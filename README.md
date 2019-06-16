@@ -213,7 +213,7 @@ Again, we use Bayesian Optimization for finding an optimal set of hyperparameter
 ```r
 # Shapley value
 plot(xgblss_model,
-     parameter = "mu",
+     parameter = "all",
      type = "shapley")
 ```
 
@@ -226,7 +226,7 @@ Looking at the estimated effects indicates that newer flats are on average more 
 ```r
 # Partial Dependence Plots
 plot(xgblss_model,
-     parameter = "mu",
+     parameter = "all",
      type = "pdp")
 ```
 
