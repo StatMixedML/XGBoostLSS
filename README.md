@@ -253,10 +253,13 @@ xgblss_sigma_pred <- predict(xgblss_model,
                              parameter = "sigma")
 ```
 
-The following plots shows a subset of 50 predictions only for ease of readability. The red dots show the actual out of sample rents, while the boxplots are the distributional predictions.
-
+The following plot shows a subset of 50 predictions only for ease of readability. The red dots show the actual out of sample rents, while the boxplots are the distributional predictions.
 
 ![Optional Text](../master/plots/munich_rent_pred_boxplot.png)
+
+Also, we can illustrate a subset of the probabilistic forecasted densities and cumulative distributions.
+
+![Optional Text](../master/plots/munich_rent_density.png)
 
 
 ### Comparison to other approaches
