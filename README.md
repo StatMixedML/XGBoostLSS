@@ -147,7 +147,7 @@ munichrent03 <- munichrent03 %>%
 munichrent03_dummy <- munichrent03 %>% 
   mlr::createDummyFeatures(target = dep_var)
 
-# Train and Test Data ----
+# Train and Test Data 
 set.seed(123)
 train_split <- sample(1:nrow(munichrent03), floor(0.7*nrow(munichrent03)))
 train <- munichrent03_dummy[train_split,]
@@ -229,6 +229,11 @@ Looking at the estimated effects indicates that newer flats are on average more 
 As we have modelled all parameter of the Normal distribution, **XGBoostLSS** provides a probabilistic forecast, from which any quantity of interest can be derived. The following shows a subset of 50 predictions only for ease of readability. The red dots show the actual rents, while the boxplots are the distributional predictions.
 
 ![Optional Text](../master/munich_rent_pred_boxplot.png)
+
+### Comparison to other approaches
+To evaluate the prediction accuracy of **XGBoostLSS**, we compare the forecasts to the implementations available in [gamlss](https://cran.r-project.org/web/packages/gamlss/index.html) and in [gamboostLSS](https://cran.r-project.org/package=gamboostLSS). 
+
+
 
 
 
