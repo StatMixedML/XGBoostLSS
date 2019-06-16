@@ -140,7 +140,6 @@ munichrent03 <- munichrent03 %>%
 munichrent03_dummy <- munichrent03 %>% 
   mlr::createDummyFeatures(target = dep_var)
 
-
 # Train and Test Data ----
 set.seed(123)
 train_split <- sample(1:nrow(munichrent03), floor(0.7*nrow(munichrent03)))
@@ -152,12 +151,42 @@ covariates <- munichrent03_dummy %>%
   select(-dep_var) %>% 
   colnames()
   
- dep_var <- "rentsqm"
+dep_var <- "rentsqm"
 
 # Date for XGBoostLSS
 dtrain <- xgb.DMatrix(data = data.matrix(train[, covariates]),
                       label = train[, dep_var])
 dtest <- xgb.DMatrix(data = data.matrix(test[, covariates]))
+```
+
+The first decision one has to make is about choosing an appropriate distribution for the response. As there are many potential candidates, we use an automated approach based on the generalised Akaike information criterion. Due to its great flexibility, many functions of the R package [gamlss](https://cran.r-project.org/web/packages/gamlss/index.html) are used within **XGBoostLSS**. 
+
+```r
+opt_dist <- fitDist(y = train[, dep_var],
+                 typ = "realplus",
+                 extra = "NO")
+                 
+opt_dist              
+                 
+                 
+      dist    GAIC
+1      GB2 6588.29
+2       NO 6601.17
+3       GG 6602.02
+4     BCCG 6602.26
+5      WEI 6602.37
+6   exGAUS 6603.17
+7      BCT 6603.35
+8    BCPEo 6604.26
+9       GA 6707.85
+10     GIG 6709.85
+11   LOGNO 6839.56
+12      IG 6871.12
+13  IGAMMA 7046.50
+14     EXP 9018.04
+15 PARETO2 9020.04
+16      GP 9020.05
+
 ```
 
 
