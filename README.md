@@ -10,12 +10,28 @@ In the following, we provide a short walk-through of the functionality of **XGBo
 
 ## Simulation
 
-We simulate a data set w
+We start with a simulated a data set that exhibits heteroscedasticity. The data is simulated as follows 
 
 ```r
-s = "Python syntax highlighting"
-print s
+# Simulate
+set.seed(123)
+quant_sel <- c(0.05, 0.95)
+n <- 10000
+p <- 10
+x <- runif(n)
+y <- rnorm(n, mean = 10, sd = 1 + 4*(0.3 < x & x < 0.5) + 2*(x > 0.7))
+X <- matrix(runif(n * p), ncol = p)
+sim_data <- data.frame(y,x,X) 
+dep_var <- "y"
+covariates <- c("x", paste0("X", seq(1:10)))
+
+# Split into train and test data
+train_sample <- sample(1:n, floor(0.7*n))
+train <- sim_data[train_sample, ]
+test <- sim_data[-train_sample, ]
 ```
+
+
 
 
 ## References
