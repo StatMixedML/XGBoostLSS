@@ -163,11 +163,8 @@ The first decision one has to make is about choosing an appropriate distribution
 
 ```r
 opt_dist <- fitDist(y = train[, dep_var],
-                 typ = "realplus",
-                 extra = "NO")
-                 
-opt_dist              
-                 
+                    typ = "realplus",
+                    extra = "NO")              
                  
       dist    GAIC
 1      GB2 6588.29
@@ -188,6 +185,10 @@ opt_dist
 16      GP 9020.05
 
 ```
+
+Even though the generalized Beta type 2 provides the best approximation to the data, we use the Normal distribution, as it has only two distributional parameter, compared to 4 of the generalized Beta type 2. In general, though, **XGBoostLSS** is flexible to allow the use to chose and fit all distributions available in the [gamlss](https://cran.r-project.org/web/packages/gamlss/index.html) package. The good fit of the Normal distribution is also confirmed by the following density plot, where the actual data is presented as a histogrom, while the normal fit is shown in red.
+
+![Optional Text](../master/fitted_dist.png)
 
 
 
