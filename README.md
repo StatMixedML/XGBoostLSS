@@ -259,9 +259,7 @@ gamboostLSS_form <- as.formula(paste0(dep_var, "~",
                                     "+",
                                     paste0("bols(", covariates_gamlss[4:length(covariates_gamlss)], ")", collapse = "+")))
                                     
-rentsqm ~ bbs(area) + bbs(rooms) + bbs(yearc) + bols(bathextra) + 
-    bols(bathtile) + bols(cheating) + bols(district) + bols(location) + 
-    bols(upkitchen) + bols(wwater)
+# rentsqm ~ bbs(area) + bbs(rooms) + bbs(yearc) + bols(bathextra) + bols(bathtile) + bols(cheating) + bols(district) + bols(location) + # bols(upkitchen) + bols(wwater)
 
 gamboostlss_mod <- gamboostLSS(list(mu = gamboostLSS_form,
                                                   sigma = gamboostLSS_form),
@@ -308,8 +306,8 @@ gamlss_form_mu <- as.formula(paste0(dep_var, "~",
                                     paste0(covariates_gamlss[4:length(covariates_gamlss)], collapse = "+")))
                                     
                                     
-rentsqm ~ pb(area) + pb(rooms) + pb(yearc) + bathextra + bathtile + 
-    cheating + district + location + upkitchen + wwater
+# rentsqm ~ pb(area) + pb(rooms) + pb(yearc) + bathextra + bathtile + 
+#    cheating + district + location + upkitchen + wwater
     
 
 gamlss_form_lss <- as.formula(paste0("~",
@@ -333,22 +331,16 @@ gamlss_sigma_pred <- predictAll(gamlss_model,
 
 ```
 
-We evaluate distributional forecasts using Scoring Rules implemented in the [scoringRules](https://cran.r-project.org/web/packages/scoringRules/index.html) R-package.
+We evaluate distributional forecasts using Continuous Ranked Probability Scoring Rules (CRPS) implemented in the [scoringRules](https://cran.r-project.org/web/packages/scoringRules/index.html) R-package, where lower scores indicates a better forecast, along with a Mean Absolute Error (MAE) comparison evaluating the mean-prediction accuracy of the models.
 
 ```r
-
+            CRPS-Score      MAE
+XGBoostLSS    1.139325 1.608783
+gamboostLSS   1.154054 1.627551
+gamlss        1.152746 1.625110
 ```
 
-
-
-
-
-
-
-
-
-
-
+Both CRPS and MAE indicate that XGBoostLSS provides more accurate forecasts than the othet two approaches.
 
 
 
