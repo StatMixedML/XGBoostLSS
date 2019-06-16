@@ -80,6 +80,11 @@ Comparing the coverage of the intervals with the nominal level of 90% shows that
 plot(xgblss_model,
      parameter = "mu",
      type = "shapley")
+     
+# Partial Dependence Plots
+plot(xgblss_model,
+     parameter = "mu",
+     type = "pdp")
 ```
 
 ![Optional Text](../master/xgboostlss_shapley.png)
@@ -198,9 +203,22 @@ xgblss_model <- xgblss.train(data = dtrain,
                              n_init_hyper = 50,
                              time_budget = 5)
 ```
-Again, we use Bayesian Optimization for finding an optimal set of hyperparameter, while restricting the overall runtime to 5 minutes. 
-                             
+Again, we use Bayesian Optimization for finding an optimal set of hyperparameter, while restricting the overall runtime to 5 minutes. Looking at the estimated effects indicates that newer flats are on average more expensive, with the variance increasing for flats built around 1980. Also, as expected, rents per square meter decrease with an increasing size of the appartment.                   
+                      
                          
+```r
+# Shapley value
+plot(xgblss_model,
+     parameter = "mu",
+     type = "shapley")
+     
+# Partial Dependence Plots
+plot(xgblss_model,
+     parameter = "mu",
+     type = "pdp")
+```
+![Optional Text](../master/munich_rent_estimated_effects.png)
+
 
 
 
