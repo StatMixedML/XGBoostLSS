@@ -92,17 +92,55 @@ The plot of the Shapley value shows that **XGBoostLSS** has identified the only 
 
 In this example we show the usage of **XGBoostLSS** using a sample of 2,053 appartments from the data collected for the preparation of the Munich rent index 2003.
 
+A data frame with 2,053 observations on the following 12 variables.
+
+rent
+  Net rent in EUR (numeric).
+
+rentsqm
+  Net rent per square meter in EUR (numeric).
+
+area
+  Floor area in square meters (numeric).
+
+rooms
+  Number of rooms (numeric).
+
+yearc
+  Year of construction (numeric).
+
+bathextra
+  Factor: High quality equipment in the bathroom?
+
+bathtile
+  Factor: Bathroom tiled?
+
+cheating
+  Factor: Central heating available?
+
+district
+  Urban district where the apartment is located. Factor with 25 levels: "All-Umenz" (Allach - Untermenzing), "Alt-Le" (Altstadt - Lehel), "Au-Haid" (Au - Haidhausen), "Au-Lo-La" (Aubing - Lochhausen - Langwied), "BamLaim" (Berg am Laim), "Bogenh" (Bogenhausen), "Feld-Has" (Feldmoching - Hasenbergl), "Had" (Hadern), "Laim" (Laim), "Lud-Isar"(Ludwigsvorstadt - Isarvorstadt), "Maxvor" (Maxvorstadt), "Mil-AmH" (Milbertshofen - Am Hart), "Moos" (Moosach), "Neuh-Nymp" (Neuhausen - Nymphenburg), "Obgies" (Obergiesing), "Pas-Obmenz" (Pasing - Obermenzing), "Ram-Per" (Ramersdorf - Perlach), "SchwWest" (Schwabing West), "Schwab-Frei" (Schwabing - Freimann), "Schwanth" (Schwanthalerhoehe), "Send" (Sendling), "Send-West" (Sendling - Westpark), "Th-Ob-Fo-Fu-So" (Thalkirchen - Obersendling - Forstenried - Fuerstenried - Solln), "Trud-Riem" (Trudering - Riem) and "Ugies-Har" (Untergiesing - Harlaching).
+
+location
+  Quality of location. Ordered factor with levels "normal", "good" and "top".
+
+upkitchen
+  Factor: Upscale equipment in kitchen?
+
+wwater
+  Factor: Hot water supply available?
+
 ```r
 # Load data
 data("munichrent03", package = "LinRegInteractive")
 
 munichrent03 <- munichrent03 %>% 
-  dplyr::select(-rent) %>% 
+  select(-rent) %>% 
   mutate_if(is.integer, as.numeric)
   
 # Dummy Coding ----
 munichrent03_dummy <- munichrent03 %>% 
-  createDummyFeatures(target = dep_var)
+  mlr::createDummyFeatures(target = dep_var)
 
 
 # Train and Test Data ----
@@ -113,7 +151,7 @@ test <- munichrent03_dummy[-train_split,]
 
 # Select dependent variable and covariates
 covariates <- munichrent03_dummy %>% 
-  dplyr::select(-dep_var) %>% 
+  select(-dep_var) %>% 
   colnames()
   
  dep_var <- "rentsqm"
@@ -122,8 +160,9 @@ covariates <- munichrent03_dummy %>%
 dtrain <- xgb.DMatrix(data = data.matrix(train[, covariates]),
                       label = train[, dep_var])
 dtest <- xgb.DMatrix(data = data.matrix(test[, covariates]))
-
 ```
+
+
 
 
 
