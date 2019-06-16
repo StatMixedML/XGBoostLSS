@@ -211,11 +211,6 @@ Again, we use Bayesian Optimization for finding an optimal set of hyperparameter
 plot(xgblss_model,
      parameter = "mu",
      type = "shapley")
-     
-# Partial Dependence Plots
-plot(xgblss_model,
-     parameter = "mu",
-     type = "pdp")
 ```
 
 Looking at the top 5 Shapley values for both the conditional mean and variance indicates that both *yearc* and *area* are considered as being important variables.
@@ -224,11 +219,19 @@ Looking at the top 5 Shapley values for both the conditional mean and variance i
 
 Looking at the estimated effects indicates that newer flats are on average more expensive, with the variance increasing for flats built around 1980 and later. Also, as expected, rents per square meter decrease with an increasing size of the appartment.  
 
+```r
+# Shapley value
+plot(xgblss_model,
+     parameter = "mu",
+     type = "shapley")
+```
+
 ![Optional Text](../master/munich_rent_estimated_effects.png)
 
 As we have modelled all parameter of the Normal distribution, **XGBoostLSS** provides a probabilistic forecast, from which any quantity of interest can be derived. The following shows a subset of 50 predictions only for ease of readability. The red dots show the actual rents, while the boxplots are the distributional predictions.
 
 ![Optional Text](../master/munich_rent_pred_boxplot.png)
+
 
 ### Comparison to other approaches
 To evaluate the prediction accuracy of **XGBoostLSS**, we compare the forecasts of the Munich rent example to the implementations available in [gamlss](https://cran.r-project.org/web/packages/gamlss/index.html) and in [gamboostLSS](https://cran.r-project.org/package=gamboostLSS). For both implementations, we use factor coding, instead of dummy-coding as for **XGBoostLSS**.
