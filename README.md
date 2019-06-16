@@ -31,7 +31,7 @@ train <- sim_data[train_sample, ]
 test <- sim_data[-train_sample, ]
 ```
 
-The dots in red show points that lie outside the 5% and 95% quantiles, which are indicated by the black dashed line. As **XGBoostLSS** allows to model the entire conditional distribution, we can draw random samples from the predicted distribution, which allows us to create prediction intervals and quantiles of interest.
+The dots in red show points that lie outside the 5% and 95% quantiles, which are indicated by the black dashed line.
 
 ![Optional Text](../master/sim_data.png)
 
@@ -52,7 +52,7 @@ xgblss_model <- xgblss.train(data = dtrain,
 
 The user has also the option to provide a list of hyperparameters. In this example however, we use Bayesian Optimization as implemented in the [mlrMBO](https://github.com/mlr-org/mlrMBO) R-package, using a randomly generated set of initial hyperparameter that are used for trainng the surrogate Kriging model to find an optimized set of parameter. The *time_budget* parameter indicates the running time budget in minutes and is used as a stopping criteria for the Bayesian Optimization.
 
-Once the model is trained, we can predict all parameter of the distribution.                      
+Once the model is trained, we can predict all parameter of the distribution.                 
    
                     
 ```r
@@ -66,6 +66,8 @@ xgblss_sigma_pred <- predict(xgblss_model,
                              parameter = "sigma")
 
 ```
+
+As **XGBoostLSS** allows to model the entire conditional distribution, we can draw random samples from the predicted distribution, which allows us to create prediction intervals and quantiles of interest. The below image shows the fitted values of **XGBoostLSS** in blue. Not only does **XGBoostLSS** correctly model the heteroscedasticity in the data, but it also provides an accurate forecast for the 5% and 95% quantiles.
 
 
 
