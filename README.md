@@ -69,7 +69,7 @@ xgblss_sigma_pred <- predict(xgblss_model,
 
 ```
 
-As **XGBoostLSS** allows to model the entire conditional distribution, we can draw random samples from the predicted distribution, which allows us to create prediction intervals and quantiles of interest. The below image shows the fitted values of **XGBoostLSS** for the 5% and 95% quantile in blue. 
+As **XGBoostLSS** allows to model the entire conditional distribution, we can draw random samples from the predicted distribution, which allows us to create prediction intervals and quantiles of interest. The below image shows the predictions of **XGBoostLSS** for the 5% and 95% quantile in blue. 
 
 ![Optional Text](../master/plots/xgboostlss_sim.png)
 
