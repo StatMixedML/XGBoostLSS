@@ -17,3 +17,6 @@ s = "Python syntax highlighting"
 print s
 ```
 
+
+## References
+März, Alexander (2019). *XGBoostLSS - An extension of XGBoost to probabilistic forecasting*. Under Review, pp. 1–26.
