@@ -257,7 +257,7 @@ The following plot shows a subset of 50 predictions only for ease of readability
 
 ![Optional Text](../master/plots/munich_rent_pred_boxplot.png)
 
-Also, we can illustrate a subset of the probabilistic forecasted densities and cumulative distributions.
+Also, we can illustrate a subset of the forecasted densities and cumulative distributions.
 
 ![Optional Text](../master/plots/munich_rent_density.png)
 
