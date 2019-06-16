@@ -232,7 +232,7 @@ plot(xgblss_model,
 
 ![Optional Text](../master/plots/munich_rent_estimated_effects.png)
 
-As we have modelled all parameter of the Normal distribution, **XGBoostLSS** provides a probabilistic forecast, from which any quantity of interest can be derived. The following shows a subset of 50 predictions only for ease of readability. The red dots show the actual rents, while the boxplots are the distributional predictions.
+As we have modelled all parameter of the Normal distribution, **XGBoostLSS** provides a probabilistic forecast, from which any quantity of interest can be derived. 
 
 ```r
 # XGBoostLSS predictions
@@ -244,6 +244,9 @@ xgblss_sigma_pred <- predict(xgblss_model,
                              newdata = dtest,
                              parameter = "sigma")
 ```
+
+The following plots shows a subset of 50 predictions only for ease of readability. The red dots show the actual rents, while the boxplots are the distributional predictions.
+
 
 ![Optional Text](../master/plots/munich_rent_pred_boxplot.png)
 
