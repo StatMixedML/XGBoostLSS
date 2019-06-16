@@ -357,8 +357,8 @@ We evaluate distributional forecasts using Continuous Ranked Probability Scoring
 ```r
             CRPS_Score      MAE
 XGBoostLSS    1.139325 1.608783
-gamboostLSS   1.154054 1.627551
 gamlss        1.152746 1.625110
+gamboostLSS   1.154054 1.627551
 ```
 
 Both CRPS and MAE indicate that XGBoostLSS provides more accurate forecasts than the other two approaches.
