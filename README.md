@@ -78,7 +78,7 @@ Comparing the coverage of the intervals with the nominal level of 90% shows that
 ```r
 # Shapley value
 plot(xgblss_model,
-     parameter = "mu",
+     parameter = "sigma",
      type = "shapley")
 ```
 
@@ -90,7 +90,7 @@ The plot of the Shapley value shows that **XGBoostLSS** has identified the only 
 ```r
 # Partial Dependence Plots
 plot(xgblss_model,
-     parameter = "mu",
+     parameter = "sigma",
      type = "pdp")
 ```
 Looking at partial dependence plots of the effect of x on Var(y|x) shows that it also correctly identifies the amount of heteroscedasticity in the data.
