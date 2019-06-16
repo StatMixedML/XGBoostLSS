@@ -95,7 +95,7 @@ The plot of the Shapley value shows that **XGBoostLSS** has identified the only 
 
 ###  Data for the Rent Index 2003 in Munich, Germany
 
-![Optional Text](../master/xmunich_rent_district.png)
+![Optional Text](../master/munich_rent_district.png)
 
 In this example we show the usage of **XGBoostLSS** using a sample of 2,053 appartments from the data collected for the preparation of the Munich rent index 2003.
 
