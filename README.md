@@ -80,16 +80,20 @@ Comparing the coverage of the intervals with the nominal level of 90% shows that
 plot(xgblss_model,
      parameter = "mu",
      type = "shapley")
-     
+```
+
+![Optional Text](../master/plots/xgboostlss_shapley.png)
+
+The plot of the Shapley value shows that **XGBoostLSS** has identified the only informative predictor *x* and does not consider any of the noise variables X1, ..., X10 as an important feature. 
+
+
+```r
 # Partial Dependence Plots
 plot(xgblss_model,
      parameter = "mu",
      type = "pdp")
 ```
-
-![Optional Text](../master/plots/xgboostlss_shapley.png)
-
-The plot of the Shapley value shows that **XGBoostLSS** has identified the only informative predictor *x* and does not consider any of the noise variables X1, ..., X10 as an important feature. Looking at partial dependence plots of the effect of x on Var(y|x) shows that it also correctly identifies the amount of heteroscedasticity in the data.
+Looking at partial dependence plots of the effect of x on Var(y|x) shows that it also correctly identifies the amount of heteroscedasticity in the data.
 
 ![Optional Text](../master/plots/xgboostlss_parteffect.png)
 
