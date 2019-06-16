@@ -8,7 +8,9 @@ In the era of increasingly awareness that the output of black box prediction mod
 
 In the following, we provide a short walk-through of the functionality of **XGBoostLSS**. 
 
-## Simulation
+## Examples
+
+### Simulation
 
 We start with a simulated a data set that exhibits heteroscedasticity where the interest lies in predicting the 5% and 95% quantiles. The data is simulated as follows: 
 
@@ -71,7 +73,7 @@ As **XGBoostLSS** allows to model the entire conditional distribution, we can dr
 
 ![Optional Text](../master/xgboostlss_sim.png)
 
-Comparing the coverage of the intervals with the nominal level of 90% shows that **XGBoostLSS** not only correctly models the heteroscedasticity in the data, but it also provides an accurate forecast for the 5% and 95% quantiles. The great flexibility of **XGBoostLSS** also comes from its ability to provide attribute importance, as well as partial dependence plots for all of the distributional parameters. In the following we only investigate the effect on the conditional variance. All plots are generated using the [interpretable machine learning (iml)](https://github.com/christophM/iml) R package.
+Comparing the coverage of the intervals with the nominal level of 90% shows that **XGBoostLSS** not only correctly models the heteroscedasticity in the data, but it also provides an accurate forecast for the 5% and 95% quantiles. The great flexibility of **XGBoostLSS** also comes from its ability to provide attribute importance, as well as partial dependence plots for all of the distributional parameters. In the following we only investigate the effect on the conditional variance. All plots are generated using wrappers around the [interpretable machine learning (iml)](https://github.com/christophM/iml) R package.
 
 ```r
 # Shapley value
@@ -82,11 +84,12 @@ plot(xgblss_model,
 
 ![Optional Text](../master/xgboostlss_shapley.png)
 
-The plot of the Shapley value shows that **XGBoostLSS** has identified the only informative predictor *x* and does not consider any of the noise variables X1, ..., X10 as important. 
-
-Looking at partial dependence plots of the effect of x on Var(y|x) shows that it also correctly identifies the amount of heteroscedasticity in the data.
+The plot of the Shapley value shows that **XGBoostLSS** has identified the only informative predictor *x* and does not consider any of the noise variables X1, ..., X10 as important. Looking at partial dependence plots of the effect of x on Var(y|x) shows that it also correctly identifies the amount of heteroscedasticity in the data.
 
 ![Optional Text](../master/xgboostlss_parteffect.png)
+
+### Munich Rent Data
+
 
 
 
