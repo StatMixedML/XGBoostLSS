@@ -220,10 +220,10 @@ Looking at the top 5 Shapley values for both the conditional mean and variance i
 Looking at the estimated effects indicates that newer flats are on average more expensive, with the variance increasing for flats built around 1980 and later. Also, as expected, rents per square meter decrease with an increasing size of the appartment.  
 
 ```r
-# Shapley value
+# Partial Dependence Plots
 plot(xgblss_model,
      parameter = "mu",
-     type = "shapley")
+     type = "pdp")
 ```
 
 ![Optional Text](../master/munich_rent_estimated_effects.png)
