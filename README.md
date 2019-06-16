@@ -149,8 +149,7 @@ test <- munichrent03_dummy[-train_split,]
 # Select dependent variable and covariates
 covariates <- munichrent03_dummy %>% 
   select(-dep_var) %>% 
-  colnames()
-  
+  colnames()  
 dep_var <- "rentsqm"
 
 # Data for XGBoostLSS
@@ -163,7 +162,7 @@ The first decision one has to make is about choosing an appropriate distribution
 
 ```r
 opt_dist <- fitDist(y = train[, dep_var],
-                    typ = "realplus",
+                    type = "realplus",
                     extra = "NO")              
                  
       dist    GAIC
