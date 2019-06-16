@@ -67,9 +67,11 @@ xgblss_sigma_pred <- predict(xgblss_model,
 
 ```
 
-As **XGBoostLSS** allows to model the entire conditional distribution, we can draw random samples from the predicted distribution, which allows us to create prediction intervals and quantiles of interest. The below image shows the fitted values of **XGBoostLSS** in blue. Not only does **XGBoostLSS** correctly model the heteroscedasticity in the data, but it also provides an accurate forecast for the 5% and 95% quantiles.
+As **XGBoostLSS** allows to model the entire conditional distribution, we can draw random samples from the predicted distribution, which allows us to create prediction intervals and quantiles of interest. The below image shows the fitted values of **XGBoostLSS** in blue. 
 
 ![Optional Text](../master/xgboostlss_sim.png)
+
+Comparing the coverage of the intervals with the nominal level of 90% shows that **XGBoostLSS** not only correctly models the heteroscedasticity in the data, but it also provides an accurate forecast for the 5% and 95% quantiles.
 
 
 
