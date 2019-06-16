@@ -231,7 +231,62 @@ As we have modelled all parameter of the Normal distribution, **XGBoostLSS** pro
 ![Optional Text](../master/munich_rent_pred_boxplot.png)
 
 ### Comparison to other approaches
-To evaluate the prediction accuracy of **XGBoostLSS**, we compare the forecasts to the implementations available in [gamlss](https://cran.r-project.org/web/packages/gamlss/index.html) and in [gamboostLSS](https://cran.r-project.org/package=gamboostLSS). 
+To evaluate the prediction accuracy of **XGBoostLSS**, we compare the forecasts of the Munich rent example to the implementations available in [gamlss](https://cran.r-project.org/web/packages/gamlss/index.html) and in [gamboostLSS](https://cran.r-project.org/package=gamboostLSS). For both implementations, we use factor coding, instead of dummy-coding as for **XGBoostLSS**.
+
+
+```r
+train_gamlss <- munichrent03[train_split,]
+test_gamlss <- munichrent03[-train_split,]
+gamlss_form <- as.formula(paste(dep_var, "~ ."))
+
+# gamboostLSS
+covariates_gamlss <- munichrent03 %>% 
+  dplyr::select(-dep_var) %>% 
+  colnames()
+
+gamboostLSS_form <- as.formula(paste0(dep_var, "~",
+                                    paste0("bbs(", covariates_gamlss[1:3], ")", collapse = "+"),
+                                    "+",
+                                    paste0("bols(", covariates_gamlss[4:length(covariates_gamlss)], ")", collapse = "+")))
+
+gamboostlss_mod <- gamboostLSS(list(mu = gamboostLSS_form,
+                                                  sigma = gamboostLSS_form),
+                                             families = GaussianLSS(),
+                                             control = boost_control(mstop = 5000,
+                                                                     nu = 0.1),
+                                             method = "noncyclic",
+                                             data = train_gamlss)
+
+set.seed(123)
+cl <- parallel::makeCluster(detectCores() - 1) 
+myApply <- function(X, FUN, ...) {
+  myFun <- function(...) {
+    library("mboost") 
+    FUN(...)
+  }
+  parLapply(cl = cl, X, myFun, ...)
+}
+
+cv10f <- cv(model.weights(gamboostlss_mod), type = "kfold")
+cv_model <- cvrisk(gamboostlss_mod,
+                   folds = cv10f,
+                   papply = myApply)
+stopCluster(cl)
+
+gamboostlss_mod_cv <- gamboostlss_mod[mstop(cv_model)] 
+
+gamboostlss_mod_mu_pred <- as.numeric(predict(gamboostlss_mod_cv,
+                                              newdata = test_gamlss,
+                                              type = "response",
+                                              parameter = "mu")) 
+
+gamboostlss_mod_sigma_pred <- as.numeric(predict(gamboostlss_mod_cv,
+                                                 newdata = test_gamlss,
+                                                 type = "response",
+                                                 parameter = "sigma"))
+
+
+```
 
 
 
