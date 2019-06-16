@@ -92,8 +92,6 @@ The plot of the Shapley value shows that **XGBoostLSS** has identified the only 
 
 In this example we show the usage of **XGBoostLSS** using a sample of 2,053 appartments from the data collected for the preparation of the Munich rent index 2003.
 
-A data frame with 2,053 observations on the following 12 variables.
-
 - *rent*
   - Net rent in EUR (numeric).
 
