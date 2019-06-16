@@ -220,7 +220,8 @@ Again, we use Bayesian Optimization for finding an optimal set of hyperparameter
 # Shapley value
 plot(xgblss_model,
      parameter = "all",
-     type = "shapley")
+     type = "shapley",
+     top_n = 5)
 ```
 
 Looking at the top 5 Shapley values for both the conditional mean and variance indicates that both *yearc* and *area* are considered as being important variables.
@@ -233,7 +234,8 @@ Looking at the estimated effects indicates that newer flats are on average more 
 # Partial Dependence Plots
 plot(xgblss_model,
      parameter = "all",
-     type = "pdp")
+     type = "pdp",
+     top_n = 5)
 ```
 
 ![Optional Text](../master/plots/munich_rent_estimated_effects.png)
@@ -251,7 +253,7 @@ xgblss_sigma_pred <- predict(xgblss_model,
                              parameter = "sigma")
 ```
 
-The following plots shows a subset of 50 predictions only for ease of readability. The red dots show the actual rents, while the boxplots are the distributional predictions.
+The following plots shows a subset of 50 predictions only for ease of readability. The red dots show the actual out of sample rents, while the boxplots are the distributional predictions.
 
 
 ![Optional Text](../master/plots/munich_rent_pred_boxplot.png)
