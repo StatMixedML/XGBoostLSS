@@ -147,7 +147,7 @@ munichrent03 <- munichrent03 %>%
   select(-rent) %>% 
   mutate_if(is.integer, as.numeric)
   
-# Dummy Coding ----
+# Dummy Coding
 munichrent03_dummy <- munichrent03 %>% 
   mlr::createDummyFeatures(target = dep_var)
 
