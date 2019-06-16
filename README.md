@@ -35,4 +35,4 @@ test <- sim_data[-train_sample, ]
 
 
 ## References
-März, Alexander (2019). *XGBoostLSS - "An extension of XGBoost to probabilistic forecasting"*. pp. 1–26. *Under Review*.
+März, Alexander (2019). *"XGBoostLSS - An extension of XGBoost to probabilistic forecasting"*. pp. 1–26. *Under Review*.
