@@ -235,6 +235,16 @@ To evaluate the prediction accuracy of **XGBoostLSS**, we compare the forecasts 
 
 
 ```r
+# XGBoostLSS predictions
+xgblss_mu_pred <- predict(xgblss_model,
+                          newdata = dtest,
+                          parameter = "mu")
+                          
+xgblss_sigma_pred <- predict(xgblss_model,
+                             newdata = dtest,
+                             parameter = "sigma")
+
+# Data for gamlss models
 train_gamlss <- munichrent03[train_split,]
 test_gamlss <- munichrent03[-train_split,]
 gamlss_form <- as.formula(paste(dep_var, "~ ."))
@@ -248,6 +258,10 @@ gamboostLSS_form <- as.formula(paste0(dep_var, "~",
                                     paste0("bbs(", covariates_gamlss[1:3], ")", collapse = "+"),
                                     "+",
                                     paste0("bols(", covariates_gamlss[4:length(covariates_gamlss)], ")", collapse = "+")))
+                                    
+rentsqm ~ bbs(area) + bbs(rooms) + bbs(yearc) + bols(bathextra) + 
+    bols(bathtile) + bols(cheating) + bols(district) + bols(location) + 
+    bols(upkitchen) + bols(wwater)
 
 gamboostlss_mod <- gamboostLSS(list(mu = gamboostLSS_form,
                                                   sigma = gamboostLSS_form),
@@ -284,7 +298,44 @@ gamboostlss_mod_sigma_pred <- as.numeric(predict(gamboostlss_mod_cv,
                                                  newdata = test_gamlss,
                                                  type = "response",
                                                  parameter = "sigma"))
+                                                 
+                                                 
+                                                 
+# GAMLSS
+gamlss_form_mu <- as.formula(paste0(dep_var, "~",
+                                    paste0("pb(", covariates_gamlss[1:3], ")", collapse = "+"),
+                                    "+",
+                                    paste0(covariates_gamlss[4:length(covariates_gamlss)], collapse = "+")))
+                                    
+                                    
+rentsqm ~ pb(area) + pb(rooms) + pb(yearc) + bathextra + bathtile + 
+    cheating + district + location + upkitchen + wwater
+    
 
+gamlss_form_lss <- as.formula(paste0("~",
+                                     paste0("pb(", covariates_gamlss[1:3], ")", collapse = "+"),
+                                     "+",
+                                     paste0(covariates_gamlss[4:length(covariates_gamlss)], collapse = "+")))
+
+
+gamlss_model <- gamlss(gamlss_form_mu,
+                       sigma.formula = gamlss_form_lss,
+                       family = "NO",
+                       data = train_gamlss)
+
+gamlss_mu_pred <- predictAll(gamlss_model,
+                             type = "response",
+                             newdata = test_gamlss)$mu
+
+gamlss_sigma_pred <- predictAll(gamlss_model,
+                             type = "response",
+                             newdata = test_gamlss)$sigma
+
+```
+
+We evaluate distributional forecasts using Scoring Rules implemented in the [scoringRules](https://cran.r-project.org/web/packages/scoringRules/index.html) R-package.
+
+```r
 
 ```
 
