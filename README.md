@@ -259,7 +259,8 @@ gamboostLSS_form <- as.formula(paste0(dep_var, "~",
                                     "+",
                                     paste0("bols(", covariates_gamlss[4:length(covariates_gamlss)], ")", collapse = "+")))
                                     
-# rentsqm ~ bbs(area) + bbs(rooms) + bbs(yearc) + bols(bathextra) + bols(bathtile) + bols(cheating) + bols(district) + bols(location) + # bols(upkitchen) + bols(wwater)
+# rentsqm ~ bbs(area) + bbs(rooms) + bbs(yearc) + bols(bathextra) + bols(bathtile) + 
+# bols(cheating) + bols(district) + bols(location) + bols(upkitchen) + bols(wwater)
 
 gamboostlss_mod <- gamboostLSS(list(mu = gamboostLSS_form,
                                                   sigma = gamboostLSS_form),
