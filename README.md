@@ -10,7 +10,7 @@ In the following, we provide a short walk-through of the functionality of **XGBo
 
 ## Simulation
 
-We start with a simulated a data set that exhibits heteroscedasticity. The data is simulated as follows 
+We start with a simulated a data set that exhibits heteroscedasticity. The data is simulated as follows: 
 
 ```r
 # Simulate
