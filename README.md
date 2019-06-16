@@ -84,11 +84,46 @@ plot(xgblss_model,
 
 ![Optional Text](../master/xgboostlss_shapley.png)
 
-The plot of the Shapley value shows that **XGBoostLSS** has identified the only informative predictor *x* and does not consider any of the noise variables X1, ..., X10 as important. Looking at partial dependence plots of the effect of x on Var(y|x) shows that it also correctly identifies the amount of heteroscedasticity in the data.
+The plot of the Shapley value shows that **XGBoostLSS** has identified the only informative predictor *x* and does not consider any of the noise variables X1, ..., X10 as an important feature. Looking at partial dependence plots of the effect of x on Var(y|x) shows that it also correctly identifies the amount of heteroscedasticity in the data.
 
 ![Optional Text](../master/xgboostlss_parteffect.png)
 
-### Munich Rent Data
+###  Data for the Rent Index 2003 in Munich, Germany
+
+In this example we show the usage of **XGBoostLSS** using a sample of 2,053 appartments from the data collected for the preparation of the Munich rent index 2003.
+
+```r
+# Load data
+data("munichrent03", package = "LinRegInteractive")
+
+munichrent03 <- munichrent03 %>% 
+  dplyr::select(-rent) %>% 
+  mutate_if(is.integer, as.numeric)
+  
+# Dummy Coding ----
+munichrent03_dummy <- munichrent03 %>% 
+  createDummyFeatures(target = dep_var)
+
+
+# Train and Test Data ----
+set.seed(123)
+train_split <- sample(1:nrow(munichrent03), floor(0.7*nrow(munichrent03)))
+train <- munichrent03_dummy[train_split,]
+test <- munichrent03_dummy[-train_split,]
+
+# Select dependent variable and covariates
+covariates <- munichrent03_dummy %>% 
+  dplyr::select(-dep_var) %>% 
+  colnames()
+  
+ dep_var <- "rentsqm"
+
+# Date for XGBoostLSS
+dtrain <- xgb.DMatrix(data = data.matrix(train[, covariates]),
+                      label = train[, dep_var])
+dtest <- xgb.DMatrix(data = data.matrix(test[, covariates]))
+
+```
 
 
 
