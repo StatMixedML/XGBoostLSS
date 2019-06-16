@@ -82,6 +82,8 @@ plot(xgblss_model,
 
 ![Optional Text](../master/xgboostlss_shapley.png)
 
+The plot of the Shapley value shows that **XGBoostLSS** has identified the only informative predictor *x* and does not consider any of the noise variables X1, ..., X10 as important.
+
 
 
 
