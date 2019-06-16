@@ -175,7 +175,7 @@ dtrain <- xgb.DMatrix(data = data.matrix(train[, covariates]),
 dtest <- xgb.DMatrix(data = data.matrix(test[, covariates]))
 ```
 
-The first decision one has to make is about choosing an appropriate distribution for the response. As there are many potential candidates, we use an automated approach based on the generalised Akaike information criterion. Due to its great flexibility, many functions of the R package [gamlss](https://cran.r-project.org/web/packages/gamlss/index.html) are used within **XGBoostLSS**. 
+The first decision one has to make is about choosing an appropriate distribution for the response. As there are many potential candidates, we use an automated approach based on the generalised Akaike information criterion. Due to its great flexibility, **XGBoostLSS** is built around the R package [gamlss](https://cran.r-project.org/web/packages/gamlss/index.html). 
 
 ```r
 opt_dist <- fitDist(y = train[, dep_var],
