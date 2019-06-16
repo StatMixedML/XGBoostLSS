@@ -97,7 +97,7 @@ The plot of the Shapley value shows that **XGBoostLSS** has identified the only 
 
 ![Optional Text](../master/munich_rent_district.png)
 
-In this example we show the usage of **XGBoostLSS** using a sample of 2,053 appartments from the data collected for the preparation of the Munich rent index 2003.
+In this example we show the usage of **XGBoostLSS** using a sample of 2,053 apartments from the data collected for the preparation of the Munich rent index 2003.
 
 - *rent*
   - Net rent in EUR (numeric).
@@ -340,7 +340,7 @@ gamboostLSS   1.154054 1.627551
 gamlss        1.152746 1.625110
 ```
 
-Both CRPS and MAE indicate that XGBoostLSS provides more accurate forecasts than the othet two approaches.
+Both CRPS and MAE indicate that XGBoostLSS provides more accurate forecasts than the other two approaches.
 
 
 
