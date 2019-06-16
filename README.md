@@ -234,13 +234,6 @@ plot(xgblss_model,
 
 As we have modelled all parameter of the Normal distribution, **XGBoostLSS** provides a probabilistic forecast, from which any quantity of interest can be derived. The following shows a subset of 50 predictions only for ease of readability. The red dots show the actual rents, while the boxplots are the distributional predictions.
 
-![Optional Text](../master/plots/munich_rent_pred_boxplot.png)
-
-
-### Comparison to other approaches
-To evaluate the prediction accuracy of **XGBoostLSS**, we compare the forecasts of the Munich rent example to the implementations available in [gamlss](https://cran.r-project.org/web/packages/gamlss/index.html) and in [gamboostLSS](https://cran.r-project.org/package=gamboostLSS). For both implementations, we use factor coding, instead of dummy-coding as for **XGBoostLSS**.
-
-
 ```r
 # XGBoostLSS predictions
 xgblss_mu_pred <- predict(xgblss_model,
@@ -250,7 +243,16 @@ xgblss_mu_pred <- predict(xgblss_model,
 xgblss_sigma_pred <- predict(xgblss_model,
                              newdata = dtest,
                              parameter = "sigma")
+```
 
+![Optional Text](../master/plots/munich_rent_pred_boxplot.png)
+
+
+### Comparison to other approaches
+To evaluate the prediction accuracy of **XGBoostLSS**, we compare the forecasts of the Munich rent example to the implementations available in [gamlss](https://cran.r-project.org/web/packages/gamlss/index.html) and in [gamboostLSS](https://cran.r-project.org/package=gamboostLSS). For both implementations, we use factor coding, instead of dummy-coding as for **XGBoostLSS**.
+
+
+```r
 # Data for gamlss models
 train_gamlss <- munichrent03[train_split,]
 test_gamlss <- munichrent03[-train_split,]
