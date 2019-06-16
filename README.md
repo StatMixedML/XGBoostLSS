@@ -71,7 +71,7 @@ As **XGBoostLSS** allows to model the entire conditional distribution, we can dr
 
 ![Optional Text](../master/xgboostlss_sim.png)
 
-Comparing the coverage of the intervals with the nominal level of 90% shows that **XGBoostLSS** not only correctly models the heteroscedasticity in the data, but it also provides an accurate forecast for the 5% and 95% quantiles.
+Comparing the coverage of the intervals with the nominal level of 90% shows that **XGBoostLSS** not only correctly models the heteroscedasticity in the data, but it also provides an accurate forecast for the 5% and 95% quantiles. The great flexibility of **XGBoostLSS** also comes from its ability to provide attribute importances, as well as partial dependence plots for all of the distributional paramters. In the following we only investigate the effect on the conditional variance. All plots are generated using the [interpretable machine learning (iml)](https://github.com/christophM/iml) R package.
 
 
 
