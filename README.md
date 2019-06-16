@@ -31,9 +31,7 @@ train <- sim_data[train_sample, ]
 test <- sim_data[-train_sample, ]
 ```
 
-The dots in red show points that lie outside the 5% and 95% quantile, which is indicated by the black dashed line. In this example, we are interested in 
-
-As **XGBoostLSS** allows to model the entire conditional distribution, we can draw random samples from the predicted distribution, which allows us to create prediction intervals and quantiles of interest
+The dots in red show points that lie outside the 5% and 95% quantile, which is indicated by the black dashed line. As **XGBoostLSS** allows to model the entire conditional distribution, we can draw random samples from the predicted distribution, which allows us to create prediction intervals and quantiles of interest.
 
 
 
