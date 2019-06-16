@@ -153,7 +153,7 @@ covariates <- munichrent03_dummy %>%
   
 dep_var <- "rentsqm"
 
-# Date for XGBoostLSS
+# Data for XGBoostLSS
 dtrain <- xgb.DMatrix(data = data.matrix(train[, covariates]),
                       label = train[, dep_var])
 dtest <- xgb.DMatrix(data = data.matrix(test[, covariates]))
@@ -189,6 +189,19 @@ opt_dist <- fitDist(y = train[, dep_var],
 Even though the generalized Beta type 2 provides the best approximation to the data, we use the Normal distribution, as it has only two distributional parameter, compared to 4 of the generalized Beta type 2. In general, though, **XGBoostLSS** is flexible to allow the use to chose and fit all distributions available in the [gamlss](https://cran.r-project.org/web/packages/gamlss/index.html) package. The good fit of the Normal distribution is also confirmed by the following density plot, where the actual data is presented as a histogrom, while the normal fit is shown in red.
 
 ![Optional Text](../master/fitted_dist.png)
+
+Now that we have specified the distribution, let's fit an **XGBoostLSS** to the data.
+
+```r
+# Fit model
+xgblss_model <- xgblss.train(data = dtrain,
+                             family = "NO",
+                             n_init_hyper = 50,
+                             time_budget = 5)
+```
+Again, we use Bayesian Optimization for finding an optimal set of hyperparameter, while restricting the overall runtime to 5 minutes. 
+                             
+                         
 
 
 
