@@ -94,41 +94,41 @@ In this example we show the usage of **XGBoostLSS** using a sample of 2,053 appa
 
 A data frame with 2,053 observations on the following 12 variables.
 
-rent
-  Net rent in EUR (numeric).
+- *rent*
+  - Net rent in EUR (numeric).
 
-rentsqm
-  Net rent per square meter in EUR (numeric).
+- *rentsqm*
+  - Net rent per square meter in EUR (numeric).
 
-area
-  Floor area in square meters (numeric).
+- *area*
+  - Floor area in square meters (numeric).
 
-rooms
-  Number of rooms (numeric).
+- *rooms*
+  - Number of rooms (numeric).
 
-yearc
-  Year of construction (numeric).
+- *yearc*
+  - Year of construction (numeric).
 
-bathextra
-  Factor: High quality equipment in the bathroom?
+- *bathextra*
+  - Factor: High quality equipment in the bathroom?
 
-bathtile
-  Factor: Bathroom tiled?
+- *bathtile*
+  - Factor: Bathroom tiled?
 
-cheating
-  Factor: Central heating available?
+- *cheating*
+  - Factor: Central heating available?
 
-district
-  Urban district where the apartment is located. Factor with 25 levels: "All-Umenz" (Allach - Untermenzing), "Alt-Le" (Altstadt - Lehel), "Au-Haid" (Au - Haidhausen), "Au-Lo-La" (Aubing - Lochhausen - Langwied), "BamLaim" (Berg am Laim), "Bogenh" (Bogenhausen), "Feld-Has" (Feldmoching - Hasenbergl), "Had" (Hadern), "Laim" (Laim), "Lud-Isar"(Ludwigsvorstadt - Isarvorstadt), "Maxvor" (Maxvorstadt), "Mil-AmH" (Milbertshofen - Am Hart), "Moos" (Moosach), "Neuh-Nymp" (Neuhausen - Nymphenburg), "Obgies" (Obergiesing), "Pas-Obmenz" (Pasing - Obermenzing), "Ram-Per" (Ramersdorf - Perlach), "SchwWest" (Schwabing West), "Schwab-Frei" (Schwabing - Freimann), "Schwanth" (Schwanthalerhoehe), "Send" (Sendling), "Send-West" (Sendling - Westpark), "Th-Ob-Fo-Fu-So" (Thalkirchen - Obersendling - Forstenried - Fuerstenried - Solln), "Trud-Riem" (Trudering - Riem) and "Ugies-Har" (Untergiesing - Harlaching).
+- *district*
+  - Urban district where the apartment is located. Factor with 25 levels: "All-Umenz" (Allach - Untermenzing), "Alt-Le" (Altstadt - Lehel), "Au-Haid" (Au - Haidhausen), "Au-Lo-La" (Aubing - Lochhausen - Langwied), "BamLaim" (Berg am Laim), "Bogenh" (Bogenhausen), "Feld-Has" (Feldmoching - Hasenbergl), "Had" (Hadern), "Laim" (Laim), "Lud-Isar"(Ludwigsvorstadt - Isarvorstadt), "Maxvor" (Maxvorstadt), "Mil-AmH" (Milbertshofen - Am Hart), "Moos" (Moosach), "Neuh-Nymp" (Neuhausen - Nymphenburg), "Obgies" (Obergiesing), "Pas-Obmenz" (Pasing - Obermenzing), "Ram-Per" (Ramersdorf - Perlach), "SchwWest" (Schwabing West), "Schwab-Frei" (Schwabing - Freimann), "Schwanth" (Schwanthalerhoehe), "Send" (Sendling), "Send-West" (Sendling - Westpark), "Th-Ob-Fo-Fu-So" (Thalkirchen - Obersendling - Forstenried - Fuerstenried - Solln), "Trud-Riem" (Trudering - Riem) and "Ugies-Har" (Untergiesing - Harlaching).
 
-location
-  Quality of location. Ordered factor with levels "normal", "good" and "top".
+- *location*
+  - Quality of location. Ordered factor with levels "normal", "good" and "top".
 
-upkitchen
-  Factor: Upscale equipment in kitchen?
+- *upkitchen*
+  - Factor: Upscale equipment in kitchen?
 
-wwater
-  Factor: Hot water supply available?
+- *wwater*
+  - Factor: Hot water supply available?
 
 ```r
 # Load data
