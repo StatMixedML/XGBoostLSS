@@ -360,7 +360,7 @@ GamBoostLSS   1.154054 1.627551
 
 Both CRPS and MAE indicate that **XGBoostLSS** provides more accurate forecasts than the other two approaches.
 
-## Summary and comparison to existing approaches
+## Summary and key features
 
 In summary, **XGBoostLSS** has the following key features: 
 
