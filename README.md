@@ -52,7 +52,7 @@ xgblss_model <- xgblss.train(data = dtrain,
                              time_budget = 10)
 ```
 
-The user has also the option to provide a list of hyperparameters. In this example however, we use Bayesian Optimization as implemented in the [mlrMBO](https://github.com/mlr-org/mlrMBO) R-package, using a randomly generated set of initial hyperparameters that are used for training the surrogate Kriging model to find an optimized set of parameter. The *time_budget* parameter indicates the running time budget in minutes and is used as a stopping criteria for the Bayesian Optimization.
+The user has also the option to provide a list of hyperparameters to optimize. In this example however, we use Bayesian Optimization as implemented in the [mlrMBO](https://github.com/mlr-org/mlrMBO) R-package, using a randomly generated set of initial hyperparameters that are used for training the surrogate Kriging model to find an optimized set of parameter. Currently, the default set-up in **XGBoostLSS** optimizes *eta, gamma, max_depth, min_child_weight, subsample* and *colsample_bytree* as hyperparameter. The *time_budget* parameter indicates the running time budget in minutes and is used as a stopping criteria for the Bayesian Optimization.
 
 Once the model is trained, we can predict all parameter of the distribution.                 
    
