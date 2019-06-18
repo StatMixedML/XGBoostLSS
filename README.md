@@ -358,7 +358,11 @@ GAMLSS        1.152746 1.625110
 GamBoostLSS   1.154054 1.627551
 ```
 
-Both CRPS and MAE indicate that **XGBoostLSS** provides more accurate forecasts than the other two approaches.
+Both CRPS and MAE indicate that **XGBoostLSS** provides more accurate forecasts than the other two approaches. To investigate the ability of **XGBoostLSS** to provide insights into the estimated effects on all distributional parameter, we compare its estimated effects to those estimated by gamboostlss.
+
+![Optional Text](../master/plots/munich_rent_gamboostlss.png)
+
+All effects are similar to **XGBoostLSS** and therefore confirm its ability to provide insights into the data generating process.
 
 ## Summary and key features
 
