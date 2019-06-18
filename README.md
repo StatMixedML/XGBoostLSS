@@ -369,8 +369,8 @@ All effects are similar to **XGBoostLSS** and therefore confirm its ability to p
 In summary, **XGBoostLSS** has the following key features: 
 
 - Extends XGBoost to probabilistic forecasting from which prediction intervals and quantiles of interest can be derived.
-- Compatible with all XGBoost implementations, i.e., R, Julia, Python, Java and JVM languages like Scala and platforms like Hadoop.
-- Parallel model traininig, both CPU and GPU.
+- Compatible with all XGBoost implementations, i.e., R, Julia, Python, Java and Scala.
+- Parallel model traininig, both CPU and GPU, as well as Spark and Dask.
 - Compatibility for training large models using large datasets (> 1 Mio rows).
 - Low memory usage.
 - High prediction accuracy due to Newton boosting. 
