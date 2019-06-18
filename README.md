@@ -251,7 +251,7 @@ The following plot shows a subset of 50 predictions only for ease of readability
 
 ![Optional Text](../master/plots/munich_rent_pred_boxplot.png)
 
-Also, we can illustrate a subset of the forecasted densities and cumulative distributions.
+Even though the Normal distribution was identified by the AIC as an appropriate distribution, the Whiskers in the above plot show that some of the forecasted rents are smaller than 0. In real life applications, a distribution with positive support might be a more reasonable assumption and the above distributional assumption was made for illustration purposes only. Also, we can plot a subset of the forecasted densities and cumulative distributions.
 
 ![Optional Text](../master/plots/munich_rent_density.png)
 
