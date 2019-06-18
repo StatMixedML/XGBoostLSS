@@ -33,7 +33,7 @@ train <- sim_data[train_sample, ]
 test <- sim_data[-train_sample, ]
 ```
 
-The dots in red show points that lie outside the 5% and 95% quantiles, which are indicated by the black dashed line.
+The dots in red show points that lie outside the 5% and 95% quantiles, which are indicated by the black dashed lines.
 
 ![Optional Text](../master/plots/sim_data.png)
 
