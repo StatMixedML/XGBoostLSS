@@ -237,13 +237,9 @@ As we have modelled all parameter of the Normal distribution, **XGBoostLSS** pro
 
 ```r
 # XGBoostLSS predictions
-xgblss_mu_pred <- predict(xgblss_model,
+xgblss_pred <- predict(xgblss_model,
                           newdata = dtest,
-                          parameter = "mu")
-                          
-xgblss_sigma_pred <- predict(xgblss_model,
-                             newdata = dtest,
-                             parameter = "sigma")
+                          parameter = "all")
 ```
 
 The following plot shows a subset of 50 predictions only for ease of readability. The red dots show the actual out of sample rents, while the boxplots are the distributional predictions.
