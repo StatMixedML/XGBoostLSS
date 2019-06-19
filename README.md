@@ -371,6 +371,8 @@ In summary, **XGBoostLSS** has the following key features:
 - Extends XGBoost to probabilistic forecasting from which prediction intervals and quantiles of interest can be derived.
 - Compatible with all XGBoost implementations, i.e., R, Julia, Python, Java and Scala.
 - Parallel model traininig, both CPU and GPU, as well as Spark and Dask.
+- Fast Histogram Model Training.
+- Efficient representation of sparse matrices.
 - Compatibility for training large models using large datasets (> 1 Mio rows).
 - Low memory usage.
 - High prediction accuracy due to Newton boosting. 
