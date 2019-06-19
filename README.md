@@ -52,7 +52,7 @@ xgblss_model <- xgblss.train(data = dtrain,
                              time_budget = 10)
 ```
 
-The user has also the option to provide a list of hyperparameters to optimize. In this example however, we use Bayesian Optimization as implemented in the [mlrMBO](https://github.com/mlr-org/mlrMBO) R-package, using a randomly generated set of initial hyperparameters that are used for training the surrogate Kriging model to find an optimized set of parameter. Currently, the default set-up in **XGBoostLSS** optimizes *eta, gamma, max_depth, min_child_weight, subsample* and *colsample_bytree* as hyperparameter. The *time_budget* parameter indicates the running time budget in minutes and is used as a stopping criteria for the Bayesian Optimization.
+The user has also the option to provide a list of hyperparameters to optimize, as well as its boundary values. In this example however, we use Bayesian Optimization as implemented in the [mlrMBO](https://github.com/mlr-org/mlrMBO) R-package, using a randomly generated set of initial hyperparameters that are used for training the surrogate Kriging model to find an optimized set of parameter. Currently, the default set-up in **XGBoostLSS** optimizes *eta, gamma, max_depth, min_child_weight, subsample* and *colsample_bytree* as hyperparameter. The *time_budget* parameter indicates the running time budget in minutes and is used as a stopping criteria for the Bayesian Optimization.
 
 Once the model is trained, we can predict all parameter of the distribution.                 
    
@@ -363,6 +363,31 @@ Both CRPS and MAE indicate that **XGBoostLSS** provides more accurate forecasts 
 ![Optional Text](../master/plots/munich_rent_gamboostlss.png)
 
 All effects are similar to **XGBoostLSS** and therefore confirm its ability to provide insights into the data generating process.
+
+## Expectile Regression
+
+While GAMLSS retain the assumption of a parametric distribution for the response, it may also be useful to completely drop this assumption and to formulate models that still allow us to describe
+more than the mean of the response. This may in particular be the case if interest is not on identifying covariate effects on speciﬁc parameters of the response distribution but on the relation of extreme observations in the tails of the distribution on covariates. This is enabled in quantile and expectile regression. As XGBoost requieres both Gradient and Hessian to be non-zero, we illustrate the ability of **XGBoostLSS** to model and provide inference for different parts of the response distribution using expectile regression.
+
+We estimate a model, where we replace the family argument with „Expectile“, where **tau** specifies the expectiles of interest. Note that for **tau=0.5**, a mean regression model is estimated. As in the above examples, we use Bayesian Optimization to find the best hyperparameter.
+
+```r
+# Fit model
+xgblss_expect <- xgblss.train(data = dtrain,
+                             family = "Expectile",
+		     tau = c(0.05, 0.5, 0.95),
+                             n_init_hyper = 50,
+                             time_budget = 10)
+``` 
+
+
+Investigation of the feature importances across different expectiles allows to infere the most important covariates for each point of the response distribution so that, e.g., effects that are more important for more expensive rents can be isolated from those of low rents.
+
+![Optional Text](../master/plots/munich_rent_expectiles_effects.png)
+
+Furthermore, plotting the effects across different expectile allows to uncover heterogeneity in the data, as the estimated effects, as well as their strengths are allowed to vary across the response distribution. 
+
+![Optional Text](../master/plots/munich_rent_expectiles_effects.png)
 
 ## Summary and key features
 
