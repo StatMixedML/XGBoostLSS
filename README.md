@@ -282,66 +282,31 @@ gamboostlss_mod <- gamboostLSS(list(mu = gamboostLSS_form,
                                     method = "noncyclic",
                                     data = train_gamlss)
 
-set.seed(123)
-cl <- parallel::makeCluster(detectCores() - 1) 
-myApply <- function(X, FUN, ...) {
-  myFun <- function(...) {
-    library("mboost") 
-    FUN(...)
-  }
-  parLapply(cl = cl, X, myFun, ...)
-}
-
 cv10f <- cv(model.weights(gamboostlss_mod), type = "kfold")
 cv_model <- cvrisk(gamboostlss_mod,
                    folds = cv10f,
                    papply = myApply)
-stopCluster(cl)
-
 gamboostlss_mod_cv <- gamboostlss_mod[mstop(cv_model)] 
 
-gamboostlss_mod_mu_pred <- as.numeric(predict(gamboostlss_mod_cv,
-                                              newdata = test_gamlss,
-                                              type = "response",
-                                              parameter = "mu")) 
-
-gamboostlss_mod_sigma_pred <- as.numeric(predict(gamboostlss_mod_cv,
-                                                 newdata = test_gamlss,
-                                                 type = "response",
-                                                 parameter = "sigma"))
-                                                 
-                                                 
-                                                 
+                                           
 # GAMLSS
 gamlss_form_mu <- as.formula(paste0(dep_var, "~",
                                     paste0("pb(", covariates_gamlss[1:3], ")", collapse = "+"),
                                     "+",
                                     paste0(covariates_gamlss[4:length(covariates_gamlss)], collapse = "+")))
-                                    
-                                    
-# rentsqm ~ pb(area) + pb(rooms) + pb(yearc) + bathextra + bathtile + 
-#    cheating + district + location + upkitchen + wwater
-    
-
+				    
 gamlss_form_lss <- as.formula(paste0("~",
                                      paste0("pb(", covariates_gamlss[1:3], ")", collapse = "+"),
                                      "+",
                                      paste0(covariates_gamlss[4:length(covariates_gamlss)], collapse = "+")))
-
-
+                                    
+# rentsqm ~ pb(area) + pb(rooms) + pb(yearc) + bathextra + bathtile + 
+#    cheating + district + location + upkitchen + wwater
+    
 gamlss_model <- gamlss(gamlss_form_mu,
                        sigma.formula = gamlss_form_lss,
                        family = "NO",
                        data = train_gamlss)
-
-gamlss_mu_pred <- predictAll(gamlss_model,
-                             type = "response",
-                             newdata = test_gamlss)$mu
-
-gamlss_sigma_pred <- predictAll(gamlss_model,
-                             type = "response",
-                             newdata = test_gamlss)$sigma
-
 ```
 
 We evaluate distributional forecasts using Continuous Ranked Probability Scoring Rules (CRPS) implemented in the [scoringRules](https://cran.r-project.org/web/packages/scoringRules/index.html) R-package, where lower scores indicates a better forecast, along with a Mean Absolute Error (MAE) comparison evaluating the mean-prediction accuracy of the models.
