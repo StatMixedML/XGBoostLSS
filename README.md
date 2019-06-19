@@ -333,10 +333,10 @@ We estimate a model, where we replace the family argument with „Expectile“, 
 ```r
 # Fit model
 xgblss_expect <- xgblss.train(data = dtrain,
-                             family = "Expectile",
-		             tau = c(0.05, 0.5, 0.95),
-                             n_init_hyper = 50,
-                             time_budget = 10)
+                              family = "Expectile",
+		              tau = c(0.05, 0.5, 0.95),
+                              n_init_hyper = 50,
+                              time_budget = 10)
 ``` 
 
 
