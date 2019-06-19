@@ -366,10 +366,9 @@ All effects are similar to **XGBoostLSS** and therefore confirm its ability to p
 
 ## Expectile Regression
 
-While GAMLSS retain the assumption of a parametric distribution for the response, it may also be useful to completely drop this assumption and to formulate models that still allow us to describe
-more than the mean of the response. This may in particular be the case if interest is not on identifying covariate effects on speciﬁc parameters of the response distribution but on the relation of extreme observations in the tails of the distribution on covariates. This is enabled in quantile and expectile regression. As XGBoost requieres both Gradient and Hessian to be non-zero, we illustrate the ability of **XGBoostLSS** to model and provide inference for different parts of the response distribution using expectile regression.
+While GAMLSS retain the assumption of a parametric distribution for the response, it may also be useful to completely drop this assumption and to formulate models that still allow us to describe more than the mean of the response. This may in particular be the case if interest is not on identifying covariate effects on speciﬁc parameters of the response distribution but on the relation of extreme observations in the tails of the distribution on covariates. This is enabled in quantile and expectile regression. As XGBoost requieres both Gradient and Hessian to be non-zero, we illustrate the ability of **XGBoostLSS** to model and provide inference for different parts of the response distribution using expectile regression.
 
-We estimate a model, where we replace the family argument with „Expectile“, where **tau** specifies the expectiles of interest. Note that for **tau=0.5**, a mean regression model is estimated. As in the above examples, we use Bayesian Optimization to find the best hyperparameter.
+We estimate a model, where we replace the family argument with „Expectile“, where *tau* specifies the expectiles of interest. Note that for *tau=0.5*, a mean regression model is estimated. As in the above examples, we use Bayesian Optimization to find the best hyperparameter.
 
 ```r
 # Fit model
@@ -383,7 +382,7 @@ xgblss_expect <- xgblss.train(data = dtrain,
 
 Investigation of the feature importances across different expectiles allows to infere the most important covariates for each point of the response distribution so that, e.g., effects that are more important for more expensive rents can be isolated from those of low rents.
 
-![Optional Text](../master/plots/munich_rent_expectiles_effects.png)
+![Optional Text](../master/plots/munich_rent_expectiles_shapley.png)
 
 Furthermore, plotting the effects across different expectile allows to uncover heterogeneity in the data, as the estimated effects, as well as their strengths are allowed to vary across the response distribution. 
 
