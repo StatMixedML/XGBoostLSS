@@ -239,7 +239,7 @@ Besides the global attribute importance, the user might also be interested in lo
 plot(xgblss_model,
      newdata = test,
      parameter = "mu",
-     type = "loc_shapley",
+     type = "shapley",
      x_interest = 1,
      top_n = 10)
  ```
