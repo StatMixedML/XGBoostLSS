@@ -200,7 +200,7 @@ Even though the generalized Beta type 2 provides the best approximation to the d
 
 ![Optional Text](../master/plots/fitted_dist.png)
 
-Now that we have specified the distribution, let's fit an **XGBoostLSS** to the data.
+Now that we have specified the distribution, let's fit an **XGBoostLSS** to the data. Again, we use Bayesian Optimization for finding an optimal set of hyperparameter, while restricting the overall runtime to 5 minutes.   
 
 ```r
 # Fit model
@@ -209,19 +209,6 @@ xgblss_model <- xgblss.train(data = dtrain,
                              n_init_hyper = 50,
                              time_budget = 5)
 ```
-Again, we use Bayesian Optimization for finding an optimal set of hyperparameter, while restricting the overall runtime to 5 minutes.                
-```r
-# Shapley value
-plot(xgblss_model,
-     parameter = "all",
-     type = "shapley",
-     top_n = 10)
-```
-
-Looking at the top 10 Shapley values for both the conditional mean and variance indicates that both *yearc* and *area* are considered as being important variables.
-
-![Optional Text](../master/plots/munich_rent_shapley.png)
-
 Looking at the estimated effects indicates that newer flats are on average more expensive, with the variance first decreasing and increasing again for flats built around 1980 and later. Also, as expected, rents per square meter decrease with an increasing size of the appartment.  
 
 ```r
@@ -232,6 +219,48 @@ plot(xgblss_model,
 ```
 
 ![Optional Text](../master/plots/munich_rent_estimated_effects.png)
+
+Looking at the top 10 Shapley values for both the conditional mean and variance indicates that both *yearc* and *area* are considered as being important variables.
+             
+```r
+# Shapley value
+plot(xgblss_model,
+     newdata = test,
+     parameter = "all",
+     type = "shapley",
+     top_n = 10)
+```
+![Optional Text](../master/plots/munich_rent_shapley.png)
+
+Besides the global attribute importance, the user might also be interested in local attribute importances for each single prediction individually. This allows to answer questions like 'How did the feature values of a single data point affect its prediction'? For illustration purposes, we select the first predicted rent of the test data set.
+
+```r
+# Local Shapley value
+plot(xgblss_model,
+     newdata = test,
+     parameter = "all",
+     type = "loc_shapley",
+     x_interest = 1,
+     top_n = 10)
+ ```
+ 
+![Optional Text](../master/plots/xgboostlss_shapley_ind.png)
+ 
+We can also measure how strongly features interact with one other. The range of the measure is between 0 (no interaction) and 1 (strong interaction).
+
+```r
+# Interaction plots
+plot(xgblss_model,
+     parameter = "mu",
+     type = "interact",
+     top_n = 10)
+ ```
+ 
+![Optional Text](../master/plots/xgboostlss_inter.png)
+  
+From all covariates, *yearc* seems to have the strongest interaction. We can also further analyse its effect and specify a feature and measure all it's 2-way interactions with all other features.
+ 
+![Optional Text](../master/plots/xgboostlss_two_way_inter.png)
 
 As we have modelled all parameter of the Normal distribution, **XGBoostLSS** provides a probabilistic forecast, from which any quantity of interest can be derived. 
 
