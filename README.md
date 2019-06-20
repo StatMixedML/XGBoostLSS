@@ -259,6 +259,15 @@ plot(xgblss_model,
 ![Optional Text](../master/plots/xgboostlss_inter.png)
   
 From all covariates, *yearc* seems to have the strongest interaction. We can also further analyse its effect and specify a feature and measure all it's 2-way interactions with all other features.
+
+```r
+# 2-Way Interaction plots
+plot(xgblss_model,
+     parameter = "mu",
+     type = "interact",
+     feature = "yearc",
+     top_n = 10)
+ ```
  
 ![Optional Text](../master/plots/xgboostlss_two_way_inter.png)
 
