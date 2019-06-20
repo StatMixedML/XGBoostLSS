@@ -399,8 +399,9 @@ In summary, **XGBoostLSS** has the following key features:
 - Low memory usage.
 - High prediction accuracy due to Newton boosting. 
 - Missing value imputation.
+- High interpretability of results.
 
-While statistical boosting algorithms, such as gamboostLSS, are supposed to perfrom well in terms of speed for medium to moderately big sized data sets, where the focus is on inference rather than prediction accuracy, **XGBoostLSS** plays off its strengths in situations where the user faces data sets that deserve the term big data. The above mentioned features set **XGBoostLSS** apart from existing distributional modeling approaches and highlight the benefits of our approach that combines the elegance and flexibility of GAMLSS with the speed and accuracy of XGBoost. 
+While statistical boosting algorithms, such as gamboostLSS, are supposed to perfrom well in terms of speed for medium to moderately big sized data sets, where the focus is on inference rather than prediction accuracy, **XGBoostLSS** plays off its strengths in situations where the user faces data sets that deserve the term big data. The above mentioned features set **XGBoostLSS** apart from existing distributional modeling approaches and highlight the benefits of our approach that combines the interpretability and flexibility of GAMLSS with the speed and accuracy of XGBoost. 
 
 ## Software Implementations
 In its current implementation, **XGBoostLSS** is available in *R* only, but extensions to *Julia* and *Python* are in progress.
