@@ -232,13 +232,13 @@ plot(xgblss_model,
 ```
 ![Optional Text](../master/plots/munich_rent_shapley.png)
 
-Besides the global attribute importance, the user might also be interested in local attribute importances for each single prediction individually. This allows to answer questions like *How did the feature values of a single data point affect its prediction*? For illustration purposes, we select the first predicted rent of the test data set.
+Besides the global attribute importance, the user might also be interested in local attribute importances for each single prediction individually. This allows to answer questions like '*How did the feature values of a single data point affect its prediction*?' For illustration purposes, we select the first predicted rent of the test data set.
 
 ```r
 # Local Shapley value
 plot(xgblss_model,
      newdata = test,
-     parameter = "all",
+     parameter = "mu",
      type = "loc_shapley",
      x_interest = 1,
      top_n = 10)
