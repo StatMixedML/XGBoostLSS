@@ -345,10 +345,10 @@ gamlss_model <- gamlss(gamlss_form_mu,
 We evaluate distributional forecasts using the average Continuous Ranked Probability Scoring Rules (CRPS) and the average Logarithmic Score (LOG) implemented in the [scoringRules](https://cran.r-project.org/web/packages/scoringRules/index.html) R-package, where lower scores indicate a better forecast, along with additional error measures evaluating the mean-prediction accuracy of the models.
 
 ```r
-            CRPS_SCORE LOG_SCORE   MAPE    MSE   RMSE    MAE MEDIAN_AE  RMSPE  RMSLE   RRSE R2_SCORE
-XGBoostLSS      1.1393    2.1570 0.2461 4.1363 2.0338 1.6088    1.3178 0.3895 0.2479 0.7826   0.3875
-gamboostLSS     1.1541    2.1920 0.2485 4.1596 2.0395 1.6276    1.3636 0.3900 0.2492 0.7848   0.3841
-GAMLSS          1.1527    2.1848 0.2478 4.1636 2.0405 1.6251    1.3537 0.3889 0.2490 0.7852   0.3835
+            CRPS_SCORE LOG_SCORE   MAPE    MSE   RMSE    MAE MEDIAN_AE    RAE  RMSPE  RMSLE   RRSE R2_SCORE
+XGBoostLSS      1.1393    2.1570 0.2461 4.1363 2.0338 1.6088    1.3178 0.7807 0.3895 0.2479 0.7826   0.3875
+gamboostLSS     1.1541    2.1920 0.2485 4.1596 2.0395 1.6276    1.3636 0.7898 0.3900 0.2492 0.7848   0.3841
+GAMLSS          1.1527    2.1848 0.2478 4.1636 2.0405 1.6251    1.3537 0.7886 0.3889 0.2490 0.7852   0.3835
 ```
 
 All measures, except RMSPE, show that **XGBoostLSS** provides more accurate forecasts than the other two approaches. To investigate the ability of **XGBoostLSS** to provide insights into the estimated effects on all distributional parameter, we compare its estimated effects to those estimated by gamboostLSS.
