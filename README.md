@@ -351,7 +351,7 @@ gamboostLSS     1.1541    2.1920 0.2485 4.1596 2.0395 1.6276    1.3636 0.3900 0.
 GAMLSS          1.1527    2.1848 0.2478 4.1636 2.0405 1.6251    1.3537 0.3889 0.2490 0.7852
 ```
 
-All measures, except RMSPE, indicate that **XGBoostLSS** provides more accurate forecasts than the other two approaches. To investigate the ability of **XGBoostLSS** to provide insights into the estimated effects on all distributional parameter, we compare its estimated effects to those estimated by gamboostlss.
+All measures, except RMSPE, show that **XGBoostLSS** provides more accurate forecasts than the other two approaches. To investigate the ability of **XGBoostLSS** to provide insights into the estimated effects on all distributional parameter, we compare its estimated effects to those estimated by gamboostlss.
 
 ![Optional Text](../master/plots/munich_rent_gamboostlss.png)
 
