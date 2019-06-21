@@ -54,24 +54,19 @@ xgblss_model <- xgblss.train(data = dtrain,
 
 The user has also the option to provide a list of hyperparameters to optimize, as well as its boundary values. In this example however, we use Bayesian Optimization as implemented in the [mlrMBO](https://github.com/mlr-org/mlrMBO) R-package, using a randomly generated set of initial hyperparameters that are used for training the surrogate Kriging model to find an optimized set of parameter. Currently, the default set-up in **XGBoostLSS** optimizes *eta, gamma, max_depth, min_child_weight, subsample* and *colsample_bytree* as hyperparameter. The *time_budget* parameter indicates the running time budget in minutes and is used as a stopping criteria for the Bayesian Optimization.
 
-Once the model is trained, we can predict all parameter of the distribution.                 
+Once the model is trained, we can predict all parameter of the distribution.            
    
                     
 ```r
 # Predict
-xgblss_mu_pred <- predict(xgblss_model,
+xgblss_pred <- predict(xgblss_model,
                           newdata = dtest,
-                          parameter = "mu")
-                          
-xgblss_sigma_pred <- predict(xgblss_model,
-                             newdata = dtest,
-                             parameter = "sigma")
-
+                          parameter = "all")
 ```
 
 As **XGBoostLSS** allows to model the entire conditional distribution, we can draw random samples from the predicted distribution, which allows us to create prediction intervals and quantiles of interest. The below image shows the predictions of **XGBoostLSS** for the 5% and 95% quantile in blue. 
 
-![Optional Text](../master/plots/xgboostlss_sim.png)
+![Optional Text](../master/plots/xgboostlss_mbo_sim.png)
 
 Comparing the coverage of the intervals with the nominal level of 90% shows that **XGBoostLSS** not only correctly models the heteroscedasticity in the data, but it also provides an accurate forecast for the 5% and 95% quantiles. The great flexibility of **XGBoostLSS** also comes from its ability to provide attribute importance, as well as partial dependence plots for all of the distributional parameters. In the following we only investigate the effect on the conditional variance. All plots are generated using wrappers around the [interpretable machine learning (iml)](https://github.com/christophM/iml) R package.
 
