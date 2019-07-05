@@ -392,6 +392,7 @@ Furthermore, plotting the effects across different expectile allows to uncover h
 In summary, **XGBoostLSS** has the following key features: 
 
 - Extends XGBoost to probabilistic forecasting from which prediction intervals and quantiles of interest can be derived.
+- Valid uncertainty quantification of forecasts.
 - Compatible with all XGBoost implementations, i.e., R, Julia, Python, Java and Scala.
 - Parallel model traininig, both CPU and GPU, as well as Spark and Dask.
 - Fast Histogram Model Training.
