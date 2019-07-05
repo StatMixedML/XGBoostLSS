@@ -215,7 +215,7 @@ plot(xgblss_model,
 
 ![Optional Text](../master/plots/munich_rent_estimated_effects.png)
 
-The diagnostics for XGBoostLSS are based on the residuals of the fitted models, where we use the  normalised quantile residuals for continuous response variables and randomised normalised quantile residuals for discrete response variable. Quantile residuals are based on the idea of inverting the estimated distribution function for each observation to obtain exactly standard normal residuals.
+The diagnostics for XGBoostLSS are based on the residuals of the fitted model, where we use the  normalised quantile residuals for continuous response variables and randomised normalised quantile residuals for discrete response variable (if the response of the test data is also available, quantile residuals are also available for the test data set). Quantile residuals are based on the idea of inverting the estimated distribution function for each observation to obtain exactly standard normal residuals.
 
 ![Optional Text](../master/plots/xgboostlss_quant_res.png)
 
