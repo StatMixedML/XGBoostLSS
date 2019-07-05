@@ -215,7 +215,13 @@ plot(xgblss_model,
 
 ![Optional Text](../master/plots/munich_rent_estimated_effects.png)
 
-Looking at the top 10 Shapley values for both the conditional mean and variance indicates that both *yearc* and *area* are considered as being important variables.
+The diagnostics for XGBoostLSS are based on the residuals of the fitted models, where we use the  normalised quantile residuals for continuous response variables and randomised normalised quantile residuals for discrete response variable. Quantile residuals are based on the idea of inverting the estimated distribution function for each observation to obtain exactly standard normal residuals.
+
+![Optional Text](../master/plots/xgboostlss_quant_res.png)
+
+Again, the good fit of the model is confirmed, even though we see some underfitting in the tail of the distribution. 
+
+XGBoostLSS also allows to investigate the estimated effects for all distributional parameter. Looking at the top 10 Shapley values for both the conditional mean and variance indicates that both *yearc* and *area* are considered as being important variables.
              
 ```r
 # Shapley value
