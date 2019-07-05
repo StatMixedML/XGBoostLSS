@@ -191,7 +191,7 @@ opt_dist <- fitDist(y = train[, dep_var],
 
 ```
 
-Even though the generalized Beta type 2 provides the best approximation to the data, we use the more parsimonious Normal distribution, as it has only two distributional parameter, compared to 4 of the generalized Beta type 2. In general, though, **XGBoostLSS** is flexible to allow the user to choose and fit all distributions available in the [gamlss](https://cran.r-project.org/web/packages/gamlss/index.html) package. The good fit of the Normal distribution is also confirmed by the the density plot, where the actual data is presented as a histogram, while the Normal fit is shown in red.
+Even though the generalized Beta type 2 provides the best approximation to the data, we use the more parsimonious Normal distribution, as it has only two distributional parameter, compared to 4 of the generalized Beta type 2. In general, though, **XGBoostLSS** is flexible to allow the user to choose and fit all distributions available in the [gamlss](https://cran.r-project.org/web/packages/gamlss/index.html) package. The good fit of the Normal distribution is also confirmed by the the density plot, where the train data is presented as a histogram, while the Normal fit is shown in red.
 
 ![Optional Text](../master/plots/fitted_dist.png)
 
@@ -219,9 +219,7 @@ The diagnostics for XGBoostLSS are based on the residuals of the fitted model, w
 
 ![Optional Text](../master/plots/xgboostlss_quant_res.png)
 
-Again, the good fit of the model is confirmed, even though we see some underfitting in the tail of the distribution. 
-
-XGBoostLSS also allows to investigate the estimated effects for all distributional parameter. Looking at the top 10 Shapley values for both the conditional mean and variance indicates that both *yearc* and *area* are considered as being important variables.
+Despite some slight underfitting in the tails of the distribution, XGBoostLSS provides a well calibrated forecast and the good approximation of our model to the data is confirmed. XGBoostLSS also allows to investigate the estimated effects for all distributional parameter. Looking at the top 10 Shapley values for both the conditional mean and variance indicates that both *yearc* and *area* are considered as being important variables.
              
 ```r
 # Shapley value
