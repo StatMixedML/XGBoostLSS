@@ -219,6 +219,13 @@ plot(xgblss_model,
 
 The diagnostics for XGBoostLSS are based on the residuals of the fitted model, where we use the  normalised quantile residuals for continuous response variables and randomised normalised quantile residuals for discrete response variable (if the response of the test data is also available, quantile residuals are also available for the test data set). Quantile residuals are based on the idea of inverting the estimated distribution function for each observation to obtain exactly standard normal residuals.
 
+```r
+# Quantile Residual Plot
+plot(xgblss_model,
+     newdata = test,
+     type = "residuals")
+```
+
 ![Optional Text](../master/plots/xgboostlss_quant_res.png)
 
 Despite some slight underfitting in the tails of the distribution, XGBoostLSS provides a well calibrated forecast and the good approximation of our model to the data is confirmed. XGBoostLSS also allows to investigate the estimated effects for all distributional parameter. Looking at the top 10 Shapley values for both the conditional mean and variance indicates that both *yearc* and *area* are considered as being important variables.
