@@ -24,10 +24,10 @@ n <- 10000
 p <- 10
 x <- runif(n)
 y <- rnorm(n, mean = 10, sd = 1 + 4*(0.3 < x & x < 0.5) + 2*(x > 0.7))
-X <- matrix(runif(n * p), ncol = p) 
+X <- matrix(runif(n * p), ncol = p) # add 10 noise variables
 sim_data <- data.frame(y,x,X) 
 dep_var <- "y"
-covariates <- c("x", paste0("X", seq(1:10))) # x is informative only, X1, ..., X10 are noise variables
+covariates <- c("x", paste0("X", seq(1:10)))
 
 # Split into train and test data
 train_sample <- sample(1:n, floor(0.7*n))
