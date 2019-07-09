@@ -98,7 +98,7 @@ Looking at partial dependence plots of the effect of x on Var(y|x) shows that it
 
 ![Optional Text](../master/plots/xgboostlss_parteffect.png)
 
-###  Data for the Rent Index 2003 in Munich, Germany
+###  Data from the Rent Index 2003 in Munich, Germany
 
 ![Optional Text](../master/plots/munich_rent_district.png)
 
