@@ -221,7 +221,7 @@ plot(xgblss_model,
 
 ![Optional Text](../master/plots/munich_rent_estimated_effects.png)
 
-The diagnostics for XGBoostLSS are based on the residuals of the fitted model, where we use the  normalised quantile residuals for continuous response variables and randomised normalised quantile residuals for discrete response variable (if the response of the test data is also available, quantile residuals are also available for the test data set). Quantile residuals are based on the idea of inverting the estimated distribution function for each observation to obtain exactly standard normal residuals.
+The diagnostics for XGBoostLSS are based on quantile residuals of the fitted model. Quantile residuals are based on the idea of inverting the estimated distribution function for each observation to obtain exactly standard normal residuals.
 
 ```r
 # Quantile Residual Plot
@@ -376,7 +376,7 @@ All effects are similar to **XGBoostLSS** and therefore confirm its ability to p
 
 ## Expectile Regression
 
-While GAMLSS retain the assumption of a parametric distribution for the response, it may also be useful to completely drop this assumption and to formulate models that still allow us to describe more than the mean of the response. This may in particular be the case if interest is not on identifying covariate effects on speciﬁc parameters of the response distribution but on the relation of extreme observations in the tails of the distribution on covariates. This is enabled in quantile and expectile regression. As XGBoost requieres both Gradient and Hessian to be non-zero, we illustrate the ability of **XGBoostLSS** to model and provide inference for different parts of the response distribution using expectile regression.
+While GAMLSS require to specify a parametric distribution for the response, it may also be useful to completely drop this assumption and to employ models that allow to describe parts of the distribution other than the mean. This may in particular be the case in situations where interest does not lie with identifying covariate effects on specific parameter of the response distribution, but rather on the relation of extreme observations  on covariates in the tails of the distribution. This is feasible using Quantile and Expectile Regression. As XGBoost requieres both Gradient and Hessian to be non-zero, we illustrate the ability of **XGBoostLSS** to model and provide inference for different parts of the response distribution using expectile regression.
 
 We estimate a model, where we replace the family argument with „Expectile“, where *tau* specifies the expectiles of interest. Note that for *tau=0.5*, a mean regression model is estimated. As in the above examples, we use Bayesian Optimization to find the best hyperparameter.
 
