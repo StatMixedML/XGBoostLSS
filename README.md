@@ -419,7 +419,5 @@ While statistical boosting algorithms, such as gamboostLSS, are supposed to perf
 ## Software Implementations
 In its current implementation, **XGBoostLSS** is available in *R* only, but extensions to *Julia* and *Python* are in progress.
 
-## References
-März, Alexander (2019). *"XGBoostLSS - An extension of XGBoost to probabilistic forecasting"*. pp. 1–26. *Under Review*.
-
-You may find a summary of the paper [here](https://arxiv.org/abs/1907.03178). 
+## Reference Paper
+März, Alexander (2019). [XGBoostLSS - An extension of XGBoost to probabilistic forecasting](https://arxiv.org/abs/1907.03178) pp. 1–26. *Under Review*.
