@@ -302,7 +302,7 @@ Even though the Normal distribution was identified by the AIC as an appropriate 
 
 
 ### Comparison to other approaches
-To evaluate the prediction accuracy of **XGBoostLSS**, we compare the forecasts of the Munich rent example to the implementations available in [gamlss](https://cran.r-project.org/web/packages/gamlss/index.html) and in [gamboostLSS](https://cran.r-project.org/package=gamboostLSS). For both implementations, we use factor coding, instead of dummy-coding as for **XGBoostLSS**.
+To evaluate the prediction accuracy of **XGBoostLSS**, we compare the forecasts of the Munich rent example to the implementations available in [gamlss](https://cran.r-project.org/web/packages/gamlss/index.html), [gamboostLSS](https://cran.r-project.org/package=gamboostLSS), [bamlss](https://cran.r-project.org/web/packages/bamlss/index.html) and [disttree](https://rdrr.io/rforge/disttree/). For all implementations, we use factor coding, instead of dummy-coding as for **XGBoostLSS**.
 
 
 ```r
