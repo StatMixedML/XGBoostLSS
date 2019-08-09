@@ -144,11 +144,15 @@ In this example we show the usage of **XGBoostLSS** using a sample of 2,053 apar
 # Load data
 data("munichrent03", package = "LinRegInteractive")
 
+# Specify dependent variable
+dep_var <- "rentsqm"
+
+# Dummy Coding
 munichrent03 <- munichrent03 %>% 
-  select(-rent) %>% 
+  select(-rent) %>%
+  mutate_if(is.character, as.factor) %>%
   mutate_if(is.integer, as.numeric)
   
-# Dummy Coding
 munichrent03_dummy <- munichrent03 %>% 
   mlr::createDummyFeatures(target = dep_var)
 
@@ -158,11 +162,10 @@ train_split <- sample(1:nrow(munichrent03), floor(0.7*nrow(munichrent03)))
 train <- munichrent03_dummy[train_split,]
 test <- munichrent03_dummy[-train_split,]
 
-# Select dependent variable and covariates
+# Select covariates
 covariates <- munichrent03_dummy %>% 
   select(-dep_var) %>% 
   colnames()  
-dep_var <- "rentsqm"
 
 # Data for XGBoostLSS
 dtrain <- xgb.DMatrix(data = data.matrix(train[, covariates]),
