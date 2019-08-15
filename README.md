@@ -331,11 +331,39 @@ gamboostlss_mod <- gamboostLSS(list(mu = gamboostLSS_form,
                                     method = "noncyclic",
                                     data = train_gamlss)
 
-cv10f <- cv(model.weights(gamboostlss_mod), type = "kfold")
+apply_fun <- function(X, FUN, ...) {
+  myFun <- function(...) {
+    library("mboost") 
+    FUN(...)
+  }
+  parLapply(cl = cl, X, myFun, ...)
+}
+
+cl <- parallel::makeCluster(detectCores() - 1) 
+cv10f <- cv(model.weights(blackboostLSS_model), type = "kfold")
 cv_model <- cvrisk(gamboostlss_mod,
                    folds = cv10f,
-                   papply = myApply)
+                   papply = apply_fun)
+stopCluster(cl)
 gamboostlss_mod_cv <- gamboostlss_mod[mstop(cv_model)] 
+
+
+# blackboostLSS
+blackboostLSS_model <- blackboostLSS(list(mu = gamlss_form,
+                                          sigma = gamlss_form),
+                                   families = GaussianLSS(),
+                                   control = boost_control(mstop = 1000, 
+                                                           nu = 0.1),
+                                   method = "noncyclic",
+                                   data = train_gamlss)
+
+cl <- parallel::makeCluster(detectCores() - 1) 
+cv10f <- cv(model.weights(blackboostLSS_model), type = "kfold")
+cv_model <- cvrisk(blackboostLSS_model,
+                   folds = cv10f,
+                   papply = apply_fun)
+stopCluster(cl)
+blackboostLSS_model_cv <- blackboostLSS_model[mstop(cv_model)] 
 
                                            
 # GAMLSS
@@ -372,13 +400,13 @@ distforest_predict <- predict(distforest_model,
 We evaluate distributional forecasts using the average Continuous Ranked Probability Scoring Rules (CRPS) and the average Logarithmic Score (LOG) implemented in the [scoringRules](https://cran.r-project.org/web/packages/scoringRules/index.html) R-package, where lower scores indicate a better forecast, along with additional error measures evaluating the mean-prediction accuracy of the models.
 
 ```r
-		 CRPS_SCORE LOG_SCORE   MAPE    MSE   RMSE    MAE MEDIAN_AE    RAE  RMSPE  RMSLE   RRSE R2_SCORE
-XGBoostLSS     	     1.1392    2.1339 0.2450 4.0687 2.0171 1.6091    1.4044 0.7808 0.3797 0.2451 0.7762   0.3975
-gamboostLSS          1.1541    2.1920 0.2485 4.1596 2.0395 1.6276    1.3636 0.7898 0.3900 0.2492 0.7848   0.3841
-GAMLSS               1.1527    2.1848 0.2478 4.1636 2.0405 1.6251    1.3537 0.7886 0.3889 0.2490 0.7852   0.3835
-BAMLSS               1.1509    2.1656 0.2478 4.1650 2.0408 1.6258    1.3542 0.7890 0.3889 0.2490 0.7853   0.3833
-DistForest           1.1554    2.1429 0.2532 4.2570 2.0633 1.6482    1.3611 0.7998 0.3991 0.2516 0.7939   0.3697
-
+              CRPS_SCORE LOG_SCORE   MAPE    MSE   RMSE    MAE MEDIAN_AE    RAE  RMSPE  RMSLE   RRSE R2_SCORE
+XGBoostLSS        1.1393    2.1570 0.2461 4.1363 2.0338 1.6088    1.3178 0.7807 0.3895 0.2479 0.7826   0.3875
+gamboostLSS       1.1541    2.1920 0.2485 4.1596 2.0395 1.6276    1.3636 0.7898 0.3900 0.2492 0.7848   0.3841
+GAMLSS            1.1527    2.1848 0.2478 4.1636 2.0405 1.6251    1.3537 0.7886 0.3889 0.2490 0.7852   0.3835
+BAMLSS            1.1509    2.1656 0.2478 4.1650 2.0408 1.6258    1.3542 0.7890 0.3889 0.2490 0.7853   0.3833
+DistForest        1.1554    2.1429 0.2532 4.2570 2.0633 1.6482    1.3611 0.7998 0.3991 0.2516 0.7939   0.3697
+blackboostLSS     1.2315    2.7904 0.2650 4.5977 2.1442 1.7148    1.4737 0.8322 0.4230 0.2611 0.8251   0.3192
 ```
 
 All measures, except MEDIAN_AE, show that **XGBoostLSS** provides more accurate forecasts than the other two approaches. To investigate the ability of **XGBoostLSS** to provide insights into the estimated effects on all distributional parameter, we compare its estimated effects to those estimated by gamboostLSS.
