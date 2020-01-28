@@ -397,6 +397,23 @@ distforest_predict <- predict(distforest_model,
                               newdata = test_gamlss)
 ```
 
+NGBoost is trained with the following manually selected parameters
+
+```python
+np.random.seed(seed = 1234)
+ngb = NGBoost(Base = default_tree_learner,
+              Dist = Normal,
+              Score = MLE(),
+              n_estimators = 200,
+              learning_rate = 0.03,              
+              natural_gradient = True,
+              minibatch_frac = 0.7,
+              verbose = False)
+ngb.fit(train_data, train_labels)
+Y_preds = ngb.predict(test_data)
+Y_dists = ngb.pred_dist(test_data)
+```
+
 We evaluate distributional forecasts using the average Continuous Ranked Probability Scoring Rules (CRPS) and the average Logarithmic Score (LOG) implemented in the [scoringRules](https://cran.r-project.org/web/packages/scoringRules/index.html) R-package, where lower scores indicate a better forecast, along with additional error measures evaluating the mean-prediction accuracy of the models.
 
 ```r
@@ -459,7 +476,7 @@ In summary, **XGBoostLSS** has the following key features:
 While statistical boosting algorithms, such as gamboostLSS, are supposed to perfrom well in terms of speed for medium to moderately big sized data sets, where the focus is on inference rather than prediction accuracy, **XGBoostLSS** plays off its strengths in situations where the user faces data sets that deserve the term big data. The above mentioned features set **XGBoostLSS** apart from existing distributional modeling approaches and highlight the benefits of our approach that combines the interpretability and flexibility of GAMLSS with the speed and accuracy of XGBoost. 
 
 ## Software Implementations
-In its current implementation, **XGBoostLSS** is available in *R* only, but extensions to *Julia* and *Python* are in progress.
+In its current implementation, **XGBoostLSS** is available in *R* only, but extensions to *Julia* and *Python* are planned. Due to time restrictions of the author, the public release of the package is somewhat delayed.
 
 ## Reference Paper
 März, Alexander (2019) [*"XGBoostLSS - An extension of XGBoost to probabilistic forecasting"*](https://arxiv.org/abs/1907.03178). *Under Review*.
