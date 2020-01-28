@@ -414,7 +414,7 @@ Y_preds = ngb.predict(test_data)
 Y_dists = ngb.pred_dist(test_data)
 ```
 
-We evaluate distributional forecasts using the average Continuous Ranked Probability Scoring Rules (CRPS) and the average Logarithmic Score (LOG) implemented in the [scoringRules](https://cran.r-project.org/web/packages/scoringRules/index.html) R-package, where lower scores indicate a better forecast, along with additional error measures evaluating the mean-prediction accuracy of the models.
+For details on CatBoostLSS, see our [CatBoostLSS](https://github.com/StatMixedML/CatBoostLSS/blob/master/README.md) repo. We evaluate distributional forecasts using the average Continuous Ranked Probability Scoring Rules (CRPS) and the average Logarithmic Score (LOG) implemented in the [scoringRules](https://cran.r-project.org/web/packages/scoringRules/index.html) R-package, where lower scores indicate a better forecast, along with additional error measures evaluating the mean-prediction accuracy of the models.
 
 ```r
             CRPS_SCORE LOG_SCORE   MAPE    MSE   RMSE    MAE MEDIAN_AE    RAE  RMSPE  RMSLE   RRSE R2_SCORE
