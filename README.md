@@ -400,13 +400,14 @@ distforest_predict <- predict(distforest_model,
 We evaluate distributional forecasts using the average Continuous Ranked Probability Scoring Rules (CRPS) and the average Logarithmic Score (LOG) implemented in the [scoringRules](https://cran.r-project.org/web/packages/scoringRules/index.html) R-package, where lower scores indicate a better forecast, along with additional error measures evaluating the mean-prediction accuracy of the models.
 
 ```r
-              CRPS_SCORE LOG_SCORE   MAPE    MSE   RMSE    MAE MEDIAN_AE    RAE  RMSPE  RMSLE   RRSE R2_SCORE
-XGBoostLSS        1.1393    2.1570 0.2461 4.1363 2.0338 1.6088    1.3178 0.7807 0.3895 0.2479 0.7826   0.3875
-gamboostLSS       1.1541    2.1920 0.2485 4.1596 2.0395 1.6276    1.3636 0.7898 0.3900 0.2492 0.7848   0.3841
-GAMLSS            1.1527    2.1848 0.2478 4.1636 2.0405 1.6251    1.3537 0.7886 0.3889 0.2490 0.7852   0.3835
-BAMLSS            1.1509    2.1656 0.2478 4.1650 2.0408 1.6258    1.3542 0.7890 0.3889 0.2490 0.7853   0.3833
-DistForest        1.1554    2.1429 0.2532 4.2570 2.0633 1.6482    1.3611 0.7998 0.3991 0.2516 0.7939   0.3697
-blackboostLSS     1.2315    2.7904 0.2650 4.5977 2.1442 1.7148    1.4737 0.8322 0.4230 0.2611 0.8251   0.3192
+            CRPS_SCORE LOG_SCORE   MAPE    MSE   RMSE    MAE MEDIAN_AE    RAE  RMSPE  RMSLE   RRSE R2_SCORE
+CatBoostLSS     1.1562    2.1635 0.2492 4.0916 2.0228 1.6129    1.3740 0.7827 0.3955 0.2487 0.7784   0.3942
+XGBoostLSS      1.1415    2.1350 0.2450 4.0687 2.0171 1.6091    1.4044 0.7808 0.3797 0.2451 0.7762   0.3975
+gamboostLSS     1.1541    2.1920 0.2485 4.1596 2.0395 1.6276    1.3636 0.7898 0.3900 0.2492 0.7848   0.3841
+GAMLSS          1.1527    2.1848 0.2478 4.1636 2.0405 1.6251    1.3537 0.7886 0.3889 0.2490 0.7852   0.3835
+BAMLSS          1.1509    2.1656 0.2478 4.1650 2.0408 1.6258    1.3542 0.7890 0.3889 0.2490 0.7853   0.3833
+DistForest      1.1554    2.1429 0.2532 4.2570 2.0633 1.6482    1.3611 0.7998 0.3991 0.2516 0.7939   0.3697
+NGBoost         1.1634    2.2226 0.2506 4.2136 2.0527 1.6344    1.3574 0.7932 0.3950 0.2507 0.7899   0.3761
 ```
 
 All measures, except MEDIAN_AE, show that **XGBoostLSS** provides more accurate forecasts than the other two approaches. To investigate the ability of **XGBoostLSS** to provide insights into the estimated effects on all distributional parameter, we compare its estimated effects to those estimated by gamboostLSS.
