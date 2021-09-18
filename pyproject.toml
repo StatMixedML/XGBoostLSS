@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "xgboostlss"
+version = "0.1.0"
+description = "XGBoostLSS - An extension of XGBoost to probabilistic forecasting"
+authors = ["Alexander März <alex.maerz@gmx.net>"]
+repository = "https://github.com/StatMixedML/XGBoostLSS"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+optuna = "^2.9.1"
+scikit-learn = "^0.24.2"
+scipy = "^1.7.1"
+shap = "^0.39.0"
+tqdm = "^4.62.2"
+xgboost = "^1.4.2"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
