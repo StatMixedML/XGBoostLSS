@@ -1,10 +1,11 @@
 [tool.poetry]
 name = "xgboostlss"
-version = "0.1.0"
+version = "0.1.0dev"
 description = "XGBoostLSS - An extension of XGBoost to probabilistic forecasting"
-authors = ["Alexander März <alex.maerz@gmx.net>"]
+authors = ["Alexander März"]
 repository = "https://github.com/StatMixedML/XGBoostLSS"
 readme = "README.md"
+license = "Apache License 2.0"
 
 [tool.poetry.dependencies]
 python = "^3.7"
