@@ -6,6 +6,10 @@ authors = ["Alexander März"]
 repository = "https://github.com/StatMixedML/XGBoostLSS"
 readme = "README.md"
 license = "Apache License 2.0"
+keywords = ["XGBoost", "distributional-regression", "Machine Learning"]
+classifiers = [
+    "Operating System :: OS Independent"
+]
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -19,6 +23,8 @@ tqdm = "^4.62.2"
 
 
 [tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+flake8 = "^3.9.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
