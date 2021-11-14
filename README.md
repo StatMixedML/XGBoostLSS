@@ -11,6 +11,7 @@ $ pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 We refer to the [examples section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for an example notebook.
 
 ## News
+- [2021-11-14] XGBoostLSS 0.1.0 is released!
 - In contrast to previous implementations, XGBoostLSS supports simultaneous training of all distributional parameters.
 - Currently, XGBoostLSS only supports training using the Gaussian distribution (both location and scale). More distributions are to come soon.
 
