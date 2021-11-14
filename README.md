@@ -8,7 +8,7 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 $ pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 ```
 ## Quick start
-We refer to [examples section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for an example notebook.
+We refer to the [examples section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for an example notebook.
 
 ## News
 - In contrast to previous implementations, XGBoostLSS supports simultaneous training of all distributional parameters.
