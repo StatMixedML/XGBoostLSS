@@ -12,7 +12,7 @@ setup(
     license="Apache License 2.0",
     packages=find_packages(exclude=["tests"]),
     include_package_data=True,
-    package_data={'': ['datasets/*.csv']}
+    package_data={'': ['datasets/*.csv']},
     zip_safe=True,
     python_requires=">=3.7",
     install_requires=[
