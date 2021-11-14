@@ -8,6 +8,9 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 ```
 
+## Quick start
+We refer to for an example notebook.
+
 ## Software Implementation
 Currently, XGBoostLSS is available in *Python* only.
 
