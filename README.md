@@ -8,7 +8,9 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 
 ## Features
 - In contrast to previous implementations, XGBoostLSS now supports simultaneous training and updating of all distributional parameters.
+- Automate hyperparameter search is done via [Optuna](https://optuna.org/).
 - Currently, XGBoostLSS only supports the Gaussian distribution (both location and scale). More continuous distributions (e.g., Student-T, Gamma, ...), as well as discrete, mixed discrete-continuous and Zero-Inflated distributions are to come soon.
+- XGBoostLSS is currently available in Python only.
 
 ## Installation
 ```python
@@ -16,11 +18,6 @@ $ pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 ```
 ## Quick start
 We refer to the [examples section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for an example notebook.
-
-
-
-## Software Implementation
-Currently, XGBoostLSS is available in Python only.
 
 ## Reference Paper
 März, Alexander (2019) [*"XGBoostLSS - An extension of XGBoost to probabilistic forecasting"*](https://arxiv.org/abs/1907.03178). 
