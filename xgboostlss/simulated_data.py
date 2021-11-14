@@ -11,7 +11,10 @@ def load_simulated_data():
         X1:X10         int64: random noise features
 
     """
-    
-    train_df = pkg_resources.resource_stream(__name__, 'datasets/train_sim.csv')
-    test_df = pkg_resources.resource_stream(__name__, 'datasets/test_sim.csv')
-    return pd.read_csv(train_df), pd.read_csv(test_df)
+    train_path = pkg_resources.resource_stream(__name__, 'datasets/train_sim.csv')
+    train_df = pd.read_csv(train_path)
+
+    test_path = pkg_resources.resource_stream(__name__, 'datasets/test_sim.csv')
+    test_df = pd.read_csv(test_path)
+
+    return train_df, test_df
