@@ -7,12 +7,15 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 ```python
 $ pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 ```
-
 ## Quick start
 We refer to [examples section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for an example notebook.
 
+## News
+- In contrast to previous implementations, XGBoostLSS supports simultaneous training of all distributional parameters.
+- Currently, XGBoostLSS only supports training using the Gaussian distribution (both location and scale). More distributions are to come soon.
+
 ## Software Implementation
-Currently, XGBoostLSS is available in *Python* only.
+Currently, XGBoostLSS is available in Python only.
 
 ## Reference Paper
 März, Alexander (2019) [*"XGBoostLSS - An extension of XGBoost to probabilistic forecasting"*](https://arxiv.org/abs/1907.03178). 
