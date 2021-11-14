@@ -26,6 +26,7 @@ setup(
         "scipy",
         "tqdm",
         "matplotlib",
+        "ipywidgets",
     ],
     test_suite="tests",
     tests_require=["flake8", "pytest"],
