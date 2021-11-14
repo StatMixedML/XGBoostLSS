@@ -3,7 +3,7 @@ import pandas as pd
 
 
 def load_simulated_data():
-    """Returns train/test dataframe of a similated example.
+    """Returns train/test dataframe of a simulated example.
 
     Contains the following columns:
         y              int64: response
