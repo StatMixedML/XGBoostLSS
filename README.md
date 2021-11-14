@@ -9,7 +9,7 @@ $ pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 ```
 
 ## Quick start
-We refer to for an example notebook.
+We refer to [examples section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for an example notebook.
 
 ## Software Implementation
 Currently, XGBoostLSS is available in *Python* only.
