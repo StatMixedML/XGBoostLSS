@@ -9,7 +9,7 @@ pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 ```
 
 ## Software Implementation
-In its current implementation, **XGBoostLSS** is available in *Python* only.
+Currently, XGBoostLSS is available in *Python* only.
 
 ## Reference Paper
 März, Alexander (2019) [*"XGBoostLSS - An extension of XGBoost to probabilistic forecasting"*](https://arxiv.org/abs/1907.03178). 
