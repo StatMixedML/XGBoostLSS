@@ -5,7 +5,7 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 
 ## Installation
 ```python
-pip install git+https://github.com/StatMixedML/XGBoostLSS.git
+$ pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 ```
 
 ## Quick start
