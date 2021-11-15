@@ -9,6 +9,7 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 ## Features
 :white_check_mark: XGBoostLSS supports simultaneous training and updating of all distributional parameters. <br/>
 :white_check_mark: Automated hyper-parameter search is done via [Optuna](https://optuna.org/). <br/>
+:white_check_mark: The output of XGBoostLSS is explained using [SHapley Additive exPlanations](https://github.com/slundberg/shap). <br/>
 :white_check_mark: XGBoostLSS is available in Python. <br/>
 
 ## Available Distributions
