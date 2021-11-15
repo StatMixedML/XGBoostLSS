@@ -17,8 +17,8 @@ Currently, XGBoostLSS only supports the Gaussian distribution (both location and
 
 | Distribution   |     Type      |       Range                 |     Parameters    |
 | -------------- | --------------| -----------------           | ----------------- | 
-|   Gaussian     |   Continuous  | $`- \infty < y < \infty`$   | location $`\mu_{i}`$ <br/> scale $`\sigma_{i}`$ | 
-<!-- |   Student-t    |   Continuous  | $`- \infty < y < \infty`$   | location $`\mu_{i}`$, scale $`\sigma_{i}`$, shape $`\nu_{i}`$ |  -->
+|   Gaussian     |   Continuous  | $`- \infty < y < \infty`$   | location $`\mu_{i}:- \infty < y < \infty`$ <br/> scale $`\sigma_{i}: > 0`$ | 
+<!-- |   Student-t    |   Continuous  | $`- \infty < y < \infty`$   | location: $`\mu_{i}`$, scale: $`\sigma_{i}`$, shape $`\nu_{i}`$ |  -->
 
 ## Installation
 ```python
