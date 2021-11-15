@@ -4,12 +4,12 @@
 We propose a new framework of XGBoost that predicts the entire conditional distribution of a univariate response variable. In particular, **XGBoostLSS** models all moments of a parametric distribution, i.e., mean, location, scale and shape (LSS), instead of the conditional mean only. Choosing from a wide range of continuous, discrete and mixed discrete-continuous distribution, modelling and predicting the entire conditional distribution greatly enhances the flexibility of XGBoost, as it allows to create probabilistic forecasts from which prediction intervals and quantiles of interest can be derived.
 
 ## News
-:boom:[2021-11-14] XGBoostLSS v0.1.0 is released!
+:boom: [2021-11-14] XGBoostLSS v0.1.0 is released!
 
 ## Features
-- XGBoostLSS now supports simultaneous training and updating of all distributional parameters.
-- Automated hyper-parameter search is done via [Optuna](https://optuna.org/).
-- XGBoostLSS is currently available in Python only.
+:white_check_mark: XGBoostLSS supports simultaneous training and updating of all distributional parameters.
+:white_check_mark: Automated hyper-parameter search is done via [Optuna](https://optuna.org/).
+:white_check_mark: XGBoostLSS is available in Python.
 
 ## Available Distributions
 
