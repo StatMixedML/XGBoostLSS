@@ -15,6 +15,8 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 
 Currently, XGBoostLSS only supports the Gaussian distribution (both location and scale). More continuous distributions (e.g., Student-T, Gamma, ...), as well as discrete, mixed discrete-continuous and zero-inflated distributions are to come soon.
 
+<pre xml:lang="latex">\sqrt{2}</pre>
+
 | Distribution | Type | Parameters | Default |
 | --------------| ---- | ----------------- | ------- |
 | Gaussian  | Continuous  | location $`\mu_{i}, scale \sigma_{i}`$ | positional argument|
