@@ -29,7 +29,7 @@ Currently, XGBoostLSS supports the following distributions. More continuous dist
 ```python
 $ pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 ```
-## Quick start
+## Quick Start
 We refer to the [examples section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for an example notebook.
 
 ## Reference Paper
