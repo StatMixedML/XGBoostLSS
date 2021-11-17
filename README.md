@@ -19,7 +19,8 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 ## Available Distributions
 Currently, XGBoostLSS supports the following distributions. More continuous distributions (e.g., Student-t, Gamma, ...), as well as discrete, mixed discrete-continuous and zero-inflated distributions are to come soon.
 
-![image](https://user-images.githubusercontent.com/41187941/142160936-4336d524-2e18-4d7a-8994-65ff96d02af4.png)
+![image](https://user-images.githubusercontent.com/41187941/142161184-ea1479d0-986b-4c54-bf01-40d4c87f1554.png)
+
 
 
 <!-- |        Distribution           |              Type               |            Support            |           Location            |           Scale               |           Shape 1             |           Shape 2             |    
