@@ -26,7 +26,7 @@ Currently, XGBoostLSS supports the following distributions. More continuous dist
 | ----------------------------- | ------------------------------- | ----------------------------- | ----------------------------- | ----------------------------- | ----------------------------- | ----------------------------- | 
 |          Gaussian             |  Continuous <br/> (Univariate)  |   $`- \infty < y < \infty`$   |  $`- \infty < \mu < \infty`$  |    $`0 < \sigma < \infty`$    |          $`None`$             |          $`None`$             |
 ...
-<!-- |   Student-t    |   Continuous  | $`- \infty < y < \infty`$   | location: $`\mu_{i}`$, scale: $`\sigma_{i}`$, shape $`\nu_{i}`$ |  --> -->
+<!-- |   Student-t    |   Continuous  | $`- \infty < y < \infty`$   | location: $`\mu_{i}`$, scale: $`\sigma_{i}`$, shape $`\nu_{i}`$ |  --> 
 
 ## Installation
 ```python
