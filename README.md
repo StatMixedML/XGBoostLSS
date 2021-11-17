@@ -1,20 +1,23 @@
 <img align="right" width="156.5223" height="181.3" src="../master/logo/XGBoostLSS_inv.png">
 
 # XGBoostLSS - An extension of XGBoost to probabilistic forecasting
-We propose a new framework of XGBoost that predicts the entire conditional distribution of a univariate response variable. In particular, **XGBoostLSS** models all moments of a parametric distribution, i.e., mean, location, scale and shape (LSS), instead of the conditional mean only. Choosing from a wide range of continuous, discrete and mixed discrete-continuous distribution, modelling and predicting the entire conditional distribution greatly enhances the flexibility of XGBoost, as it allows to create probabilistic forecasts from which prediction intervals and quantiles of interest can be derived.
+We propose a new framework of XGBoost that predicts the entire conditional distribution of a univariate response variable. In particular, **XGBoostLSS** models all moments of a parametric distribution, i.e., mean, location, scale and shape (LSS), instead of the conditional mean only. Choosing from a wide range of continuous, discrete, and mixed discrete-continuous distribution, modelling and predicting the entire conditional distribution greatly enhances the flexibility of XGBoost, as it allows to create probabilistic forecasts from which prediction intervals and quantiles of interest can be derived.
 
 ## News
 :boom: [2021-11-14] XGBoostLSS v0.1.0 is released!
 
 ## Features
 :white_check_mark: XGBoostLSS supports simultaneous training and updating of all distributional parameters. <br/>
-:heavy_check_mark: Automated hyper-parameter search is done via [Optuna](https://optuna.org/). <br/>
+:white_check_mark: Automated hyper-parameter search is done via [Optuna](https://optuna.org/). <br/>
 :white_check_mark: The output of XGBoostLSS is explained using [SHapley Additive exPlanations](https://github.com/slundberg/shap). <br/>
 :white_check_mark: XGBoostLSS is available in Python. <br/>
 
-## Available Distributions
+## Work in Progress
+:construction: Calling XGBoostLSS from R via the [reticulate package](https://rstudio.github.io/reticulate/). <br/>
+:construction: Function that facilitates the choice of a suitable distribution among all of the implemented. 
 
-Currently, XGBoostLSS supports the Gaussian distribution (both location and scale). More continuous distributions (e.g., Student-t, Gamma, ...), as well as discrete, mixed discrete-continuous and zero-inflated distributions are to come soon.
+## Available Distributions
+Currently, XGBoostLSS supports the following distributions. More continuous distributions (e.g., Student-t, Gamma, ...), as well as discrete, mixed discrete-continuous and zero-inflated distributions are to come soon.
 
 |        Distribution           |              Type               |            Support            |           Location            |           Scale               |           Shape 1             |           Shape 2             |    
 | ----------------------------- | ------------------------------- | ----------------------------- | ----------------------------- | ----------------------------- | ----------------------------- | ----------------------------- | 
