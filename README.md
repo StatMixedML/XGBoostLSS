@@ -17,16 +17,9 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 :construction: Function that facilitates the choice of a suitable distribution amongst all of the implemented. 
 
 ## Available Distributions
-Currently, XGBoostLSS supports the following distributions. More continuous distributions (e.g., Student-t, Gamma, ...), as well as discrete, mixed discrete-continuous and zero-inflated distributions are to come soon.
+Currently, XGBoostLSS supports the following distributions. More continuous distributions, as well as discrete, mixed discrete-continuous and zero-inflated distributions are to come soon.
 
-![image](https://user-images.githubusercontent.com/41187941/142161184-ea1479d0-986b-4c54-bf01-40d4c87f1554.png)
-
-
-<!-- |        Distribution           |              Type               |            Support            |           Location            |           Scale               |           Shape 1             |           Shape 2             |    
-| ----------------------------- | ------------------------------- | ----------------------------- | ----------------------------- | ----------------------------- | ----------------------------- | ----------------------------- | 
-|          Gaussian             |  Continuous <br/> (Univariate)  |   $`- \infty < y < \infty`$   |  $`- \infty < \mu < \infty`$  |    $`0 < \sigma < \infty`$    |          $`None`$             |          $`None`$             |
-...
-<!-- |   Student-t    |   Continuous  | $`- \infty < y < \infty`$   | location: $`\mu_{i}`$, scale: $`\sigma_{i}`$, shape $`\nu_{i}`$ |  --> 
+![image](https://user-images.githubusercontent.com/41187941/142474817-363f475d-ed5b-4d19-864c-cbf8b3bfcf97.png)
 
 ## Installation
 ```python
