@@ -36,7 +36,7 @@ class StudentT():
         """
         param_dict = {"location": identity,
                       "scale": soft_plus,
-                      "nu": soft_plus}
+                      "nu": soft_plus1}
 
         return param_dict
 
@@ -135,7 +135,7 @@ class StudentT():
         # When num_class!= 0, preds has shape (n_obs, n_classes)
         preds_location = predt[:, 0]
         preds_scale = soft_plus(predt[:, 1])
-        preds_nu = soft_plus(predt[:, 2])
+        preds_nu = soft_plus1(predt[:, 2])
 
         # Initialize Gradient and Hessian Matrices
         grad = np.zeros((predt.shape[0], predt.shape[1]), dtype=float)
@@ -171,7 +171,7 @@ class StudentT():
         target = data.get_label()
         preds_location = predt[:, 0]
         preds_scale = soft_plus(predt[:, 1])
-        preds_nu = soft_plus(predt[:, 2])
+        preds_nu = soft_plus1(predt[:, 2])
 
         nll = -np.sum(student_t.logpdf(x=target, loc=preds_location, scale=preds_scale, df=preds_nu))
         return "NegLogLikelihood", nll
