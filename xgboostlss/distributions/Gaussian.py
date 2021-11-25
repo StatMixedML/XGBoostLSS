@@ -4,13 +4,13 @@ import pandas as pd
 from scipy.stats import norm
 from xgboostlss.utils import *
 
-
+np.seterr(all="ignore")
 
 ########################################################################################################################
 ###############################################      Gaussian      #####################################################
 ########################################################################################################################
 class Gaussian():
-    """"Abstract Distribution Class
+    """"Gaussian Distribution Class
 
     """
 
@@ -91,8 +91,8 @@ class Gaussian():
         target = data.get_label()
 
         # When num_class!= 0, preds has shape (n_obs, n_classes)
-        preds_location = predt[:, 0]
-        preds_scale = soft_plus(predt[:, 1])
+        preds_location = Gaussian.param_dict()["location"](predt[:, 0])
+        preds_scale = Gaussian.param_dict()["scale"](predt[:, 1])
 
         # Initialize Gradient and Hessian Matrices
         grad = np.zeros((predt.shape[0], predt.shape[1]), dtype=float)
@@ -122,8 +122,8 @@ class Gaussian():
 
         """
         target = data.get_label()
-        preds_location = predt[:, 0]
-        preds_scale = soft_plus(predt[:, 1])
+        preds_location = Gaussian.param_dict()["location"](predt[:, 0])
+        preds_scale = Gaussian.param_dict()["scale"](predt[:, 1])
 
         nll = -np.sum(norm.logpdf(x=target, loc=preds_location, scale=preds_scale))
 
