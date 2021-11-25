@@ -251,7 +251,7 @@ class xgboostlss:
 
             # Add opt_rounds as a trial attribute, accessible via study.trials_dataframe(). # https://github.com/optuna/optuna/issues/1169
             opt_rounds = xgblss_param_tuning["test-NegLogLikelihood-mean"].idxmin() + 1
-            trial.set_user_attr("opt_round", opt_rounds)
+            trial.set_user_attr("opt_round", int(opt_rounds))
 
             # Extract the best score
             best_score = np.min(xgblss_param_tuning["test-NegLogLikelihood-mean"])
