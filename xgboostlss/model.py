@@ -349,9 +349,9 @@ class xgboostlss:
         feature: str
             Specifies which feature to use for plotting for Partial_Dependence plot.
         parameter: str
-            Specifies which distributional parameter to plot. Valid parameters are "location", "scale", "shape1", "shape2".
+            Specifies which distributional parameter to plot. Valid parameters are "location", "scale", "nu", "tau".
         plot_type: str
-            Specifies which shap-plot to visualize. Currently "Partial_Dependence" and "Feature_Importance" are supported.
+            Specifies which SHapley-plot to visualize. Currently "Partial_Dependence" and "Feature_Importance" are supported.
 
         '''
 
@@ -363,9 +363,9 @@ class xgboostlss:
             param_pos = 0
         if parameter == "scale":
             param_pos = 1
-        if parameter == "shape1":
+        if parameter == "nu":
             param_pos = 2
-        if parameter == "shape2":
+        if parameter == "tau":
             param_pos = 3
 
         if plot_type == "Partial_Dependence":
