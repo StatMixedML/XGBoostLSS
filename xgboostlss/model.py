@@ -285,7 +285,7 @@ class xgboostlss:
 
 
     def predict(booster: xgb.Booster, X: xgb.DMatrix, dist: str, pred_type: str,
-                n_samples:int = 1000, quantiles:list = [0.1, 0.5, 0.9], seed:str = 123):
+                n_samples: int = 1000, quantiles: list = [0.1, 0.5, 0.9], seed: str = 123):
         '''A customized xgboostlss prediction function.
 
         booster: xgb.Booster
