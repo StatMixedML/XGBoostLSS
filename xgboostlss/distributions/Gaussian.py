@@ -40,7 +40,7 @@ class Gaussian():
     ###
     @staticmethod
     def param_dict():
-        """ Dictionary that holds the name of distributional parameter and their correspondig repsonse functions.
+        """ Dictionary that holds the name of distributional parameter and their corresponding response functions.
 
         """
         param_dict = {"location": identity,
@@ -48,46 +48,45 @@ class Gaussian():
 
         return param_dict
 
-
     ###
     # Location Parameter gradient and hessian
     ###
     @staticmethod
-    def gradient_location(y: np.ndarray, location: np.ndarray, scale: np.ndarray):
+    def gradient_location(y: np.ndarray, location: np.ndarray, scale: np.ndarray, weights: np.ndarray):
         """Calculates Gradient of location parameter.
 
         """
         grad = (1/(scale**2)) * (y - location)
-        return(grad*(-1))
+        return grad*(-1)*weights
 
 
     @staticmethod
-    def hessian_location(scale: np.ndarray):
+    def hessian_location(scale: np.ndarray, weights: np.ndarray):
         """Calculates Hessian of location parameter.
 
         """
         hes = -(1/(scale**2))
-        return(hes*(-1))
+        return hes*(-1)*weights
 
 
     ###
     # Scale Parameter gradient and hessian
     ###
     @staticmethod
-    def gradient_scale(y: np.ndarray, location: np.ndarray, scale: np.ndarray):
+    def gradient_scale(y: np.ndarray, location: np.ndarray, scale: np.ndarray, weights: np.ndarray):
         """Calculates Gradient of scale parameter.
 
         """
         grad = ((y - location)**2 - scale**2)/(scale**3)
-        return(grad*(-1))
+        return grad*(-1)*weights
 
     @staticmethod
-    def hessian_scale(scale: np.ndarray):
+    def hessian_scale(scale: np.ndarray, weights: np.ndarray):
         '''Calculates Hessian of scale parameter.
 
         '''
         hes = -(2/(scale**2))
-        return(hes*(-1))
+        return hes*(-1)*weights
 
 
 
@@ -106,17 +105,37 @@ class Gaussian():
         preds_location = Gaussian.param_dict()["location"](predt[:, 0])
         preds_scale = Gaussian.param_dict()["scale"](predt[:, 1])
 
+
+        # Weights
+        if data.get_weight().size == 0:
+            # Use 1 as weight if no weights are specified
+            weights = np.ones_like(target, dtype=float)
+        else:
+            weights = data.get_weight()
+
+
         # Initialize Gradient and Hessian Matrices
         grad = np.zeros((predt.shape[0], predt.shape[1]), dtype=float)
         hess = np.zeros((predt.shape[0], predt.shape[1]), dtype=float)
 
+
         # Location
-        grad[:, 0] = Gaussian.gradient_location(y=target, location=preds_location, scale=preds_scale)
-        hess[:, 0] = Gaussian.hessian_location(scale=preds_scale)
+        grad[:, 0] = Gaussian.gradient_location(y=target,
+                                                location=preds_location,
+                                                scale=preds_scale,
+                                                weights=weights)
+
+        hess[:, 0] = Gaussian.hessian_location(scale=preds_scale,
+                                               weights=weights)
 
         # Scale
-        grad[:, 1] = Gaussian.gradient_scale(y=target, location=preds_location, scale=preds_scale)
-        hess[:, 1] = Gaussian.hessian_scale(scale=preds_scale)
+        grad[:, 1] = Gaussian.gradient_scale(y=target,
+                                             location=preds_location,
+                                             scale=preds_scale,
+                                             weights=weights)
+
+        hess[:, 1] = Gaussian.hessian_scale(scale=preds_scale,
+                                            weights=weights)
 
         # Reshaping
         grad = grad.reshape((predt.shape[0] * predt.shape[1], 1))
@@ -133,6 +152,9 @@ class Gaussian():
 
         """
         target = data.get_label()
+
+        # Using a custom objective function, the custom metric receives raw predictions which need to be transformed
+        # with the corresponding response function.
         preds_location = Gaussian.param_dict()["location"](predt[:, 0])
         preds_scale = Gaussian.param_dict()["scale"](predt[:, 1])
 
