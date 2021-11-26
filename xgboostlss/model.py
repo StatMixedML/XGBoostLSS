@@ -274,12 +274,12 @@ class xgboostlss:
         # Add optimal stopping round
         opt_param.params["opt_rounds"] = study.trials_dataframe()["user_attrs_opt_round"][
             study.trials_dataframe()["value"].idxmin()]
+        opt_param.params["opt_rounds"] = int(opt_param.params["opt_rounds"])
 
         print("  Value: {}".format(opt_param.value))
         print("  Params: ")
         for key, value in opt_param.params.items():
             print("    {}: {}".format(key, value))
-
 
         return opt_param.params
 
