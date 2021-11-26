@@ -9,6 +9,17 @@ np.seterr(all="ignore")
 ########################################################################################################################
 ###############################################      Gaussian      #####################################################
 ########################################################################################################################
+
+# When a custom objective is provided XGBoost doesn't know its response function so the user is responsible for making
+# the transformation for both objective and custom evaluation metric. For objective with identity link like squared
+# error this is trivial, but for other link functions like log link or inverse link the difference is significant.
+
+# For the Python package, the behaviour of the predictions can be controlled by the output_margin parameter in the
+# predict function. When using the custom_metric parameter without a custom objective, the metric function will receive
+# transformed predictions since the objective is defined by XGBoost. However, when a custom objective is also provided
+# along with a custom metric, then both the objective and custom metric will receive raw predictions and hence must be
+# transformed using the specified response functions.
+
 class Gaussian():
     """"Gaussian Distribution Class
 
@@ -90,7 +101,8 @@ class Gaussian():
 
         target = data.get_label()
 
-        # When num_class!= 0, preds has shape (n_obs, n_classes)
+        # When num_class!= 0, preds has shape (n_obs, n_dist_param).
+        # Each element in a row represents a raw prediction (leaf weight, hasn't gone through response function yet).
         preds_location = Gaussian.param_dict()["location"](predt[:, 0])
         preds_scale = Gaussian.param_dict()["scale"](predt[:, 1])
 
@@ -117,8 +129,7 @@ class Gaussian():
     # Custom Evaluation Metric
     ###
     def Dist_Metric(predt: np.ndarray, data: xgb.DMatrix):
-        """A customized evaluation metric that evaluates the predictions using the
-        negative log-likelihood
+        """A customized evaluation metric that evaluates the predictions using the negative log-likelihood.
 
         """
         target = data.get_label()
