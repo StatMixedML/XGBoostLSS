@@ -13,7 +13,7 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 :white_check_mark: XGBoostLSS is available in Python. <br/>
 
 ## Work in Progress
-:construction: Functions that facilitates the choice and evaluation of a candidate distribution (e.g., quantile residual plots, worm plots, ...). <br/>
+:construction: Functions that facilitates the choice and evaluation of a candidate distribution (e.g., quantile residual plots, ...). <br/>
 :construction: Calling XGBoostLSS from R via the [reticulate package](https://rstudio.github.io/reticulate/). <br/>
  
 
