@@ -2,3 +2,4 @@
 
 from xgboostlss.distributions.Gaussian import *
 from xgboostlss.distributions.StudentT import *
+from xgboostlss.distributions.BCT import *
