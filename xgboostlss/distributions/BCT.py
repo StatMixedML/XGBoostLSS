@@ -429,4 +429,3 @@ class BCT():
         pred_quantiles = pd.DataFrame(pred_quantiles_list).T
         return pred_quantiles
 
-
