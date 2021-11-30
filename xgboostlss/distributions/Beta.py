@@ -106,7 +106,9 @@ class Beta():
         a = location * (1 - scale ** 2) / (scale ** 2)
         b = a * (1 - location) / location
         grad = ((1 - scale ** 2) / (scale ** 2)) * (-digamma(a) + digamma(b) + np.log(y) - np.log(1 - y))
-        return grad * (-1) * weights
+        grad = stabilize_derivative(grad)
+        grad = grad * (-1) * weights
+        return grad
 
 
     @staticmethod
@@ -117,7 +119,9 @@ class Beta():
         a = location * (1 - scale ** 2) / (scale ** 2)
         b = a * (1 - location) / location
         hes = -(((1 - scale ** 2) ** 2) / (scale ** 4)) * (polygamma(1, a) + polygamma(1, b))
-        return hes * (-1) * weights
+        hes = stabilize_derivative(hes)
+        hes = hes * (-1) * weights
+        return hes
 
 
     ###
@@ -132,7 +136,9 @@ class Beta():
         b = a * (1 - location) / location
         grad = -(2 / (scale ** 3)) * (location * (-digamma(a) + digamma(a + b) + np.log(y)) + (1 - location) * (
                     -digamma(b) + digamma(a + b) + np.log(1 - y)))
-        return grad * (-1) * weights
+        grad = stabilize_derivative(grad)
+        grad = grad * (-1) * weights
+        return grad
 
 
     @staticmethod
@@ -144,7 +150,9 @@ class Beta():
         b = a * (1 - location) / location
         hes = -(4 / (scale ** 6)) * (
                     (location ** 2) * polygamma(1, a) + ((1 - location) ** 2) * polygamma(1, b) - polygamma(1, a + b))
-        return hes * (-1) * weights
+        hes = stabilize_derivative(hes)
+        hes = hes * (-1) * weights
+        return hes
 
 
 
