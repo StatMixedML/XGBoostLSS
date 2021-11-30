@@ -57,7 +57,9 @@ class Gaussian():
 
         """
         grad = (1/(scale**2)) * (y - location)
-        return grad*(-1)*weights
+        grad = stabilize_derivative(grad)
+        grad = grad * (-1) * weights
+        return grad
 
 
     @staticmethod
@@ -66,7 +68,9 @@ class Gaussian():
 
         """
         hes = -(1/(scale**2))
-        return hes*(-1)*weights
+        hes = stabilize_derivative(hes)
+        hes = hes * (-1) * weights
+        return hes
 
 
     ###
@@ -78,7 +82,9 @@ class Gaussian():
 
         """
         grad = ((y - location)**2 - scale**2)/(scale**3)
-        return grad*(-1)*weights
+        grad = stabilize_derivative(grad)
+        grad = grad * (-1) * weights
+        return grad
 
     @staticmethod
     def hessian_scale(scale: np.ndarray, weights: np.ndarray):
@@ -86,7 +92,9 @@ class Gaussian():
 
         '''
         hes = -(2/(scale**2))
-        return hes*(-1)*weights
+        hes = stabilize_derivative(hes)
+        hes = hes * (-1) * weights
+        return hes
 
 
 
