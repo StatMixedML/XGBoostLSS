@@ -65,7 +65,9 @@ class StudentT():
         dsq = ((y - location) ** 2) / s2
         omega = (nu + 1) / (nu + dsq)
         grad = (omega * (y - location)) / s2
-        return grad*(-1)*weights
+        grad = stabilize_derivative(grad)
+        grad = grad * (-1) * weights
+        return grad
 
     @staticmethod
     def hessian_location(scale: np.ndarray, nu: np.ndarray, weights: np.ndarray):
@@ -73,7 +75,9 @@ class StudentT():
 
         """
         hes = -(nu + 1) / ((nu + 3) * (scale ** 2))
-        return hes*(-1)*weights
+        hes = stabilize_derivative(hes)
+        hes = hes * (-1) * weights
+        return hes
 
 
 
@@ -89,7 +93,9 @@ class StudentT():
         dsq = ((y - location) ** 2) / s2
         omega = (nu + 1) / (nu + dsq)
         grad = (omega * dsq - 1) / scale
-        return grad*(-1)*weights
+        grad = stabilize_derivative(grad)
+        grad = grad * (-1) * weights
+        return grad
 
     @staticmethod
     def hessian_scale(scale: np.ndarray, nu: np.ndarray, weights: np.ndarray):
@@ -98,7 +104,9 @@ class StudentT():
         """
         s2 = scale ** 2
         hes = -(2 * nu) / ((nu + 3) * s2)
-        return hes*(-1)*weights
+        hes = stabilize_derivative(hes)
+        hes = hes * (-1) * weights
+        return hes
 
 
 
@@ -118,7 +126,9 @@ class StudentT():
         v3 = (nu + 1) / 2
         grad = -np.log(dsq3) + (omega * dsq - 1) / nu + polygamma(0, v3) - polygamma(0, v2)
         grad = grad / 2
-        return grad*(-1)*weights
+        grad = stabilize_derivative(grad)
+        grad = grad * (-1) * weights
+        return grad
 
     @staticmethod
     def hessian_nu(y: np.ndarray, location: np.ndarray, scale: np.ndarray, nu: np.ndarray, weights: np.ndarray):
@@ -130,7 +140,9 @@ class StudentT():
         hes = polygamma(1, v3) - polygamma(1, v2) + (2 * (nu + 5)) / (nu * (nu + 1) * (nu + 3))
         hes = hes / 4
         hes = np.where(hes < -1e-15, hes, -1e-15)
-        return hes*(-1)*weights
+        hes = stabilize_derivative(hes)
+        hes = hes * (-1) * weights
+        return hes
 
 
 
