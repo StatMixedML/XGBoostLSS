@@ -16,11 +16,15 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 :construction: Functions that facilitates the choice and evaluation of a candidate distribution (e.g., quantile residual plots, ...). <br/>
 :construction: Calling XGBoostLSS from R via the [reticulate package](https://rstudio.github.io/reticulate/). <br/>
  
-
 ## Available Distributions
 Currently, XGBoostLSS supports the following distributions. More continuous distributions, as well as discrete, mixed discrete-continuous and zero-inflated distributions are to come soon.
 
 <img align="center" src="../master/figures/distr.png">
+
+## A Note on Stabilization
+As XGBoostLSS updates the parameter estimates by optimizing Gradients and Hessians, it is important that these are comparable in magnitude for all distributional parameters. Due to imbalances regarding the ranges, the estimation of Gradients and Hessians might become unstable so that XGBoostLSS does not converge or converge very slowly. To mitigate these effects, we have a built-in stabilization of Gradients and Hessians. 
+
+An additional option to improve convergence might be to standardize the response variable, e.g., ```y/10``` or ```y/100```. This is especially useful if the range of the response differs strongly from the range of the Gradients and Hessians. Both, the in-built stabilization, and the standardization of the response need to be carefully considered given the data at hand.
 
 ## Installation
 ```python
