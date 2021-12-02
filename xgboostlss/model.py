@@ -239,12 +239,17 @@ class xgboostlss:
                 "min_child_weight": trial.suggest_int("min_child_weight", params["min_child_weight"][0], params["min_child_weight"][1])
             }
 
+
+            # Add pruning
+            pruning_callback = optuna.integration.XGBoostPruningCallback(trial, "test-NegLogLikelihood")
+
             xgblss_param_tuning = xgboostlss.cv(hyper_params,
                                                 dtrain=dtrain,
                                                 dist=dist,
                                                 num_boost_round=num_boost_round,
                                                 nfold=nfold,
                                                 early_stopping_rounds=early_stopping_rounds,
+                                                callbacks=[pruning_callback],
                                                 seed=123,
                                                 verbose_eval=False,
                                                 maximize=False)
@@ -263,7 +268,8 @@ class xgboostlss:
             optuna.logging.set_verbosity(optuna.logging.WARNING)
 
         sampler = TPESampler(seed=123)
-        study = optuna.create_study(sampler=sampler, direction="minimize", study_name=study_name)
+        pruner = optuna.pruners.MedianPruner(n_warmup_steps=5)
+        study = optuna.create_study(sampler=sampler, pruner=pruner, direction="minimize", study_name=study_name)
         study.optimize(objective, n_trials=n_trials, timeout=60 * max_minutes, show_progress_bar=True)
 
         print("Hyper-Parameter Optimization successfully finished.")
