@@ -268,7 +268,7 @@ class xgboostlss:
             optuna.logging.set_verbosity(optuna.logging.WARNING)
 
         sampler = TPESampler(seed=123)
-        pruner = optuna.pruners.MedianPruner(n_warmup_steps=5)
+        pruner = optuna.pruners.MedianPruner(n_warmup_steps=10)
         study = optuna.create_study(sampler=sampler, pruner=pruner, direction="minimize", study_name=study_name)
         study.optimize(objective, n_trials=n_trials, timeout=60 * max_minutes, show_progress_bar=True)
 
