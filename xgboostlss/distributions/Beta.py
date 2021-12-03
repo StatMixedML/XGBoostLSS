@@ -226,7 +226,7 @@ class Beta():
         preds_location = Beta.param_dict()["location"](predt[:, 0])
         preds_scale = Beta.param_dict()["scale"](predt[:, 1])
 
-        nll = -np.sum(Beta.dBE(y=target, location=preds_location, scale=preds_scale))
+        nll = -np.nansum(Beta.dBE(y=target, location=preds_location, scale=preds_scale))
 
         return "NegLogLikelihood", nll
 
