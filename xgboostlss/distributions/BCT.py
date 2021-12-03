@@ -373,12 +373,12 @@ class BCT():
         preds_nu = BCT.param_dict()["nu"](predt[:, 2])
         preds_tau = BCT.param_dict()["tau"](predt[:, 3])
 
-        nll = -np.sum(BCT.dBCT(y=target,
-                               location=preds_location,
-                               scale=preds_scale,
-                               nu=preds_nu,
-                               tau=preds_tau,
-                               log=True))
+        nll = -np.nansum(BCT.dBCT(y=target,
+                                  location=preds_location,
+                                  scale=preds_scale,
+                                  nu=preds_nu,
+                                  tau=preds_tau,
+                                  log=True))
         return "NegLogLikelihood", nll
 
 
