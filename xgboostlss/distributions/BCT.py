@@ -162,7 +162,7 @@ class BCT():
         z = np.where(nu != 0, (((y / location) ** nu - 1) / (nu * scale)), np.log(y / location) / scale)
         w = (tau + 1) / (tau + z ** 2)
         grad = (w * z) / (location * scale) + (nu / location) * (w * (z ** 2) - 1)
-        # grad = stabilize_derivative(grad)
+        grad = stabilize_derivative(grad, BCT.stabilize)
         grad = grad * (-1) * weights
         return grad
 
@@ -174,7 +174,7 @@ class BCT():
         """
         hes = -(tau + 2 * nu * nu * scale * scale * tau + 1) / (tau + 3)
         hes = hes / (location * location * scale * scale)
-        # hes = stabilize_derivative(hes)
+        hes = stabilize_derivative(hes, BCT.stabilize)
         hes = hes * (-1) * weights
         return hes
 
@@ -192,7 +192,7 @@ class BCT():
         w = (tau + 1) / (tau + z ** 2)
         h = t.pdf(1 / (scale * np.abs(nu)), df=tau) / t.cdf(1 / (scale * np.abs(nu)), df=tau)
         grad = (w * (z ** 2) - 1) / scale + h / (scale ** 2 * np.abs(nu))
-        # grad = stabilize_derivative(grad)
+        grad = stabilize_derivative(grad, BCT.stabilize)
         grad = grad * (-1) * weights
         return grad
 
@@ -204,7 +204,7 @@ class BCT():
 
         """
         hes = -2 * tau / (scale ** 2 * (tau + 3))
-        # hes = stabilize_derivative(hes)
+        hes = stabilize_derivative(hes, BCT.stabilize)
         hes = hes * (-1) * weights
         return hes
 
@@ -223,7 +223,7 @@ class BCT():
         h = t.pdf(1 / (scale * np.abs(nu)), df=tau) / t.cdf(1 / (scale * np.abs(nu)), df=tau)
         grad = ((w * z ** 2) / nu) - np.log(y / location) * (w * z ** 2 + ((w * z) / (scale * nu)) - 1)
         grad = grad + np.sign(nu) * h / (scale * nu ** 2)
-        # grad = stabilize_derivative(grad)
+        grad = stabilize_derivative(grad, BCT.stabilize)
         grad = grad * (-1) * weights
         return grad
 
@@ -234,7 +234,7 @@ class BCT():
 
         """
         hes = -7 * (scale ** 2) / 4
-        # hes = stabilize_derivative(hes)
+        hes = stabilize_derivative(hes, BCT.stabilize)
         hes = hes * (-1) * weights
         return hes
 
@@ -253,7 +253,7 @@ class BCT():
             t.cdf(1 / (scale * abs(nu)), df=tau))) / 0.01
         grad = -0.5 * np.log(1 + (z ** 2) / tau) + (w * (z ** 2)) / (2 * tau)
         grad = grad + 0.5 * digamma((tau + 1) / 2) - 0.5 * digamma(tau / 2) - 1 / (2 * tau) - j
-        # grad = stabilize_derivative(grad)
+        grad = stabilize_derivative(grad, BCT.stabilize)
         grad = grad * (-1) * weights
         return grad
 
@@ -266,7 +266,7 @@ class BCT():
         hes = polygamma(1, ((tau + 1) / 2)) - polygamma(1, tau / 2) + 2 * (tau + 5) / (tau * (tau + 1) * (tau + 3))
         hes = hes / 4
         hes = np.where(hes < -1e-15, hes, -1e-15)
-        # hes = stabilize_derivative(hes)
+        hes = stabilize_derivative(hes, BCT.stabilize)
         hes = hes * (-1) * weights
         return hes
 
