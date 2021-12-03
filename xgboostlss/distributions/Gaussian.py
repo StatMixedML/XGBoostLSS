@@ -166,7 +166,7 @@ class Gaussian():
         preds_location = Gaussian.param_dict()["location"](predt[:, 0])
         preds_scale = Gaussian.param_dict()["scale"](predt[:, 1])
 
-        nll = -np.sum(norm.logpdf(x=target, loc=preds_location, scale=preds_scale))
+        nll = -np.nansum(norm.logpdf(x=target, loc=preds_location, scale=preds_scale))
 
         return "NegLogLikelihood", nll
 
