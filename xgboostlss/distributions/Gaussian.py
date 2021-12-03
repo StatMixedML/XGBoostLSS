@@ -21,7 +21,7 @@ np.seterr(all="ignore")
 # transformed using the specified response functions.
 
 class Gaussian():
-    """"Gaussian Distribution Class
+    """Gaussian Distribution Class
 
     """
 
@@ -57,7 +57,7 @@ class Gaussian():
 
         """
         grad = (1/(scale**2)) * (y - location)
-        grad = stabilize_derivative(grad)
+        # grad = stabilize_derivative(grad)
         grad = grad * (-1) * weights
         return grad
 
@@ -68,7 +68,7 @@ class Gaussian():
 
         """
         hes = -(1/(scale**2))
-        hes = stabilize_derivative(hes)
+        # hes = stabilize_derivative(hes)
         hes = hes * (-1) * weights
         return hes
 
@@ -82,17 +82,17 @@ class Gaussian():
 
         """
         grad = ((y - location)**2 - scale**2)/(scale**3)
-        grad = stabilize_derivative(grad)
+        # grad = stabilize_derivative(grad)
         grad = grad * (-1) * weights
         return grad
 
     @staticmethod
     def hessian_scale(scale: np.ndarray, weights: np.ndarray):
-        '''Calculates Hessian of scale parameter.
+        """Calculates Hessian of scale parameter.
 
-        '''
+        """
         hes = -(2/(scale**2))
-        hes = stabilize_derivative(hes)
+        # hes = stabilize_derivative(hes)
         hes = hes * (-1) * weights
         return hes
 
@@ -228,5 +228,4 @@ class Gaussian():
 
         pred_quantiles = pd.DataFrame(pred_quantiles_list).T
         return pred_quantiles
-
 
