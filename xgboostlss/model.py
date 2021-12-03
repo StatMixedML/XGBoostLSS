@@ -378,4 +378,3 @@ class xgboostlss:
             shap.plots.scatter(shap_values[:, feature][:, param_pos], color=shap_values[:, :, param_pos])
         elif plot_type == "Feature_Importance":
             shap.plots.bar(shap_values[:,:,param_pos], max_display = 15 if X.shape[1] > 15 else X.shape[1])
-
