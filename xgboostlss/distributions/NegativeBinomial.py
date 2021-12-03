@@ -225,7 +225,7 @@ class NBI():
         preds_location = NBI.param_dict()["location"](predt[:, 0])
         preds_scale = NBI.param_dict()["scale"](predt[:, 1])
 
-        nll = -np.sum(NBI.dNBI(y=target, location=preds_location, scale=preds_scale))
+        nll = -np.nansum(NBI.dNBI(y=target, location=preds_location, scale=preds_scale))
 
         return "NegLogLikelihood", nll
 
