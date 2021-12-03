@@ -65,7 +65,7 @@ class StudentT():
         dsq = ((y - location) ** 2) / s2
         omega = (nu + 1) / (nu + dsq)
         grad = (omega * (y - location)) / s2
-        # grad = stabilize_derivative(grad)
+        grad = stabilize_derivative(grad, StudentT.stabilize)
         grad = grad * (-1) * weights
         return grad
 
@@ -75,7 +75,7 @@ class StudentT():
 
         """
         hes = -(nu + 1) / ((nu + 3) * (scale ** 2))
-        # hes = stabilize_derivative(hes)
+        hes = stabilize_derivative(hes, StudentT.stabilize)
         hes = hes * (-1) * weights
         return hes
 
@@ -93,7 +93,7 @@ class StudentT():
         dsq = ((y - location) ** 2) / s2
         omega = (nu + 1) / (nu + dsq)
         grad = (omega * dsq - 1) / scale
-        # grad = stabilize_derivative(grad)
+        grad = stabilize_derivative(grad, StudentT.stabilize)
         grad = grad * (-1) * weights
         return grad
 
@@ -104,7 +104,7 @@ class StudentT():
         """
         s2 = scale ** 2
         hes = -(2 * nu) / ((nu + 3) * s2)
-        # hes = stabilize_derivative(hes)
+        hes = stabilize_derivative(hes, StudentT.stabilize)
         hes = hes * (-1) * weights
         return hes
 
@@ -126,7 +126,7 @@ class StudentT():
         v3 = (nu + 1) / 2
         grad = -np.log(dsq3) + (omega * dsq - 1) / nu + polygamma(0, v3) - polygamma(0, v2)
         grad = grad / 2
-        # grad = stabilize_derivative(grad)
+        grad = stabilize_derivative(grad, StudentT.stabilize)
         grad = grad * (-1) * weights
         return grad
 
@@ -140,7 +140,7 @@ class StudentT():
         hes = polygamma(1, v3) - polygamma(1, v2) + (2 * (nu + 5)) / (nu * (nu + 1) * (nu + 3))
         hes = hes / 4
         hes = np.where(hes < -1e-15, hes, -1e-15)
-        # hes = stabilize_derivative(hes)
+        hes = stabilize_derivative(hes, StudentT.stabilize)
         hes = hes * (-1) * weights
         return hes
 
