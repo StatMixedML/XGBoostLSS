@@ -109,7 +109,7 @@ class NBI():
 
         """
         grad = (y - location) / (location * (1 + location * scale))
-        # grad = stabilize_derivative(grad)
+        grad = stabilize_derivative(grad, NBI.stabilize)
         grad = grad * (-1) * weights
         return grad
 
@@ -120,7 +120,7 @@ class NBI():
 
         """
         hes = -1 / (location * (1 + location * scale))
-        # hes = stabilize_derivative(hes)
+        hes = stabilize_derivative(hes, NBI.stabilize)
         hes = hes * (-1) * weights
         return hes
 
@@ -135,7 +135,7 @@ class NBI():
         """
         grad = -((1 / scale) ** 2) * (digamma(y + (1 / scale)) - digamma(1 / scale) - np.log(1 + location * scale) - (
                     y - location) * scale / (1 + location * scale))
-        # grad = stabilize_derivative(grad)
+        grad = stabilize_derivative(grad, NBI.stabilize)
         grad = grad * (-1) * weights
         return grad
 
@@ -148,7 +148,7 @@ class NBI():
                     y - location) * scale / (1 + location * scale))
         hes = -hes ** 2
         hes = np.where(hes < -1e-15, hes, -1e-15)
-        # hes = stabilize_derivative(hes)
+        hes = stabilize_derivative(hes, NBI.stabilize)
         hes = hes * (-1) * weights
         return hes
 
