@@ -23,7 +23,7 @@ def soft_plus(predt: np.ndarray):
 ###
 # Stabilization of Gradient and Hessian
 ###
-def stabilize_derivative(input_der: np.ndarray,  type: str = "MAD"):
+def stabilize_derivative(input_der: np.ndarray,  type: str = "None"):
     """Function that stabilizes Gradients and Hessians.
 
     As XGBoostLSS updates the parameter estimates by optimizing Gradients and Hessians, it is important
@@ -43,7 +43,7 @@ def stabilize_derivative(input_der: np.ndarray,  type: str = "MAD"):
     input_der : np.ndarray
         Either Gradient or Hessian.
     type: str
-        Stabilization method. Can be either "MAD" or "L2".
+        Stabilization method. Can be either "None", "MAD" or "L2".
 
     Returns
     -------
@@ -61,5 +61,8 @@ def stabilize_derivative(input_der: np.ndarray,  type: str = "MAD"):
         div = np.where(div < 1e-04, 1e-04, div)
         div = np.where(div > 10000, 10000, div)
         stab_der = input_der/div
+
+    if type == "None":
+        stab_der = input_der
 
     return stab_der
