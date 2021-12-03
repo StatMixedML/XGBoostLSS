@@ -57,7 +57,7 @@ class Gaussian():
 
         """
         grad = (1/(scale**2)) * (y - location)
-        # grad = stabilize_derivative(grad)
+        grad = stabilize_derivative(grad, Gaussian.stabilize)
         grad = grad * (-1) * weights
         return grad
 
@@ -68,7 +68,7 @@ class Gaussian():
 
         """
         hes = -(1/(scale**2))
-        # hes = stabilize_derivative(hes)
+        hes = stabilize_derivative(hes, Gaussian.stabilize)
         hes = hes * (-1) * weights
         return hes
 
@@ -82,7 +82,7 @@ class Gaussian():
 
         """
         grad = ((y - location)**2 - scale**2)/(scale**3)
-        # grad = stabilize_derivative(grad)
+        grad = stabilize_derivative(grad, Gaussian.stabilize)
         grad = grad * (-1) * weights
         return grad
 
@@ -92,7 +92,7 @@ class Gaussian():
 
         """
         hes = -(2/(scale**2))
-        # hes = stabilize_derivative(hes)
+        hes = stabilize_derivative(hes, Gaussian.stabilize)
         hes = hes * (-1) * weights
         return hes
 
