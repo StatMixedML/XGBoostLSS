@@ -232,7 +232,7 @@ class StudentT():
         preds_scale = StudentT.param_dict()["scale"](predt[:, 1])
         preds_nu = StudentT.param_dict()["nu"](predt[:, 2])
 
-        nll = -np.sum(student_t.logpdf(x=target, loc=preds_location, scale=preds_scale, df=preds_nu))
+        nll = -np.nansum(student_t.logpdf(x=target, loc=preds_location, scale=preds_scale, df=preds_nu))
         return "NegLogLikelihood", nll
 
 
