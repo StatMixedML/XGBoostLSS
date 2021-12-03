@@ -10,6 +10,7 @@ import shap
 class xgboostlss:
     """
     XGBoostLSS model class
+
     """
 
     def train(params, dtrain, dist, num_boost_round=10, evals=(),
@@ -73,7 +74,7 @@ class xgboostlss:
                 [xgb.callback.LearningRateScheduler(custom_rates)]
         """
 
-        dist_args = eval(dist)
+        dist_args = dist    #eval(dist)
 
         params2 = {"num_class": dist_args.n_dist_param(),
                    "disable_default_eval_metric": True}
@@ -98,7 +99,7 @@ class xgboostlss:
 
     def cv(params, dtrain, dist, num_boost_round=10, nfold=3, stratified=False, folds=None,
            maximize=None, early_stopping_rounds=None, fpreproc=None, as_pandas=True,
-           verbose_eval=None, show_stdv=True, seed=0, callbacks=None, shuffle=True):
+           verbose_eval=None, show_stdv=True, seed=123, callbacks=None, shuffle=True):
         """Function to cross-validate a xgboostlss model with given parameters.
 
         Parameters
@@ -161,7 +162,7 @@ class xgboostlss:
         evaluation history : list(string)
         """
 
-        dist_args = eval(dist)
+        dist_args = dist    #eval(dist)
 
         params2 = {"num_class": dist_args.n_dist_param(),
                    "disable_default_eval_metric": True}
@@ -313,7 +314,7 @@ class xgboostlss:
             If pred_type="response" specifies the seed for drawing samples from the predicted response distribution.
 
         '''
-        dist_args = eval(dist)
+        dist_args = dist    #eval(dist)
         dict_param = dist_args.param_dict()
 
         predt = booster.predict(X, output_margin=True)
