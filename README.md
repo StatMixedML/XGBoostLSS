@@ -10,8 +10,8 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 
 ## Features
 :white_check_mark: Simultaneous training and updating of all distributional parameters. <br/>
-:white_check_mark: Automated derivation of Gradients and Hessian of all distributional parameters using [PyTorch](https://pytorch.org/docs/stable/autograd.html). <br/>
-:white_check_mark: Automated hyper-parameter search is done via [Optuna](https://optuna.org/). <br/>
+:white_check_mark: Automatic derivation of Gradients and Hessian of all distributional parameters using [PyTorch](https://pytorch.org/docs/stable/autograd.html). <br/>
+:white_check_mark: Automated hyper-parameter search, including pruning, is done via [Optuna](https://optuna.org/). <br/>
 :white_check_mark: The output of XGBoostLSS is explained using [SHapley Additive exPlanations](https://github.com/slundberg/shap). <br/>
 :white_check_mark: XGBoostLSS is available in Python. <br/>
 
