@@ -1,4 +1,6 @@
 import numpy as np
+import torch
+from torch.autograd import grad
 
 ###
 # Response Functions
@@ -49,6 +51,7 @@ def stabilize_derivative(input_der: np.ndarray,  type: str = "None"):
     -------
     stab_der : np.ndarray
         Stabilized Gradient or Hessian.
+
     """
 
     if type == "MAD":
@@ -66,3 +69,31 @@ def stabilize_derivative(input_der: np.ndarray,  type: str = "None"):
         stab_der = input_der
 
     return stab_der
+
+
+
+def auto_grad(metric: torch.Tensor, parameter: torch.Tensor, n: int):
+    """Function for automatic derivation of derivatives using PyTorch AutoGrad.
+
+    Parameters
+    ----------
+    metric: Tensor
+        Input, usually sum of negative log-likelihood.
+    parameter: Tensor
+        Distributional parameter for which to calculate derivative.
+    n: int
+        Order of derivative: 1=Gradient, 2=Hessian.
+
+    Returns
+    -------
+    deriv : Tensor
+        Tensor of derivatives.
+
+    """
+
+    for i in range(n):
+        deriv = grad(metric, parameter, create_graph=True)[0]
+        metric = deriv.nansum()
+    deriv_np = np.round(deriv.detach().numpy(), 5)
+
+    return deriv_np
