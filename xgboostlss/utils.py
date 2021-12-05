@@ -73,7 +73,7 @@ def stabilize_derivative(input_der: np.ndarray,  type: str = "None"):
 
 
 def auto_grad(metric: torch.Tensor, parameter: torch.Tensor, n: int):
-    """Function for automatic derivation of derivatives using PyTorch AutoGrad.
+    """Function for automatic differentiation and calculation of derivatives using PyTorch AutoGrad.
 
     Parameters
     ----------
