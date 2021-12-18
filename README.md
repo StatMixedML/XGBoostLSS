@@ -18,7 +18,7 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 ## Work in Progress
 :construction: Functions that facilitates the choice and evaluation of a candidate distribution (e.g., quantile residual plots, ...). <br/>
 :construction: Calling XGBoostLSS from R via the [reticulate package](https://rstudio.github.io/reticulate/). <br/>
-:construction: Estimation of full predictive distributions without relying on a distributional assumption, i.e., non-parametric quantile estimation.  <br/>
+:construction: Estimation of full predictive distribution without relying on a distributional assumption.  <br/>
  
 ## Available Distributions
 Currently, XGBoostLSS supports the following distributions. More continuous distributions, as well as discrete, mixed discrete-continuous and zero-inflated distributions are to come soon.
