@@ -9,7 +9,7 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 :boom: [2021-11-14] XGBoostLSS v0.1.0 is released!
 
 ## Features
-:white_check_mark: Simultaneous training and updating of all distributional parameters. <br/>
+:white_check_mark: Simultaneous updating of all distributional parameters. <br/>
 :white_check_mark: Automatic derivation of Gradients and Hessian of all distributional parameters using [PyTorch](https://pytorch.org/docs/stable/autograd.html). <br/>
 :white_check_mark: Automated hyper-parameter search, including pruning, is done via [Optuna](https://optuna.org/). <br/>
 :white_check_mark: The output of XGBoostLSS is explained using [SHapley Additive exPlanations](https://github.com/slundberg/shap). <br/>
@@ -18,6 +18,7 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 ## Work in Progress
 :construction: Functions that facilitates the choice and evaluation of a candidate distribution (e.g., quantile residual plots, ...). <br/>
 :construction: Calling XGBoostLSS from R via the [reticulate package](https://rstudio.github.io/reticulate/). <br/>
+:construction: Estimation of full predictive distributions without relying on a distributional assumption, i.e., non-parametric quantile estimation.  <br/>
  
 ## Available Distributions
 Currently, XGBoostLSS supports the following distributions. More continuous distributions, as well as discrete, mixed discrete-continuous and zero-inflated distributions are to come soon.
