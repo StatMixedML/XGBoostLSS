@@ -32,7 +32,7 @@ Since XGBoostLSS updates the parameter estimates by optimizing Gradients and Hes
 An additional option to improve convergence can be to standardize the (continuous) response variable, e.g., ```y/10``` or ```y/100```. This is especially useful if the range of the response differs strongly from the range of the Gradients and Hessians. Both, the in-built stabilization, and the standardization of the response need to be carefully considered given the data at hand.
 
 ### Runtime
-Since XGBoostLSS estimates all distributional parameters simultaneously, it requires training ```[number of iterations] * [number of distributional parameters]``` trees. Hence, the runtime of XGBoostLSS is generally slightly higher as compared to XGBoost, which requires training ```[number of iterations]``` trees only. 
+Since XGBoostLSS updates all distributional parameters simultaneously, it requires training ```[number of iterations] * [number of distributional parameters]``` trees. Hence, the runtime of XGBoostLSS is generally slightly higher as compared to XGBoost, which requires training ```[number of iterations]``` trees only. 
 
 ## Installation
 ```python
