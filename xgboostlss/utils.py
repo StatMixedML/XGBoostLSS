@@ -21,6 +21,14 @@ def soft_plus(predt: np.ndarray):
     return predt
 
 
+def soft_plus_inv(predt: np.ndarray):
+    """Inverse of softplus function.
+
+    """
+    predt = np.log(np.exp(predt) - 1)
+    return predt
+
+
 
 ###
 # Stabilization of Gradient and Hessian
