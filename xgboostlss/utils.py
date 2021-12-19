@@ -17,7 +17,7 @@ def soft_plus(predt: np.ndarray):
 
     """
     predt = np.log1p(np.exp(-np.abs(predt))) + np.maximum(predt, 0)
-    predt[predt == 0] = 1e-15
+    predt[predt == 0] = 1e-8
     return predt
 
 
