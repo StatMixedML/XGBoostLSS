@@ -36,14 +36,14 @@ An additional option to improve convergence can be to standardize the (continuou
 Since XGBoostLSS updates all distributional parameters simultaneously, it requires training ```[number of iterations] * [number of distributional parameters]``` trees. Hence, the runtime of XGBoostLSS is generally slightly higher as compared to XGBoost, which requires training ```[number of iterations]``` trees only. 
 
 ### Feedback
-Please provide feedback on how to improve XGBoostLSS or if you request additional distributions by opening a new issue.
+Please provide feedback on how to improve XGBoostLSS, or if you request additional distributions to be implemented, by opening a new issue.
 
 ## Installation
 ```python
 $ pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 ```
-## Quick Start
-We refer to the [examples section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for an example notebook.
+## How to use
+We refer to the [examples section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for example notebooks.
 
 ## Reference Paper
 März, Alexander (2019) [*"XGBoostLSS - An extension of XGBoost to probabilistic forecasting"*](https://arxiv.org/abs/1907.03178). 
