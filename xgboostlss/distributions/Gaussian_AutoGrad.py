@@ -51,6 +51,39 @@ class Gaussian():
 
         return param_dict
 
+    ###
+    # Inverse Parameter Dictionary
+    ###
+    @staticmethod
+    def param_dict_inv():
+        """ Dictionary that holds the name of distributional parameter and their corresponding link functions.
+
+        """
+        param_dict_inv = {"location_inv": identity,
+                          "scale_inv": soft_plus_inv}
+
+        return param_dict_inv
+
+
+    ###
+    # Starting Values
+    ###
+    @staticmethod
+    def initialize(y: np.ndarray):
+        """ Function that calculates the starting values, for each distributional parameter individually.
+
+        y_train: np.ndarray
+            Data from which starting values are calculated.
+
+        """
+        loc_fit, scale_fit = norm.fit(y)
+        location_init = Gaussian.param_dict_inv()["location_inv"](loc_fit)
+        scale_init = Gaussian.param_dict_inv()["scale_inv"](scale_fit)
+
+        start_values = np.array([location_init, scale_init])
+
+        return start_values
+
 
 
     ###
@@ -81,8 +114,8 @@ class Gaussian():
 
 
         # Initialize Gradient and Hessian Matrices
-        grad = np.zeros((predt.shape[0], predt.shape[1]), dtype=float)
-        hess = np.zeros((predt.shape[0], predt.shape[1]), dtype=float)
+        grad = np.zeros(shape=(len(target), Gaussian.n_dist_param()))
+        hess = np.zeros(shape=(len(target), Gaussian.n_dist_param()))
 
         # Specify Metric for Auto Derivation
         dGaussian = Normal(preds_location, preds_scale)
@@ -111,8 +144,8 @@ class Gaussian():
                                           Gaussian.stabilize)
 
         # Reshaping
-        grad = grad.reshape((predt.shape[0] * predt.shape[1], 1))
-        hess = hess.reshape((predt.shape[0] * predt.shape[1], 1))
+        grad = grad.flatten()
+        hess = hess.flatten()
 
         return grad, hess
 
