@@ -57,6 +57,47 @@ class BCT():
 
         return param_dict
 
+    ###
+    # Inverse Parameter Dictionary
+    ###
+    @staticmethod
+    def param_dict_inv():
+        """ Dictionary that holds the name of distributional parameter and their corresponding link functions.
+
+        """
+        param_dict_inv = {"location_inv": soft_plus_inv,
+                          "scale_inv": soft_plus_inv,
+                          "nu_inv": identity,
+                          "tau_inv": soft_plus_inv
+                          }
+
+        return param_dict_inv
+
+    ###
+    # Starting Values
+    ###
+    @staticmethod
+    def initialize(y: np.ndarray):
+        """ Function that calculates the starting values, for each distributional parameter individually.
+
+        y: np.ndarray
+            Data from which starting values are calculated.
+
+        """
+        loc_fit = np.nanmean(y)
+        scale_fit = np.max([((np.nanvar(y, ddof=1) - np.nanmean(y)) / (np.nanmean(y) ** 2)), 0.1])
+        nu_fit = 0.5
+        tau_fit = 10
+
+        location_init = BCT.param_dict_inv()["location_inv"](loc_fit)
+        scale_init = BCT.param_dict_inv()["scale_inv"](scale_fit)
+        nu_init = BCT.param_dict_inv()["nu_inv"](nu_fit)
+        tau_init = BCT.param_dict_inv()["tau_inv"](tau_fit)
+
+        start_values = np.array([location_init, scale_init, nu_init, tau_init])
+
+        return start_values
+
 
     ###
     # Density Function
@@ -299,8 +340,8 @@ class BCT():
 
 
         # Initialize Gradient and Hessian Matrices
-        grad = np.zeros((predt.shape[0], predt.shape[1]), dtype=float)
-        hess = np.zeros((predt.shape[0], predt.shape[1]), dtype=float)
+        grad = np.zeros(shape=(len(target), BCT.n_dist_param()))
+        hess = np.zeros(shape=(len(target), BCT.n_dist_param()))
 
         # Location
         grad[:, 0] = BCT.gradient_location(y=target,
@@ -351,8 +392,8 @@ class BCT():
                                      weights=weights)
 
         # Reshaping
-        grad = grad.reshape((predt.shape[0] * predt.shape[1], 1))
-        hess = hess.reshape((predt.shape[0] * predt.shape[1], 1))
+        grad = grad.flatten()
+        hess = hess.flatten()
 
         return grad, hess
 
