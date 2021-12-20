@@ -30,7 +30,7 @@ Currently, XGBoostLSS supports the following distributions. More continuous dist
 ### Stabilization
 Since XGBoostLSS updates the parameter estimates by optimizing Gradients and Hessians, it is important that these are comparable in magnitude for all distributional parameters. Due to variability regarding the ranges, the estimation of Gradients and Hessians might become unstable so that XGBoostLSS might not converge or might converge very slowly. To mitigate these effects, we have implemented a stabilization of Gradients and Hessians. 
 
-An additional option to improve convergence can be to standardize the (continuous) response variable, e.g., ```y/100```. This is especially useful if the range of the response differs strongly from the range of the Gradients and Hessians. Both, the in-built stabilization, and the standardization of the response need to be carefully considered given the data at hand.
+An additional option to improve convergence can be to standardize the (continuous) response variable, e.g., ```y/100```. This is especially useful if the range of the response differs strongly from the range of Gradients and Hessians. Both, the in-built stabilization, and the standardization of the response need to be carefully considered given the data at hand.
 
 ### Runtime
 Since XGBoostLSS updates all distributional parameters simultaneously, it requires training ```[number of iterations] * [number of distributional parameters]``` trees. Hence, the runtime of XGBoostLSS is generally slightly higher as compared to XGBoost, which requires training ```[number of iterations]``` trees only. 
