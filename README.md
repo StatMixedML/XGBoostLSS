@@ -5,8 +5,8 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 
 ## News
 :boom: [2021-12-20] XGBoostLSS is initialized with starting values for all distributional parameters to improve convergence of estimation. <br/>
-:boom: [2021-12-04] XGBoostLSS now supports automatic derivation of Gradients and Hessians: given a probability density / probability mass function, XGBoostLSS calculates  Gradients and Hessians of all distributional parameters automatically. <br/>
-:boom: [2021-12-02] XGBoostLSS now supports pruning during hyperparameter optimization, i.e., cutting of discouraging trials during optimization. <br/>
+:boom: [2021-12-04] XGBoostLSS now supports automatic derivation of Gradients and Hessians. <br/>
+:boom: [2021-12-02] XGBoostLSS now supports pruning during hyperparameter optimization. <br/>
 :boom: [2021-11-14] XGBoostLSS v0.1.0 is released!
 
 ## Features
