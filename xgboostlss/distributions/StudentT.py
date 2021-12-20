@@ -52,6 +52,41 @@ class StudentT():
 
         return param_dict
 
+    ###
+    # Inverse Parameter Dictionary
+    ###
+    @staticmethod
+    def param_dict_inv():
+        """ Dictionary that holds the name of distributional parameter and their corresponding link functions.
+
+        """
+        param_dict_inv = {"location_inv": identity,
+                          "scale_inv": soft_plus_inv,
+                          "nu_inv": soft_plus_inv}
+
+        return param_dict_inv
+
+
+    ###
+    # Starting Values
+    ###
+    @staticmethod
+    def initialize(y: np.ndarray):
+        """ Function that calculates the starting values, for each distributional parameter individually.
+
+        y: np.ndarray
+            Data from which starting values are calculated.
+
+        """
+        nu_fit, loc_fit, scale_fit = student_t.fit(y)
+        location_init = StudentT.param_dict_inv()["location_inv"](loc_fit)
+        scale_init = StudentT.param_dict_inv()["scale_inv"](scale_fit)
+        nu_init = StudentT.param_dict_inv()["nu_inv"](nu_fit)
+
+        start_values = np.array([location_init, scale_init, nu_init])
+
+        return start_values
+
 
     ###
     # Location Parameter gradient and hessian
@@ -172,8 +207,8 @@ class StudentT():
 
 
         # Initialize Gradient and Hessian Matrices
-        grad = np.zeros((predt.shape[0], predt.shape[1]), dtype=float)
-        hess = np.zeros((predt.shape[0], predt.shape[1]), dtype=float)
+        grad = np.zeros(shape=(len(target), StudentT.n_dist_param()))
+        hess = np.zeros(shape=(len(target), StudentT.n_dist_param()))
 
         # Location
         grad[:, 0] = StudentT.gradient_location(y=target,
@@ -211,8 +246,8 @@ class StudentT():
                                          weights=weights)
 
         # Reshaping
-        grad = grad.reshape((predt.shape[0] * predt.shape[1], 1))
-        hess = hess.reshape((predt.shape[0] * predt.shape[1], 1))
+        grad = grad.flatten()
+        hess = hess.flatten()
 
         return grad, hess
 
