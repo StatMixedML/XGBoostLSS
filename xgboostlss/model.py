@@ -1,6 +1,6 @@
 import pandas as pd
 import xgboost as xgb
-from xgboostlss.distributions import *
+from xgboostlss.distributions import * 
 from xgboostlss.utils import *
 import optuna
 from optuna.samplers import TPESampler
@@ -14,7 +14,7 @@ class xgboostlss:
     """
 
     def train(params, dtrain, dist, num_boost_round=10, evals=(),
-              maximize=None, early_stopping_rounds=None, evals_result=None,
+              maximize=False, early_stopping_rounds=None, evals_result=None,
               verbose_eval=True, xgb_model=None, callbacks=None):
         """Train a xgboostlss model with given parameters.
 
@@ -74,31 +74,36 @@ class xgboostlss:
                 [xgb.callback.LearningRateScheduler(custom_rates)]
         """
 
-        dist_args = dist    #eval(dist)
+        params_adj = {"objective": None,
+                      "base_score": 0,
+                      "num_class": dist.n_dist_param(),
+                      "disable_default_eval_metric": True}
 
-        params2 = {"num_class": dist_args.n_dist_param(),
-                   "disable_default_eval_metric": True}
+        params.update(params_adj)
 
-        params.update(params2)
+        # Set base_margin as starting point for each distributional parameter. Requires base_score=0 in parameters.
+        dist.start_values = dist.initialize(dtrain.get_label())
+        base_margin = (np.ones(shape=(dtrain.num_row(), 1))) * dist.start_values
+        dtrain.set_base_margin(base_margin.flatten())
 
         bstLSS_train = xgb.train(params,
                                  dtrain,
                                  num_boost_round=num_boost_round,
                                  evals=evals,
-                                 obj=dist_args.Dist_Objective,
-                                 feval=dist_args.Dist_Metric,
+                                 obj=dist.Dist_Objective,
+                                 feval=dist.Dist_Metric,
                                  xgb_model=xgb_model,
                                  callbacks=callbacks,
                                  verbose_eval=verbose_eval,
                                  evals_result=evals_result,
-                                 maximize=maximize,
+                                 maximize=False,
                                  early_stopping_rounds=early_stopping_rounds)
         return bstLSS_train
 
 
 
     def cv(params, dtrain, dist, num_boost_round=10, nfold=3, stratified=False, folds=None,
-           maximize=None, early_stopping_rounds=None, fpreproc=None, as_pandas=True,
+           maximize=False, early_stopping_rounds=None, fpreproc=None, as_pandas=True,
            verbose_eval=None, show_stdv=True, seed=123, callbacks=None, shuffle=True):
         """Function to cross-validate a xgboostlss model with given parameters.
 
@@ -162,12 +167,17 @@ class xgboostlss:
         evaluation history : list(string)
         """
 
-        dist_args = dist    #eval(dist)
+        params_adj = {"objective": None,
+                      "base_score": 0,
+                      "num_class": dist.n_dist_param(),
+                      "disable_default_eval_metric": True}
 
-        params2 = {"num_class": dist_args.n_dist_param(),
-                   "disable_default_eval_metric": True}
+        params.update(params_adj)
 
-        params.update(params2)
+        # Set base_margin as starting point for each distributional parameter. Requires base_score=0 in parameters.
+        dist.start_values = dist.initialize(dtrain.get_label())
+        base_margin = (np.ones(shape=(dtrain.num_row(), 1))) * dist.start_values
+        dtrain.set_base_margin(base_margin.flatten())
 
         bstLSS_cv = xgb.cv(params,
                            dtrain,
@@ -175,9 +185,9 @@ class xgboostlss:
                            nfold=nfold,
                            stratified=stratified,
                            folds=folds,
-                           obj=dist_args.Dist_Objective,
-                           feval=dist_args.Dist_Metric,
-                           maximize=maximize,
+                           obj=dist.Dist_Objective,
+                           feval=dist.Dist_Metric,
+                           maximize=False,
                            early_stopping_rounds=early_stopping_rounds,
                            fpreproc=fpreproc,
                            as_pandas=as_pandas,
@@ -220,7 +230,7 @@ class xgboostlss:
             The number of trials. If this argument is set to None, there is no limitation on the number of trials.
         study_name : str
             Name of the hyperparameter study.
-        silence : str
+        silence : bool
             Controls the verbosity of the trail, i.e., user can silence the outputs of the trail.
 
         Returns
@@ -269,7 +279,7 @@ class xgboostlss:
             optuna.logging.set_verbosity(optuna.logging.WARNING)
 
         sampler = TPESampler(seed=123)
-        pruner = optuna.pruners.MedianPruner( n_startup_trials=10, n_warmup_steps=20)
+        pruner = optuna.pruners.MedianPruner(n_startup_trials=10, n_warmup_steps=20)
         study = optuna.create_study(sampler=sampler, pruner=pruner, direction="minimize", study_name=study_name)
         study.optimize(objective, n_trials=n_trials, timeout=60 * max_minutes, show_progress_bar=True)
 
@@ -291,7 +301,7 @@ class xgboostlss:
         return opt_param.params
 
 
-    def predict(booster: xgb.Booster, X: xgb.DMatrix, dist: str, pred_type: str,
+    def predict(booster: xgb.Booster, dtest: xgb.DMatrix, dist: str, pred_type: str,
                 n_samples: int = 1000, quantiles: list = [0.1, 0.5, 0.9], seed: str = 123):
         '''A customized xgboostlss prediction function.
 
@@ -314,10 +324,14 @@ class xgboostlss:
             If pred_type="response" specifies the seed for drawing samples from the predicted response distribution.
 
         '''
-        dist_args = dist    #eval(dist)
-        dict_param = dist_args.param_dict()
 
-        predt = booster.predict(X, output_margin=True)
+        dict_param = dist.param_dict()
+
+        # Set base_margin as starting point for each distributional parameter. Requires base_score=0 in parameters.
+        base_margin = (np.ones(shape=(dtest.num_row(), 1))) * dist.start_values
+        dtest.set_base_margin(base_margin.flatten())
+
+        predt = booster.predict(dtest, output_margin=True)
 
         dist_params_predts = []
 
@@ -331,16 +345,16 @@ class xgboostlss:
             return dist_params_df
 
         elif pred_type == "response":
-            pred_resp_df = dist_args.pred_dist_rvs(pred_params = dist_params_df,
-                                                   n_samples = n_samples,
-                                                   seed = seed)
+            pred_resp_df = dist.pred_dist_rvs(pred_params = dist_params_df,
+                                              n_samples = n_samples,
+                                              seed = seed)
 
             pred_resp_df.columns = [str("y_pred_sample_") + str(i) for i in range(pred_resp_df.shape[1])]
             return pred_resp_df
 
         elif pred_type == "quantiles":
-            pred_quant_df = dist_args.pred_dist_quantile(quantiles = quantiles,
-                                                         pred_params = dist_params_df)
+            pred_quant_df = dist.pred_dist_quantile(quantiles = quantiles,
+                                                    pred_params = dist_params_df)
 
             pred_quant_df.columns = [str("y_quant_") + str(quantiles[i]) for i in range(len(quantiles))]
             return pred_quant_df
