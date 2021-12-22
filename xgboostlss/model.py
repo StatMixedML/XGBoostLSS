@@ -24,7 +24,7 @@ class xgboostlss:
             Booster params.
         dtrain : DMatrix
             Data to be trained.
-        dist: str
+        dist: xgboostlss.distributions class
             Specifies distributional assumption.
         num_boost_round: int
             Number of boosting iterations.
@@ -113,7 +113,7 @@ class xgboostlss:
             Booster params.
         dtrain : DMatrix
             Data to be trained.
-        dist: str
+        dist: xgboostlss.distributions class
             Specifies distributional assumption.
         num_boost_round : int
             Number of boosting iterations.
@@ -211,7 +211,7 @@ class xgboostlss:
             Booster params in the form of "params_name": [min_val, max_val].
         dtrain : DMatrix
             Data to be trained.
-        dist: str
+        dist: xgboostlss.distributions class
             Specifies distributional assumption.
         num_boost_round : int
             Number of boosting iterations.
@@ -316,6 +316,7 @@ class xgboostlss:
                 "response" draws n_samples from the predicted response distribution.
                 "quantile" calculates the quantiles from the predicted response distribution.
                 "parameters" returns the predicted distributional parameters.
+                "expectiles" returns the predicted expectiles.
         n_samples: int
             If pred_type="response" specifies how many samples are drawn from the predicted response distribution.
         quantiles: list
@@ -341,7 +342,7 @@ class xgboostlss:
         dist_params_df = pd.DataFrame(dist_params_predts).T
         dist_params_df.columns = dict_param.keys()
 
-        if pred_type == "parameters":
+        if pred_type == "parameters" or "expectiles":
             return dist_params_df
 
         elif pred_type == "response":
@@ -356,7 +357,7 @@ class xgboostlss:
             pred_quant_df = dist.pred_dist_quantile(quantiles = quantiles,
                                                     pred_params = dist_params_df)
 
-            pred_quant_df.columns = [str("y_quant_") + str(quantiles[i]) for i in range(len(quantiles))]
+            pred_quant_df.columns = [str("quant_") + str(quantiles[i]) for i in range(len(quantiles))]
             return pred_quant_df
 
 
@@ -368,7 +369,7 @@ class xgboostlss:
         X: pd.DataFrame
             Train/Test Data
         feature: str
-            Specifies which feature to use for plotting for Partial_Dependence plot.
+            Specifies which feature to use for plotting Partial_Dependence plot.
         parameter: str
             Specifies which distributional parameter to plot. Valid parameters are "location", "scale", "nu", "tau".
         plot_type: str
@@ -392,4 +393,35 @@ class xgboostlss:
         if plot_type == "Partial_Dependence":
             shap.plots.scatter(shap_values[:, feature][:, param_pos], color=shap_values[:, :, param_pos])
         elif plot_type == "Feature_Importance":
-            shap.plots.bar(shap_values[:,:,param_pos], max_display = 15 if X.shape[1] > 15 else X.shape[1])
+            shap.plots.bar(shap_values[:, :, param_pos], max_display = 15 if X.shape[1] > 15 else X.shape[1])
+
+
+
+    def expectile_plot(booster: xgb.Booster, X: pd.DataFrame, dist, feature: str = "x", expectile: str = "0.05", plot_type: str = "Partial_Dependence"):
+        '''A customized xgboostlss plotting function.
+
+        booster: xgb.Booster
+            Trained XGBoostLSS-Model
+        X: pd.DataFrame
+            Train/Test Data
+        dist: xgboostlss.distributions class
+            Specifies distributional assumption
+        feature: str
+            Specifies which feature to use for plotting Partial_Dependence plot.
+        expectile: str
+            Specifies which expectile to plot.
+        plot_type: str
+            Specifies which SHapley-plot to visualize. Currently "Partial_Dependence" and "Feature_Importance" are supported.
+
+        '''
+
+        shap.initjs()
+        explainer = shap.TreeExplainer(booster)
+        shap_values = explainer(X)
+
+        expect_pos = dist.expectiles.index(float(expectile))
+
+        if plot_type == "Partial_Dependence":
+            shap.plots.scatter(shap_values[:, feature][:, expect_pos], color=shap_values[:, :, expect_pos])
+        elif plot_type == "Feature_Importance":
+            shap.plots.bar(shap_values[:, :, expect_pos], max_display = 15 if X.shape[1] > 15 else X.shape[1])
