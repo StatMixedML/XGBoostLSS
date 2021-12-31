@@ -342,7 +342,10 @@ class xgboostlss:
         dist_params_df = pd.DataFrame(dist_params_predts).T
         dist_params_df.columns = dict_param.keys()
 
-        if pred_type == "parameters" or "expectiles":
+        if pred_type == "parameters":
+            return dist_params_df
+
+        elif pred_type == "expectiles":
             return dist_params_df
 
         elif pred_type == "response":
