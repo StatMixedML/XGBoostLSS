@@ -7,3 +7,4 @@ from xgboostlss.distributions.BCT import *
 from xgboostlss.distributions.Beta import *
 from xgboostlss.distributions.NegativeBinomial import *
 from xgboostlss.distributions.Expectile import *
+from xgboostlss.distributions.Gamma import *
