@@ -419,7 +419,8 @@ class BCT():
                                   scale=preds_scale,
                                   nu=preds_nu,
                                   tau=preds_tau,
-                                  log=True))
+                                  log=True)
+                         )
         return "NegLogLikelihood", nll
 
 
