@@ -124,23 +124,23 @@ class Gaussian():
         # Location
         grad[:, 0] = stabilize_derivative(auto_grad(metric=autograd_metric,
                                                     parameter=preds_location,
-                                                    n=1),
+                                                    n=1)*weights,
                                           Gaussian.stabilize)
 
         hess[:, 0] = stabilize_derivative(auto_grad(metric=autograd_metric,
                                                     parameter=preds_location,
-                                                    n=2),
+                                                    n=2)*weights,
                                           Gaussian.stabilize)
 
         # Scale
         grad[:, 1] = stabilize_derivative(auto_grad(metric=autograd_metric,
                                                     parameter=preds_scale,
-                                                    n=1),
+                                                    n=1)*weights,
                                           Gaussian.stabilize)
 
         hess[:, 1] = stabilize_derivative(auto_grad(metric=autograd_metric,
                                                     parameter=preds_scale,
-                                                    n=2),
+                                                    n=2)*weights,
                                           Gaussian.stabilize)
 
         # Reshaping
