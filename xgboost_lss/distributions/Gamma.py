@@ -4,7 +4,7 @@ import pandas as pd
 import math
 from scipy.stats import gamma
 from scipy.special import polygamma, loggamma
-from xgboostlss.utils import *
+from xgboost_lss.utils import *
 
 np.seterr(all="ignore")
 

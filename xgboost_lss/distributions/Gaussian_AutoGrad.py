@@ -4,7 +4,7 @@ import pandas as pd
 from scipy.stats import norm
 import torch
 from torch.distributions import Normal
-from xgboostlss.utils import *
+from xgboost_lss.utils import *
 
 np.seterr(all="ignore")
 

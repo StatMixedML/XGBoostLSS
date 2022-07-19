@@ -1,16 +1,13 @@
 import xgboost as xgb
 import numpy as np
 import pandas as pd
-import math
-from scipy.stats import nbinom, poisson
-import scipy.stats as stats
-from scipy.special import digamma
-from xgboostlss.utils import * 
+from scipy.stats import norm
+from xgboost_lss.utils import *
 
 np.seterr(all="ignore")
 
 ########################################################################################################################
-##################################################      NBI      #######################################################
+###############################################      Gaussian      #####################################################
 ########################################################################################################################
 
 # When a custom objective is provided XGBoost doesn't know its response function so the user is responsible for making
@@ -23,8 +20,8 @@ np.seterr(all="ignore")
 # along with a custom metric, then both the objective and custom metric will receive raw predictions and hence must be
 # transformed using the specified response functions.
 
-class NBI():
-    """Negative Binomial Type I Distribution Class
+class Gaussian():
+    """Gaussian Distribution Class
 
     """
 
@@ -46,7 +43,7 @@ class NBI():
         """ Dictionary that holds the name of distributional parameter and their corresponding response functions.
 
         """
-        param_dict = {"location": soft_plus,
+        param_dict = {"location": identity,
                       "scale": soft_plus}
 
         return param_dict
@@ -59,10 +56,11 @@ class NBI():
         """ Dictionary that holds the name of distributional parameter and their corresponding link functions.
 
         """
-        param_dict_inv = {"location_inv": soft_plus_inv,
+        param_dict_inv = {"location_inv": identity,
                           "scale_inv": soft_plus_inv}
 
         return param_dict_inv
+
 
     ###
     # Starting Values
@@ -75,63 +73,13 @@ class NBI():
             Data from which starting values are calculated.
 
         """
-        loc_fit = np.nanmean(y)
-        scale_fit = np.max([((np.nanvar(y, ddof=1) - np.nanmean(y))/(np.nanmean(y)**2)), 0.1])
-        location_init = NBI.param_dict_inv()["location_inv"](loc_fit)
-        scale_init = NBI.param_dict_inv()["scale_inv"](scale_fit)
+        loc_fit, scale_fit = norm.fit(y)
+        location_init = Gaussian.param_dict_inv()["location_inv"](loc_fit)
+        scale_init = Gaussian.param_dict_inv()["scale_inv"](scale_fit)
 
         start_values = np.array([location_init, scale_init])
 
         return start_values
-
-
-
-    ###
-    # Density Function
-    ###
-    @staticmethod
-    def dNBI(y: np.ndarray, location: np.ndarray, scale: np.ndarray):
-        """Density function.
-
-        """
-        n = 1 / scale
-        p = n / (n + location)
-        if len(scale) > 1:
-            fy = np.where(scale > 1e-04, nbinom.logpmf(k=y, n=n, p=p), poisson.logpmf(k=y, mu=location))
-        else:
-            fy = poisson.logpmf(k=y, mu=location) if scale < 1e-04 else nbinom.logpmf(k=y, n=n, p=p)
-        return fy
-
-
-    ###
-    # Quantile Function
-    ###
-    @staticmethod
-    def qNBI(q: float, location: np.ndarray, scale: np.ndarray):
-        """Quantile function.
-
-        """
-        n = 1 / scale
-        p = n / (n + location)
-        if len(scale) > 1:
-            quant = np.where(scale > 1e-04, nbinom.ppf(q=q, n=n, p=p), poisson.ppf(q=q, mu=location))
-        else:
-            quant = poisson.ppf(q=q, mu=location) if scale < 1e-04 else nbinom.ppf(q=q, n=n, p=p)
-        return quant
-
-
-    ###
-    # Random variable generation
-    ###
-    @staticmethod
-    def rNBI(n: int, location: np.ndarray, scale: np.ndarray):
-        """Random variable generation function.
-
-        """
-        n = math.ceil(n)
-        p = np.random.uniform(0, 1, n)
-        r = NBI.qNBI(q=p, location=location, scale=scale)
-        return r
 
 
 
@@ -143,19 +91,19 @@ class NBI():
         """Calculates Gradient of location parameter.
 
         """
-        grad = (y - location) / (location * (1 + location * scale))
-        grad = stabilize_derivative(grad, NBI.stabilize)
+        grad = (1/(scale**2)) * (y - location)
+        grad = stabilize_derivative(grad, Gaussian.stabilize)
         grad = grad * (-1) * weights
         return grad
 
 
     @staticmethod
-    def hessian_location(location: np.ndarray, scale: np.ndarray, weights: np.ndarray):
+    def hessian_location(scale: np.ndarray, weights: np.ndarray):
         """Calculates Hessian of location parameter.
 
         """
-        hes = -1 / (location * (1 + location * scale))
-        hes = stabilize_derivative(hes, NBI.stabilize)
+        hes = -(1/(scale**2))
+        hes = stabilize_derivative(hes, Gaussian.stabilize)
         hes = hes * (-1) * weights
         return hes
 
@@ -168,22 +116,18 @@ class NBI():
         """Calculates Gradient of scale parameter.
 
         """
-        grad = -((1 / scale) ** 2) * (digamma(y + (1 / scale)) - digamma(1 / scale) - np.log(1 + location * scale) - (
-                    y - location) * scale / (1 + location * scale))
-        grad = stabilize_derivative(grad, NBI.stabilize)
+        grad = ((y - location)**2 - scale**2)/(scale**3)
+        grad = stabilize_derivative(grad, Gaussian.stabilize)
         grad = grad * (-1) * weights
         return grad
 
     @staticmethod
-    def hessian_scale(y: np.ndarray, location: np.ndarray, scale: np.ndarray, weights: np.ndarray):
+    def hessian_scale(scale: np.ndarray, weights: np.ndarray):
         """Calculates Hessian of scale parameter.
 
         """
-        hes = -((1 / scale) ** 2) * (digamma(y + (1 / scale)) - digamma(1 / scale) - np.log(1 + location * scale) - (
-                    y - location) * scale / (1 + location * scale))
-        hes = -hes ** 2
-        hes = np.where(hes < -1e-15, hes, -1e-15)
-        hes = stabilize_derivative(hes, NBI.stabilize)
+        hes = -(2/(scale**2))
+        hes = stabilize_derivative(hes, Gaussian.stabilize)
         hes = hes * (-1) * weights
         return hes
 
@@ -201,8 +145,8 @@ class NBI():
 
         # When num_class!= 0, preds has shape (n_obs, n_dist_param).
         # Each element in a row represents a raw prediction (leaf weight, hasn't gone through response function yet).
-        preds_location = NBI.param_dict()["location"](predt[:, 0])
-        preds_scale = NBI.param_dict()["scale"](predt[:, 1])
+        preds_location = Gaussian.param_dict()["location"](predt[:, 0])
+        preds_scale = Gaussian.param_dict()["scale"](predt[:, 1])
 
 
         # Weights
@@ -214,30 +158,27 @@ class NBI():
 
 
         # Initialize Gradient and Hessian Matrices
-        grad = np.zeros(shape=(len(target), NBI.n_dist_param()))
-        hess = np.zeros(shape=(len(target), NBI.n_dist_param()))
+        grad = np.zeros(shape=(len(target), Gaussian.n_dist_param()))
+        hess = np.zeros(shape=(len(target), Gaussian.n_dist_param()))
 
 
         # Location
-        grad[:, 0] = NBI.gradient_location(y=target,
-                                           location=preds_location,
-                                           scale=preds_scale,
-                                           weights=weights)
+        grad[:, 0] = Gaussian.gradient_location(y=target,
+                                                location=preds_location,
+                                                scale=preds_scale,
+                                                weights=weights)
 
-        hess[:, 0] = NBI.hessian_location(location=preds_location,
-                                          scale=preds_scale,
-                                          weights=weights)
+        hess[:, 0] = Gaussian.hessian_location(scale=preds_scale,
+                                               weights=weights)
 
         # Scale
-        grad[:, 1] = NBI.gradient_scale(y=target,
-                                        location=preds_location,
-                                        scale=preds_scale,
-                                        weights=weights)
+        grad[:, 1] = Gaussian.gradient_scale(y=target,
+                                             location=preds_location,
+                                             scale=preds_scale,
+                                             weights=weights)
 
-        hess[:, 1] = NBI.hessian_scale(y=target,
-                                       location=preds_location,
-                                       scale=preds_scale,
-                                       weights=weights)
+        hess[:, 1] = Gaussian.hessian_scale(scale=preds_scale,
+                                            weights=weights)
 
         # Reshaping
         grad = grad.flatten()
@@ -257,10 +198,10 @@ class NBI():
 
         # Using a custom objective function, the custom metric receives raw predictions which need to be transformed
         # with the corresponding response function.
-        preds_location = NBI.param_dict()["location"](predt[:, 0])
-        preds_scale = NBI.param_dict()["scale"](predt[:, 1])
+        preds_location = Gaussian.param_dict()["location"](predt[:, 0])
+        preds_scale = Gaussian.param_dict()["scale"](predt[:, 1])
 
-        nll = -np.nansum(NBI.dNBI(y=target, location=preds_location, scale=preds_scale))
+        nll = -np.nansum(norm.logpdf(x=target, loc=preds_location, scale=preds_scale))
 
         return "NegLogLikelihood", nll
 
@@ -286,9 +227,10 @@ class NBI():
         pred_dist_list = []
 
         for i in range(pred_params.shape[0]):
-            pred_dist_list.append(NBI.rNBI(n=n_samples,
-                                           location=np.array([pred_params.loc[i, "location"]]),
-                                           scale=np.array([pred_params.loc[i, "scale"]]))
+            pred_dist_list.append(norm.rvs(loc=pred_params.loc[i,"location"],
+                                           scale=pred_params.loc[i,"scale"],
+                                           size=n_samples,
+                                           random_state=seed)
                                   )
 
         pred_dist = pd.DataFrame(pred_dist_list)
@@ -314,13 +256,10 @@ class NBI():
         pred_quantiles_list = []
 
         for i in range(len(quantiles)):
-            pred_quantiles_list.append(NBI.qNBI(q=quantiles[i],
-                                                location=pred_params["location"],
-                                                scale=pred_params["scale"]
-                                                )
+            pred_quantiles_list.append(norm.ppf(quantiles[i],
+                                                loc = pred_params["location"],
+                                                scale = pred_params["scale"])
                                        )
 
         pred_quantiles = pd.DataFrame(pred_quantiles_list).T
         return pred_quantiles
-
-
