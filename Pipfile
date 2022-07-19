@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+xgboost = "==1.6.1"
+optuna = "==2.10.1"
+torch = "==1.12.0"
+shap = "==0.41.0"
+numpy = "==1.22.4"
+pandas = "==1.4.3"
+scipy = "==1.8.1"
+
+[dev-packages]
+xgboostlss = {editable = true, path = "."}
+pytest = "==7.1.2"
+atomicwrites = "==1.4.1"
+tqdm = "==4.64.0"
+matplotlib = "==3.5.2"
+ipywidgets = "==7.7.1"
+plotnine = "==0.9.0"
+
+[requires]
+python_version = "3.10"

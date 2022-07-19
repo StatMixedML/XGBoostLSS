@@ -1,10 +1,9 @@
-import pandas as pd
-import xgboost as xgb
-from xgboostlss.distributions import * 
-from xgboostlss.utils import *
 import optuna
-from optuna.samplers import TPESampler
 import shap
+from optuna.samplers import TPESampler
+
+from xgboostlss.distributions import *
+from xgboostlss.utils import *
 
 
 class xgboostlss:
@@ -32,7 +31,7 @@ class xgboostlss:
             List of validation sets for which metrics will evaluated during training.
             Validation metrics will help us track the performance of the model.
         maximize : bool
-            Whether to maximize feval.
+            Whether to maximize custom_metric.
         early_stopping_rounds: int
             Activates early stopping. Validation metric needs to improve at least once in
             every **early_stopping_rounds** round(s) to continue training.
@@ -91,7 +90,7 @@ class xgboostlss:
                                  num_boost_round=num_boost_round,
                                  evals=evals,
                                  obj=dist.Dist_Objective,
-                                 feval=dist.Dist_Metric,
+                                 custom_metric=dist.Dist_Metric,
                                  xgb_model=xgb_model,
                                  callbacks=callbacks,
                                  verbose_eval=verbose_eval,
@@ -99,8 +98,6 @@ class xgboostlss:
                                  maximize=False,
                                  early_stopping_rounds=early_stopping_rounds)
         return bstLSS_train
-
-
 
     def cv(params, dtrain, dist, num_boost_round=10, nfold=3, stratified=False, folds=None,
            maximize=False, early_stopping_rounds=None, fpreproc=None, as_pandas=True,
@@ -129,7 +126,7 @@ class xgboostlss:
             as the training samples for the ``n`` th fold and ``out`` is a list of
             indices to be used as the testing samples for the ``n`` th fold.
         maximize : bool
-            Whether to maximize feval.
+            Whether to maximize custom_metric.
         early_stopping_rounds: int
             Activates early stopping. Cross-Validation metric (average of validation
             metric computed over CV folds) needs to improve at least once in
@@ -186,7 +183,7 @@ class xgboostlss:
                            stratified=stratified,
                            folds=folds,
                            obj=dist.Dist_Objective,
-                           feval=dist.Dist_Metric,
+                           custom_metric=dist.Dist_Metric,
                            maximize=False,
                            early_stopping_rounds=early_stopping_rounds,
                            fpreproc=fpreproc,
@@ -199,10 +196,8 @@ class xgboostlss:
 
         return bstLSS_cv
 
-
-
     def hyper_opt(params, dtrain, dist, num_boost_round=500, nfold=10, early_stopping_rounds=20,
-                  max_minutes=10, n_trials = None, study_name = "XGBoostLSS-HyperOpt", silence=False):
+                  max_minutes=10, n_trials=None, study_name="XGBoostLSS-HyperOpt", silence=False):
         """Function to tune hyperparameters using optuna.
 
         Parameters
@@ -246,10 +241,11 @@ class xgboostlss:
                 "max_depth": trial.suggest_int("max_depth", params["max_depth"][0], params["max_depth"][1]),
                 "gamma": trial.suggest_loguniform("gamma", params["gamma"][0], params["gamma"][1]),
                 "subsample": trial.suggest_loguniform("subsample", params["subsample"][0], params["subsample"][1]),
-                "colsample_bytree": trial.suggest_loguniform("colsample_bytree", params["colsample_bytree"][0], params["colsample_bytree"][1]),
-                "min_child_weight": trial.suggest_int("min_child_weight", params["min_child_weight"][0], params["min_child_weight"][1])
+                "colsample_bytree": trial.suggest_loguniform("colsample_bytree", params["colsample_bytree"][0],
+                                                             params["colsample_bytree"][1]),
+                "min_child_weight": trial.suggest_int("min_child_weight", params["min_child_weight"][0],
+                                                      params["min_child_weight"][1])
             }
-
 
             # Add pruning
             pruning_callback = optuna.integration.XGBoostPruningCallback(trial, "test-NegLogLikelihood")
@@ -273,7 +269,6 @@ class xgboostlss:
             best_score = np.min(xgblss_param_tuning["test-NegLogLikelihood-mean"])
 
             return best_score
-
 
         if silence:
             optuna.logging.set_verbosity(optuna.logging.WARNING)
@@ -300,16 +295,15 @@ class xgboostlss:
 
         return opt_param.params
 
-
-    def predict(booster: xgb.Booster, dtest: xgb.DMatrix, dist: str, pred_type: str,
-                n_samples: int = 1000, quantiles: list = [0.1, 0.5, 0.9], seed: str = 123):
+    def predict(booster: xgb.Booster, dtest: xgb.DMatrix, dist: DistributionType, pred_type: str,
+                n_samples: int = 1000, quantiles: list[float] = None, seed: int = 123):
         '''A customized xgboostlss prediction function.
 
         booster: xgb.Booster
             Trained XGBoostLSS-Model
         X: xgb.DMatrix
             Test Data
-        dist: str
+        dist: DistributionType
             Specifies the distributional assumption.
         pred_type: str
             Specifies what is to be predicted:
@@ -349,22 +343,28 @@ class xgboostlss:
             return dist_params_df
 
         elif pred_type == "response":
-            pred_resp_df = dist.pred_dist_rvs(pred_params = dist_params_df,
-                                              n_samples = n_samples,
-                                              seed = seed)
+            pred_resp_df = dist.pred_dist_rvs(
+                pred_params=dist_params_df,
+                n_samples=n_samples,
+                seed=seed,
+            )
 
             pred_resp_df.columns = [str("y_pred_sample_") + str(i) for i in range(pred_resp_df.shape[1])]
             return pred_resp_df
 
         elif pred_type == "quantiles":
-            pred_quant_df = dist.pred_dist_quantile(quantiles = quantiles,
-                                                    pred_params = dist_params_df)
+            if quantiles is None:
+                quantiles = [0.1, 0.5, 0.9]
+            pred_quant_df = dist.pred_dist_quantile(
+                quantiles=quantiles,
+                pred_params=dist_params_df,
+            )
 
             pred_quant_df.columns = [str("quant_") + str(quantiles[i]) for i in range(len(quantiles))]
             return pred_quant_df
 
-
-    def plot(booster: xgb.Booster, X: pd.DataFrame, feature: str = "x", parameter: str = "location", plot_type: str = "Partial_Dependence"):
+    def plot(booster: xgb.Booster, X: pd.DataFrame, feature: str = "x", parameter: str = "location",
+             plot_type: str = "Partial_Dependence"):
         '''A customized xgboostlss plotting function.
 
         booster: xgb.Booster
@@ -396,11 +396,10 @@ class xgboostlss:
         if plot_type == "Partial_Dependence":
             shap.plots.scatter(shap_values[:, feature][:, param_pos], color=shap_values[:, :, param_pos])
         elif plot_type == "Feature_Importance":
-            shap.plots.bar(shap_values[:, :, param_pos], max_display = 15 if X.shape[1] > 15 else X.shape[1])
+            shap.plots.bar(shap_values[:, :, param_pos], max_display=15 if X.shape[1] > 15 else X.shape[1])
 
-
-
-    def expectile_plot(booster: xgb.Booster, X: pd.DataFrame, dist, feature: str = "x", expectile: str = "0.05", plot_type: str = "Partial_Dependence"):
+    def expectile_plot(booster: xgb.Booster, X: pd.DataFrame, dist, feature: str = "x", expectile: str = "0.05",
+                       plot_type: str = "Partial_Dependence"):
         '''A customized xgboostlss plotting function.
 
         booster: xgb.Booster
@@ -427,4 +426,4 @@ class xgboostlss:
         if plot_type == "Partial_Dependence":
             shap.plots.scatter(shap_values[:, feature][:, expect_pos], color=shap_values[:, :, expect_pos])
         elif plot_type == "Feature_Importance":
-            shap.plots.bar(shap_values[:, :, expect_pos], max_display = 15 if X.shape[1] > 15 else X.shape[1])
+            shap.plots.bar(shap_values[:, :, expect_pos], max_display=15 if X.shape[1] > 15 else X.shape[1])
