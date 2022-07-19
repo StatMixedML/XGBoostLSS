@@ -296,7 +296,7 @@ class xgboostlss:
         return opt_param.params
 
     def predict(booster: xgb.Booster, dtest: xgb.DMatrix, dist: DistributionType, pred_type: str,
-                n_samples: int = 1000, quantiles: list[float] = None, seed: int = 123):
+                n_samples: int = 1000, quantiles: list = None, seed: int = 123):
         '''A customized xgboostlss prediction function.
 
         booster: xgb.Booster
