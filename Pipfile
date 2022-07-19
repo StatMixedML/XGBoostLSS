@@ -14,7 +14,7 @@ scipy = "==1.7.3"
 scikit-learn = "==1.0.2"
 
 [dev-packages]
-xgboost-lss = {editable = true, path = "."}
+lss-xgboost = {editable = true, path = "."}
 pytest = "==7.1.2"
 atomicwrites = "==1.4.1"
 tqdm = "==4.64.0"

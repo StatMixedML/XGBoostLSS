@@ -2,7 +2,7 @@ import xgboost as xgb
 import numpy as np
 import pandas as pd
 from scipy.stats import norm
-from xgboost_lss.utils import *
+from lss_xgboost.utils import *
 
 np.seterr(all="ignore")
 

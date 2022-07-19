@@ -5,7 +5,7 @@ import math
 from scipy.stats import norm
 from collections import ChainMap
 from collections import OrderedDict
-from xgboost_lss.utils import *
+from lss_xgboost.utils import *
 
 np.seterr(all="ignore")
 

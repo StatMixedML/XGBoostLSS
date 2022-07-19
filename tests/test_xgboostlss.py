@@ -3,9 +3,9 @@ import pandas as pd
 from pytest import approx
 
 from tests.conftest import get_scale_shares
-from xgboost_lss.datasets.data_loader import load_simulated_data
-from xgboost_lss.distributions.Gaussian import Gaussian
-from xgboost_lss.model import xgb, xgboostlss
+from lss_xgboost.datasets.data_loader import load_simulated_data
+from lss_xgboost.distributions.Gaussian import Gaussian
+from lss_xgboost.model import xgb, xgboostlss
 
 
 def test_xgblss_train():
