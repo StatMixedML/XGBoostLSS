@@ -23,7 +23,7 @@ setup(
         "torch>=1.12.0",
         "shap>=0.41.0",
         "numpy>=1.21.6",
-        "pandas>=1.4.3",
+        "pandas>=1.3.5",
         "scipy>=1.8.1",
     ],
     test_suite="tests",
