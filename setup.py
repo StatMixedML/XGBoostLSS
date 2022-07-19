@@ -25,7 +25,7 @@ setup(
         "numpy>=1.21.6",
         "pandas>=1.3.5",
         "scipy>=1.7.3",
-        "scikit-learn>=1.1.1",
+        "scikit-learn>=1.0.2",
     ],
     test_suite="tests",
     tests_require=["flake8", "pytest"],
