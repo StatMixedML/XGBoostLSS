@@ -21,6 +21,9 @@ matplotlib = "==3.5.2"
 ipywidgets = "==7.7.1"
 plotnine = "==0.9.0"
 ipython = "==7.23.1"
+build = "==0.8.0"
+twine = "==4.0.1"
+importlib-resources = "==5.8.0"
 
 [requires]
 python_version = "3.10"
