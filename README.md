@@ -49,3 +49,23 @@ We refer to the [examples section](https://github.com/StatMixedML/XGBoostLSS/tre
 
 ## Reference Paper
 März, Alexander (2019) [*"XGBoostLSS - An extension of XGBoost to probabilistic forecasting"*](https://arxiv.org/abs/1907.03178). 
+
+# Packaging and publishing to pypi
+
+Don't forget to adjust the calendar version to the current date.
+
+```shell
+pipenv run python -m build --sdist
+```
+
+Test Pypi:
+
+```shell
+pipenv run twine upload --repository testpypi dist/* -u __token__ -p $TEST_PYPI_TOKEN --verbose
+```
+
+Real PyPi:
+
+```shell
+pipenv run twine upload dist/* -u __token__ -p $PYPI_TOKEN --verbose
+```
