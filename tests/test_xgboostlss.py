@@ -8,8 +8,6 @@ from xgboostlss.distributions.Gaussian import Gaussian
 from xgboostlss.model import xgb, xgboostlss
 
 
-# plotnine.options.figure_size = (20, 10)
-
 def test_xgblss_train():
     # arrange
     # The data is a simulated Gaussian as follows, where x is the only true feature and all others are noise variables
