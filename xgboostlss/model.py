@@ -2,8 +2,8 @@ import optuna
 import shap
 from optuna.samplers import TPESampler
 
-from lss_xgboost.distributions import *
-from lss_xgboost.utils import *
+from xgboostlss.distributions import *
+from xgboostlss.utils import *
 
 
 class xgboostlss:
@@ -15,7 +15,7 @@ class xgboostlss:
     def train(params, dtrain, dist, num_boost_round=10, evals=(),
               maximize=False, early_stopping_rounds=None, evals_result=None,
               verbose_eval=True, xgb_model=None, callbacks=None):
-        """Train a lss_xgboost model with given parameters.
+        """Train a xgboostlss model with given parameters.
 
         Parameters
         ----------
@@ -23,7 +23,7 @@ class xgboostlss:
             Booster params.
         dtrain : DMatrix
             Data to be trained.
-        dist: lss_xgboost.distributions class
+        dist: xgboostlss.distributions class
             Specifies distributional assumption.
         num_boost_round: int
             Number of boosting iterations.
@@ -102,7 +102,7 @@ class xgboostlss:
     def cv(params, dtrain, dist, num_boost_round=10, nfold=3, stratified=False, folds=None,
            maximize=False, early_stopping_rounds=None, fpreproc=None, as_pandas=True,
            verbose_eval=None, show_stdv=True, seed=123, callbacks=None, shuffle=True):
-        """Function to cross-validate a lss_xgboost model with given parameters.
+        """Function to cross-validate a xgboostlss model with given parameters.
 
         Parameters
         ----------
@@ -110,7 +110,7 @@ class xgboostlss:
             Booster params.
         dtrain : DMatrix
             Data to be trained.
-        dist: lss_xgboost.distributions class
+        dist: xgboostlss.distributions class
             Specifies distributional assumption.
         num_boost_round : int
             Number of boosting iterations.
@@ -206,7 +206,7 @@ class xgboostlss:
             Booster params in the form of "params_name": [min_val, max_val].
         dtrain : DMatrix
             Data to be trained.
-        dist: lss_xgboost.distributions class
+        dist: xgboostlss.distributions class
             Specifies distributional assumption.
         num_boost_round : int
             Number of boosting iterations.
@@ -297,7 +297,7 @@ class xgboostlss:
 
     def predict(booster: xgb.Booster, dtest: xgb.DMatrix, dist: DistributionType, pred_type: str,
                 n_samples: int = 1000, quantiles: list = None, seed: int = 123):
-        '''A customized lss_xgboost prediction function.
+        '''A customized xgboostlss prediction function.
 
         booster: xgb.Booster
             Trained XGBoostLSS-Model
@@ -365,7 +365,7 @@ class xgboostlss:
 
     def plot(booster: xgb.Booster, X: pd.DataFrame, feature: str = "x", parameter: str = "location",
              plot_type: str = "Partial_Dependence"):
-        '''A customized lss_xgboost plotting function.
+        '''A customized xgboostlss plotting function.
 
         booster: xgb.Booster
             Trained XGBoostLSS-Model
@@ -400,13 +400,13 @@ class xgboostlss:
 
     def expectile_plot(booster: xgb.Booster, X: pd.DataFrame, dist, feature: str = "x", expectile: str = "0.05",
                        plot_type: str = "Partial_Dependence"):
-        '''A customized lss_xgboost plotting function.
+        '''A customized xgboostlss plotting function.
 
         booster: xgb.Booster
             Trained XGBoostLSS-Model
         X: pd.DataFrame
             Train/Test Data
-        dist: lss_xgboost.distributions class
+        dist: xgboostlss.distributions class
             Specifies distributional assumption
         feature: str
             Specifies which feature to use for plotting Partial_Dependence plot.

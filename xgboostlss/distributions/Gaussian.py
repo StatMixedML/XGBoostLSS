@@ -1,15 +1,13 @@
 import xgboost as xgb
 import numpy as np
 import pandas as pd
-import math
-from scipy.stats import gamma
-from scipy.special import polygamma, loggamma
-from lss_xgboost.utils import *
+from scipy.stats import norm
+from xgboostlss.utils import *
 
 np.seterr(all="ignore")
 
 ########################################################################################################################
-#################################################      Gamma      ######################################################
+###############################################      Gaussian      #####################################################
 ########################################################################################################################
 
 # When a custom objective is provided XGBoost doesn't know its response function so the user is responsible for making
@@ -22,8 +20,8 @@ np.seterr(all="ignore")
 # along with a custom metric, then both the objective and custom metric will receive raw predictions and hence must be
 # transformed using the specified response functions.
 
-class Gamma():
-    """Gamma Distribution Class
+class Gaussian():
+    """Gaussian Distribution Class
 
     """
 
@@ -45,7 +43,7 @@ class Gamma():
         """ Dictionary that holds the name of distributional parameter and their corresponding response functions.
 
         """
-        param_dict = {"location": soft_plus,
+        param_dict = {"location": identity,
                       "scale": soft_plus}
 
         return param_dict
@@ -58,7 +56,7 @@ class Gamma():
         """ Dictionary that holds the name of distributional parameter and their corresponding link functions.
 
         """
-        param_dict_inv = {"location_inv": soft_plus_inv,
+        param_dict_inv = {"location_inv": identity,
                           "scale_inv": soft_plus_inv}
 
         return param_dict_inv
@@ -75,51 +73,13 @@ class Gamma():
             Data from which starting values are calculated.
 
         """
-        loc_fit, scale_fit = np.nanmean(y), np.nanstd(y)
-        location_init = Gamma.param_dict_inv()["location_inv"](loc_fit)
-        scale_init = Gamma.param_dict_inv()["scale_inv"](scale_fit)
+        loc_fit, scale_fit = norm.fit(y)
+        location_init = Gaussian.param_dict_inv()["location_inv"](loc_fit)
+        scale_init = Gaussian.param_dict_inv()["scale_inv"](scale_fit)
 
         start_values = np.array([location_init, scale_init])
 
         return start_values
-
-    ###
-    # Density Function
-    ###
-    @staticmethod
-    def dGamma(y: np.ndarray, location: np.ndarray, scale: np.ndarray, log=True):
-        """Density function.
-
-        """
-        loglik = (1 / scale ** 2) * np.log(y / (location * scale ** 2)) - y / (location * scale ** 2) - np.log(
-            y) - loggamma(1 / scale ** 2)
-        loglik = np.exp(loglik) if log == False else loglik
-        return loglik
-
-
-    ###
-    # Quantile Function
-    ###
-    @staticmethod
-    def qGamma(p: float, location: np.ndarray, scale: np.ndarray):
-        """Quantile function.
-
-        """
-        q = gamma.ppf(p, a=1 / scale ** 2, scale=location * scale ** 2)
-        return q
-
-
-    ###
-    # Random variable generation
-    ###
-    def rGamma(n: int, location: np.ndarray, scale: np.ndarray):
-        """Random variable generation function.
-
-        """
-        n = math.ceil(n)
-        p = np.random.uniform(0, 1, n)
-        r = Gamma.qGamma(p, location=location, scale=scale)
-        return r
 
 
 
@@ -131,19 +91,19 @@ class Gamma():
         """Calculates Gradient of location parameter.
 
         """
-        grad = (y - location) / ((scale ** 2) * (location ** 2))
-        grad = stabilize_derivative(grad, Gamma.stabilize)
+        grad = (1/(scale**2)) * (y - location)
+        grad = stabilize_derivative(grad, Gaussian.stabilize)
         grad = grad * (-1) * weights
         return grad
 
 
     @staticmethod
-    def hessian_location(location: np.ndarray, scale: np.ndarray, weights: np.ndarray):
+    def hessian_location(scale: np.ndarray, weights: np.ndarray):
         """Calculates Hessian of location parameter.
 
         """
-        hes = -1 / ((scale ** 2) * (location ** 2))
-        hes = stabilize_derivative(hes, Gamma.stabilize)
+        hes = -(1/(scale**2))
+        hes = stabilize_derivative(hes, Gaussian.stabilize)
         hes = hes * (-1) * weights
         return hes
 
@@ -156,8 +116,8 @@ class Gamma():
         """Calculates Gradient of scale parameter.
 
         """
-        grad = (2 / scale ** 3) * ((y / location) - np.log(y) + np.log(location) + np.log(scale ** 2) - 1 + polygamma(0,(1 / (scale ** 2))))
-        grad = stabilize_derivative(grad, Gamma.stabilize)
+        grad = ((y - location)**2 - scale**2)/(scale**3)
+        grad = stabilize_derivative(grad, Gaussian.stabilize)
         grad = grad * (-1) * weights
         return grad
 
@@ -166,8 +126,8 @@ class Gamma():
         """Calculates Hessian of scale parameter.
 
         """
-        hes = (4/scale**4) - (4/scale**6) * polygamma(1, (1/scale**2))
-        hes = stabilize_derivative(hes, Gamma.stabilize)
+        hes = -(2/(scale**2))
+        hes = stabilize_derivative(hes, Gaussian.stabilize)
         hes = hes * (-1) * weights
         return hes
 
@@ -185,8 +145,8 @@ class Gamma():
 
         # When num_class!= 0, preds has shape (n_obs, n_dist_param).
         # Each element in a row represents a raw prediction (leaf weight, hasn't gone through response function yet).
-        preds_location = Gamma.param_dict()["location"](predt[:, 0])
-        preds_scale = Gamma.param_dict()["scale"](predt[:, 1])
+        preds_location = Gaussian.param_dict()["location"](predt[:, 0])
+        preds_scale = Gaussian.param_dict()["scale"](predt[:, 1])
 
 
         # Weights
@@ -198,28 +158,27 @@ class Gamma():
 
 
         # Initialize Gradient and Hessian Matrices
-        grad = np.zeros(shape=(len(target), Gamma.n_dist_param()))
-        hess = np.zeros(shape=(len(target), Gamma.n_dist_param()))
+        grad = np.zeros(shape=(len(target), Gaussian.n_dist_param()))
+        hess = np.zeros(shape=(len(target), Gaussian.n_dist_param()))
 
 
         # Location
-        grad[:, 0] = Gamma.gradient_location(y=target,
+        grad[:, 0] = Gaussian.gradient_location(y=target,
+                                                location=preds_location,
+                                                scale=preds_scale,
+                                                weights=weights)
+
+        hess[:, 0] = Gaussian.hessian_location(scale=preds_scale,
+                                               weights=weights)
+
+        # Scale
+        grad[:, 1] = Gaussian.gradient_scale(y=target,
                                              location=preds_location,
                                              scale=preds_scale,
                                              weights=weights)
 
-        hess[:, 0] = Gamma.hessian_location(location=preds_location,
-                                            scale=preds_scale,
+        hess[:, 1] = Gaussian.hessian_scale(scale=preds_scale,
                                             weights=weights)
-
-        # Scale
-        grad[:, 1] = Gamma.gradient_scale(y=target,
-                                          location=preds_location,
-                                          scale=preds_scale,
-                                          weights=weights)
-
-        hess[:, 1] = Gamma.hessian_scale(scale=preds_scale,
-                                         weights=weights)
 
         # Reshaping
         grad = grad.flatten()
@@ -239,14 +198,10 @@ class Gamma():
 
         # Using a custom objective function, the custom metric receives raw predictions which need to be transformed
         # with the corresponding response function.
-        preds_location = Gamma.param_dict()["location"](predt[:, 0])
-        preds_scale = Gamma.param_dict()["scale"](predt[:, 1])
+        preds_location = Gaussian.param_dict()["location"](predt[:, 0])
+        preds_scale = Gaussian.param_dict()["scale"](predt[:, 1])
 
-        nll = -np.nansum(Gamma.dGamma(y=target,
-                                      location=preds_location,
-                                      scale=preds_scale,
-                                      log=True)
-                         )
+        nll = -np.nansum(norm.logpdf(x=target, loc=preds_location, scale=preds_scale))
 
         return "NegLogLikelihood", nll
 
@@ -272,10 +227,10 @@ class Gamma():
         pred_dist_list = []
 
         for i in range(pred_params.shape[0]):
-            pred_dist_list.append(Gamma.rGamma(n=n_samples,
-                                               location=np.array([pred_params.loc[i, "location"]]),
-                                               scale=np.array([pred_params.loc[i, "scale"]])
-                                               )
+            pred_dist_list.append(norm.rvs(loc=pred_params.loc[i,"location"],
+                                           scale=pred_params.loc[i,"scale"],
+                                           size=n_samples,
+                                           random_state=seed)
                                   )
 
         pred_dist = pd.DataFrame(pred_dist_list)
@@ -301,9 +256,9 @@ class Gamma():
         pred_quantiles_list = []
 
         for i in range(len(quantiles)):
-            pred_quantiles_list.append(Gamma.qGamma(p=quantiles[i],
-                                                    location=pred_params["location"],
-                                                    scale=pred_params["scale"])
+            pred_quantiles_list.append(norm.ppf(quantiles[i],
+                                                loc = pred_params["location"],
+                                                scale = pred_params["scale"])
                                        )
 
         pred_quantiles = pd.DataFrame(pred_quantiles_list).T

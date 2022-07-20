@@ -1,13 +1,14 @@
 import xgboost as xgb
 import numpy as np
 import pandas as pd
-from scipy.stats import norm
-from lss_xgboost.utils import *
+from scipy.stats import t as student_t
+from scipy.special import polygamma
+from xgboostlss.utils import *
 
 np.seterr(all="ignore")
 
 ########################################################################################################################
-###############################################      Gaussian      #####################################################
+###############################################      Student-T    ######################################################
 ########################################################################################################################
 
 # When a custom objective is provided XGBoost doesn't know its response function so the user is responsible for making
@@ -20,18 +21,20 @@ np.seterr(all="ignore")
 # along with a custom metric, then both the objective and custom metric will receive raw predictions and hence must be
 # transformed using the specified response functions.
 
-class Gaussian():
-    """Gaussian Distribution Class
+class StudentT():
+    """Student-T Distribution Class
 
     """
 
+    ###
     # Specifies the number of distributional parameters
+    ###
     @staticmethod
     def n_dist_param():
         """Number of distributional parameter.
 
         """
-        n_param = 2
+        n_param = 3
         return n_param
 
 
@@ -44,7 +47,8 @@ class Gaussian():
 
         """
         param_dict = {"location": identity,
-                      "scale": soft_plus}
+                      "scale": soft_plus,
+                      "nu": soft_plus}
 
         return param_dict
 
@@ -57,7 +61,8 @@ class Gaussian():
 
         """
         param_dict_inv = {"location_inv": identity,
-                          "scale_inv": soft_plus_inv}
+                          "scale_inv": soft_plus_inv,
+                          "nu_inv": soft_plus_inv}
 
         return param_dict_inv
 
@@ -73,61 +78,104 @@ class Gaussian():
             Data from which starting values are calculated.
 
         """
-        loc_fit, scale_fit = norm.fit(y)
-        location_init = Gaussian.param_dict_inv()["location_inv"](loc_fit)
-        scale_init = Gaussian.param_dict_inv()["scale_inv"](scale_fit)
+        nu_fit, loc_fit, scale_fit = student_t.fit(y)
+        location_init = StudentT.param_dict_inv()["location_inv"](loc_fit)
+        scale_init = StudentT.param_dict_inv()["scale_inv"](scale_fit)
+        nu_init = StudentT.param_dict_inv()["nu_inv"](nu_fit)
 
-        start_values = np.array([location_init, scale_init])
+        start_values = np.array([location_init, scale_init, nu_init])
 
         return start_values
-
 
 
     ###
     # Location Parameter gradient and hessian
     ###
     @staticmethod
-    def gradient_location(y: np.ndarray, location: np.ndarray, scale: np.ndarray, weights: np.ndarray):
+    def gradient_location(y: np.ndarray, location: np.ndarray, scale: np.ndarray, nu: np.ndarray, weights: np.ndarray):
         """Calculates Gradient of location parameter.
 
         """
-        grad = (1/(scale**2)) * (y - location)
-        grad = stabilize_derivative(grad, Gaussian.stabilize)
+        s2 = scale ** 2
+        dsq = ((y - location) ** 2) / s2
+        omega = (nu + 1) / (nu + dsq)
+        grad = (omega * (y - location)) / s2
+        grad = stabilize_derivative(grad, StudentT.stabilize)
         grad = grad * (-1) * weights
         return grad
 
-
     @staticmethod
-    def hessian_location(scale: np.ndarray, weights: np.ndarray):
+    def hessian_location(scale: np.ndarray, nu: np.ndarray, weights: np.ndarray):
         """Calculates Hessian of location parameter.
 
         """
-        hes = -(1/(scale**2))
-        hes = stabilize_derivative(hes, Gaussian.stabilize)
+        hes = -(nu + 1) / ((nu + 3) * (scale ** 2))
+        hes = stabilize_derivative(hes, StudentT.stabilize)
         hes = hes * (-1) * weights
         return hes
+
 
 
     ###
     # Scale Parameter gradient and hessian
     ###
     @staticmethod
-    def gradient_scale(y: np.ndarray, location: np.ndarray, scale: np.ndarray, weights: np.ndarray):
+    def gradient_scale(y: np.ndarray, location: np.ndarray, scale: np.ndarray, nu: np.ndarray, weights: np.ndarray):
         """Calculates Gradient of scale parameter.
 
         """
-        grad = ((y - location)**2 - scale**2)/(scale**3)
-        grad = stabilize_derivative(grad, Gaussian.stabilize)
+        s2 = scale ** 2
+        dsq = ((y - location) ** 2) / s2
+        omega = (nu + 1) / (nu + dsq)
+        grad = (omega * dsq - 1) / scale
+        grad = stabilize_derivative(grad, StudentT.stabilize)
         grad = grad * (-1) * weights
         return grad
 
     @staticmethod
-    def hessian_scale(scale: np.ndarray, weights: np.ndarray):
+    def hessian_scale(scale: np.ndarray, nu: np.ndarray, weights: np.ndarray):
         """Calculates Hessian of scale parameter.
 
         """
-        hes = -(2/(scale**2))
-        hes = stabilize_derivative(hes, Gaussian.stabilize)
+        s2 = scale ** 2
+        hes = -(2 * nu) / ((nu + 3) * s2)
+        hes = stabilize_derivative(hes, StudentT.stabilize)
+        hes = hes * (-1) * weights
+        return hes
+
+
+
+    ###
+    # Nu Parameter gradient and hessian
+    ###
+    @staticmethod
+    def gradient_nu(y: np.ndarray, location: np.ndarray, scale: np.ndarray, nu: np.ndarray, weights: np.ndarray):
+        """Calculates Gradient of nu parameter.
+
+        """
+        s2 = scale ** 2
+        dsq = ((y - location) ** 2) / s2
+        omega = (nu + 1) / (nu + dsq)
+        dsq3 = 1 + (dsq / nu)
+        v2 = nu / 2
+        v3 = (nu + 1) / 2
+        grad = -np.log(dsq3) + (omega * dsq - 1) / nu + polygamma(0, v3) - polygamma(0, v2)
+        grad = grad / 2
+        grad = stabilize_derivative(grad, StudentT.stabilize)
+        grad = grad * (-1) * weights
+        return grad
+
+    @staticmethod
+    def hessian_nu(y: np.ndarray, location: np.ndarray, scale: np.ndarray, nu: np.ndarray, weights: np.ndarray):
+        """Calculates Hessian of nu parameter.
+
+        """
+        v2 = nu / 2
+        v3 = (nu + 1) / 2
+        hes = polygamma(1, v3) - polygamma(1, v2) + (2 * (nu + 5)) / (nu * (nu + 1) * (nu + 3))
+        hes = hes / 4
+        hes = np.where(hes < -1e-15, hes, -1e-15)
+        hes = stabilize_derivative(hes, StudentT.stabilize)
         hes = hes * (-1) * weights
         return hes
 
@@ -145,8 +193,9 @@ class Gaussian():
 
         # When num_class!= 0, preds has shape (n_obs, n_dist_param).
         # Each element in a row represents a raw prediction (leaf weight, hasn't gone through response function yet).
-        preds_location = Gaussian.param_dict()["location"](predt[:, 0])
-        preds_scale = Gaussian.param_dict()["scale"](predt[:, 1])
+        preds_location = StudentT.param_dict()["location"](predt[:, 0])
+        preds_scale = StudentT.param_dict()["scale"](predt[:, 1])
+        preds_nu = StudentT.param_dict()["nu"](predt[:, 2])
 
 
         # Weights
@@ -158,27 +207,43 @@ class Gaussian():
 
 
         # Initialize Gradient and Hessian Matrices
-        grad = np.zeros(shape=(len(target), Gaussian.n_dist_param()))
-        hess = np.zeros(shape=(len(target), Gaussian.n_dist_param()))
-
+        grad = np.zeros(shape=(len(target), StudentT.n_dist_param()))
+        hess = np.zeros(shape=(len(target), StudentT.n_dist_param()))
 
         # Location
-        grad[:, 0] = Gaussian.gradient_location(y=target,
+        grad[:, 0] = StudentT.gradient_location(y=target,
                                                 location=preds_location,
                                                 scale=preds_scale,
+                                                nu=preds_nu,
                                                 weights=weights)
 
-        hess[:, 0] = Gaussian.hessian_location(scale=preds_scale,
+        hess[:, 0] = StudentT.hessian_location(scale=preds_scale,
+                                               nu=preds_nu,
                                                weights=weights)
 
         # Scale
-        grad[:, 1] = Gaussian.gradient_scale(y=target,
+        grad[:, 1] = StudentT.gradient_scale(y=target,
                                              location=preds_location,
                                              scale=preds_scale,
+                                             nu=preds_nu,
                                              weights=weights)
 
-        hess[:, 1] = Gaussian.hessian_scale(scale=preds_scale,
+        hess[:, 1] = StudentT.hessian_scale(scale=preds_scale,
+                                            nu=preds_nu,
                                             weights=weights)
+
+        # Nu
+        grad[:, 2] = StudentT.gradient_nu(y=target,
+                                          location=preds_location,
+                                          scale=preds_scale,
+                                          nu=preds_nu,
+                                          weights=weights)
+
+        hess[:, 2] = StudentT.hessian_nu(y=target,
+                                         location=preds_location,
+                                         scale=preds_scale,
+                                         nu=preds_nu,
+                                         weights=weights)
 
         # Reshaping
         grad = grad.flatten()
@@ -198,11 +263,11 @@ class Gaussian():
 
         # Using a custom objective function, the custom metric receives raw predictions which need to be transformed
         # with the corresponding response function.
-        preds_location = Gaussian.param_dict()["location"](predt[:, 0])
-        preds_scale = Gaussian.param_dict()["scale"](predt[:, 1])
+        preds_location = StudentT.param_dict()["location"](predt[:, 0])
+        preds_scale = StudentT.param_dict()["scale"](predt[:, 1])
+        preds_nu = StudentT.param_dict()["nu"](predt[:, 2])
 
-        nll = -np.nansum(norm.logpdf(x=target, loc=preds_location, scale=preds_scale))
-
+        nll = -np.nansum(student_t.logpdf(x=target, loc=preds_location, scale=preds_scale, df=preds_nu))
         return "NegLogLikelihood", nll
 
 
@@ -227,14 +292,16 @@ class Gaussian():
         pred_dist_list = []
 
         for i in range(pred_params.shape[0]):
-            pred_dist_list.append(norm.rvs(loc=pred_params.loc[i,"location"],
-                                           scale=pred_params.loc[i,"scale"],
-                                           size=n_samples,
-                                           random_state=seed)
+            pred_dist_list.append(student_t.rvs(loc=pred_params.loc[i, "location"],
+                                                scale=pred_params.loc[i, "scale"],
+                                                df=pred_params.loc[i, "nu"],
+                                                size=n_samples,
+                                                random_state=seed)
                                   )
 
         pred_dist = pd.DataFrame(pred_dist_list)
         return pred_dist
+
 
     ###
     # Function for calculating quantiles from predicted distribution
@@ -256,10 +323,13 @@ class Gaussian():
         pred_quantiles_list = []
 
         for i in range(len(quantiles)):
-            pred_quantiles_list.append(norm.ppf(quantiles[i],
-                                                loc = pred_params["location"],
-                                                scale = pred_params["scale"])
+            pred_quantiles_list.append(student_t.ppf(quantiles[i],
+                                                     loc=pred_params["location"],
+                                                     scale=pred_params["scale"],
+                                                     df=pred_params["nu"])
                                        )
 
         pred_quantiles = pd.DataFrame(pred_quantiles_list).T
         return pred_quantiles
+
+

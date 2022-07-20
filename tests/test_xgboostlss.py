@@ -3,12 +3,12 @@ import pandas as pd
 from pytest import approx
 
 from tests.conftest import get_scale_shares
-from lss_xgboost.datasets.data_loader import load_simulated_data
-from lss_xgboost.distributions.Gaussian import Gaussian
-from lss_xgboost.model import xgb, xgboostlss
+from xgboostlss.datasets.data_loader import load_simulated_data
+from xgboostlss.distributions.Gaussian import Gaussian
+from xgboostlss.model import xgb, xgboostlss
 
 
-def test_xgblss_train():
+def test_xgboostlss_train():
     # arrange
     # The data is a simulated Gaussian as follows, where x is the only true feature and all others are noise variables
     # loc = 10
@@ -44,7 +44,7 @@ def test_xgblss_train():
     assert isinstance(res, xgb.Booster)
 
 
-def test_xgblss_estimated_parameter():
+def test_xgboostlss_estimated_parameter():
     # arrange
     # The data is a simulated Gaussian as follows, where x is the only true feature and all others are noise variables
     # loc = 10
@@ -111,7 +111,7 @@ def test_xgblss_estimated_parameter():
     assert approx(pred_scale_shares.loc[pred_scale_shares.scale == 5, "share"], abs=0.05) == 0.2
 
 
-def test_xgblss_prediction_quantiles():
+def test_xgboostlss_prediction_quantiles():
     # arrange
     # The data is a simulated Gaussian as follows, where x is the only true feature and all others are noise variables
     # loc = 10
@@ -170,7 +170,7 @@ def test_xgblss_prediction_quantiles():
     assert approx(share_95_s5, abs=0.05) == 0.2
 
 
-def test_xgblss_prediction_simulation():
+def test_xgboostlss_prediction_simulation():
     # arrange
     # The data is a simulated Gaussian as follows, where x is the only true feature and all others are noise variables
     # loc = 10

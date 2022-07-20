@@ -6,7 +6,7 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 
 ## Installation
 ```shell
-pip install lss-xgboost
+pip install xgboostlss
 ```
 
 Or from github:
@@ -14,12 +14,13 @@ Or from github:
 pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 ```
 ## How to use
+
 ```python
 import numpy as np
 
-from lss_xgboost.datasets.data_loader import load_simulated_data
-from lss_xgboost.distributions.Gaussian import Gaussian
-from lss_xgboost.model import xgb, xgboostlss
+from xgboostlss.datasets.data_loader import load_simulated_data
+from xgboostlss.distributions.Gaussian import Gaussian
+from xgboostlss.model import xgb, xgboostlss
 
 # prepare example data (identical to classical XGBoost)
 train, test = load_simulated_data()
@@ -123,6 +124,9 @@ Please provide feedback on how to improve XGBoostLSS, or if you request addition
 März, Alexander (2019) [*"XGBoostLSS - An extension of XGBoost to probabilistic forecasting"*](https://arxiv.org/abs/1907.03178). 
 
 ## Packaging and publishing to pypi
+```shell
+pipenv run python -m  build --sdist --wheel --outdir dist/
+```
 
 Publishing to pypi is automated using [a Github Action](https://github.com/StatMixedML/XGBoostLSS/tree/master.github/workflows/publish-to-pypi.yml)
 

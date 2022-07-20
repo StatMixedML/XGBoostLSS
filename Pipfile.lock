@@ -1,11 +1,11 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1145f9b05c1069fd32d726baaa1762d49118e64a4c9c4e7fbf400b7064c16e77"
+            "sha256": "d7a425cbaa3aa30715d6b948c0b901397f1317282b1ad005207328cfea437deb"
         },
         "pipfile-spec": 6,
         "requires": {
-            "python_version": "3.10"
+            "python_version": "3.8"
         },
         "sources": [
             {
@@ -1319,10 +1319,6 @@
             "markers": "python_version < '3.11' and python_version >= '3.7'",
             "version": "==0.38.1"
         },
-        "lss-xgboost": {
-            "editable": true,
-            "path": "."
-        },
         "mako": {
             "hashes": [
                 "sha256:df3921c3081b013c8a2d5ff03c18375651684921ae83fd12e64800b7da923257",
@@ -2422,6 +2418,10 @@
             ],
             "index": "pypi",
             "version": "==1.6.1"
+        },
+        "xgboostlss": {
+            "editable": true,
+            "path": "."
         },
         "zipp": {
             "hashes": [
