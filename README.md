@@ -57,9 +57,22 @@ Please provide feedback on how to improve XGBoostLSS, or if you request addition
 ## Reference Paper
 März, Alexander (2019) [*"XGBoostLSS - An extension of XGBoost to probabilistic forecasting"*](https://arxiv.org/abs/1907.03178).
 
+## Local development
+[Poetry](https://python-poetry.org/) is used for virtual env management.
+
+For local development clone the respository, [install Poetry](https://python-poetry.org/docs/#installation) and run
+```shell
+poetry install
+```
+
+Check if everything worked with
+```shell
+poetry run pytest -v
+```
+
 ## Packaging and publishing to pypi
 ```shell
-pipenv run python -m  build --sdist --wheel --outdir dist/
+poetry build
 ```
 
 Publishing to pypi is automated using [a Github Action](https://github.com/StatMixedML/XGBoostLSS/tree/master.github/workflows/publish-to-pypi.yml)
