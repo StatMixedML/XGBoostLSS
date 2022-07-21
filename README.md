@@ -4,18 +4,17 @@
 We propose a new framework of XGBoost that predicts the entire conditional distribution of a univariate response variable. In particular, **XGBoostLSS** models all moments of a parametric distribution, i.e., mean, location, scale and shape (LSS), instead of the conditional mean only. Choosing from a wide range of continuous, discrete, and mixed discrete-continuous distribution, modelling and predicting the entire conditional distribution greatly enhances the flexibility of XGBoost, as it allows to create probabilistic forecasts from which prediction intervals and quantiles of interest can be derived.
 
 <hr>
-<p align="center">
-<img src="https://img.shields.io/badge/python-3.8%20%7C%203.9-brightgreen">
-<img src="https://img.shields.io/pypi/wheel/yes" >
-<img src="https://img.shields.io/github/issues/StatMixedML/XGBoostLSS" >
-<img src="https://img.shields.io/github/forks/StatMixedML/XGBoostLSS" >
-<img src="https://img.shields.io/github/stars/StatMixedML/XGBoostLSS" >
-<img src="https://img.shields.io/github/contributors/StatMixedML/XGBoostLSS" >
-<img src="https://img.shields.io/github/last-commit/StatMixedML/XGBoostLSS" >
-<img src="https://img.shields.io/github/license/StatMixedML/XGBoostLSS" >
+<p align="left">
+<img alt="Supported Python Versions: 3.8, 3.9" src="https://img.shields.io/badge/python-3.8%20%7C%203.9-brightgreen">
+<img alt="GitHub issues" src="https://img.shields.io/github/issues/StatMixedML/XGBoostLSS" >
+<img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr-raw/StatMixedML/XGBoostLSS">
+<img alt="GitHub forks" src="https://img.shields.io/github/forks/StatMixedML/XGBoostLSS" >
+<img alt="GitHub stars" src="https://img.shields.io/github/stars/StatMixedML/XGBoostLSS" >
+<img alt="GitHub contributers" src="https://img.shields.io/github/contributors/StatMixedML/XGBoostLSS" >
+<img alt="Last commit" src="https://img.shields.io/github/last-commit/StatMixedML/XGBoostLSS" >
+<img alt="License" src="https://img.shields.io/github/license/StatMixedML/XGBoostLSS" >
 </p>
-<br>
-<hr>
+
 
 ## Installation
 ```shell
