@@ -24,10 +24,10 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        curl -sSL https://install.python-poetry.org | python3 -
-        poetry install
         sudo apt-get update
         sudo apt-get -y install llvm
+        curl -sSL https://install.python-poetry.org | python3 -
+        poetry install
     - name: Test with pytest
       run: |
         poetry run pytest -v
