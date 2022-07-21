@@ -23,7 +23,7 @@ setup(
         "optuna>=2.10.1",
         "torch>=1.12.0",
         "shap>=0.41.0",
-        "numpy>=1.22.4",
+        "numpy>=1.21.6",
         "pandas>=1.4.3",
         "scipy>=1.8.1",
         "scikit-learn>=1.0.2",
