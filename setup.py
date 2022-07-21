@@ -1,6 +1,19 @@
 from setuptools import setup, find_packages
 
-version = "0.1.5"
+
+def get_version():
+    from os.path import abspath, dirname, join
+    abspath = abspath(__file__)
+    abspath_dir = dirname(abspath)
+    pyproject_path = join(abspath_dir, '..', 'pyproject.toml')
+
+    with open(pyproject_path, 'r') as f:
+        for line in f:
+            if 'version' in line:
+                return line.split('=')[1].strip().replace('"', '').replace("'", "")
+
+
+version = get_version()
 
 setup(
     name="xgboostlss",
@@ -23,7 +36,7 @@ setup(
         "optuna>=2.10.1",
         "torch>=1.12.0",
         "shap>=0.41.0",
-        "numpy>=1.21.6",
+        "numpy>=1.22.4",
         "pandas>=1.4.3",
         "scipy>=1.8.1",
         "scikit-learn>=1.0.2",
@@ -31,16 +44,16 @@ setup(
     test_suite="tests",
     tests_require=["flake8", "pytest"],
     classifiers=[  # Optional
-            'Development Status :: 3 - Alpha',
-            'Intended Audience :: Developers',
-            'License :: OSI Approved :: Apache Software License',
-            "Operating System :: OS Independent",
-            'Programming Language :: Python :: 3',
-            'Programming Language :: Python :: 3.7',
-            'Programming Language :: Python :: 3.8',
-            'Programming Language :: Python :: 3.9',
-            "Programming Language :: Python :: 3.10",
-            'Programming Language :: Python :: 3 :: Only',
-        ],
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Apache Software License',
+        "Operating System :: OS Independent",
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        "Programming Language :: Python :: 3.10",
+        'Programming Language :: Python :: 3 :: Only',
+    ],
 
 )
