@@ -5,7 +5,9 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "xgboostlss"
-version = "0.1.4"
+
+version = "0.1.5"
+
 description = "XGBoostLSS - An extension of XGBoost to probabilistic forecasting"
 authors = [
     "Alexander März <alex.maerz@gmx.net>",
