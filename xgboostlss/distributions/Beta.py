@@ -75,11 +75,11 @@ class Beta():
             Data from which starting values are calculated.
 
         """
-        _, _, loc_fit, scale_fit = beta.fit(y)
-        location_init = Beta.param_dict_inv()["location_inv"](loc_fit)
-        scale_init = Beta.param_dict_inv()["scale_inv"](scale_fit)
+        # _, _, loc_fit, scale_fit = beta.fit(y)
+        # location_init = Beta.param_dict_inv()["location_inv"](loc_fit)
+        # scale_init = Beta.param_dict_inv()["scale_inv"](scale_fit)
 
-
+        location_init, scale_init = np.mean(y), np.std(y)
         start_values = np.array([location_init, scale_init])
 
         return start_values
