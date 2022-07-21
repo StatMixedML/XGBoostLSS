@@ -1,3 +1,69 @@
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta:__legacy__"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry]
+name = "xgboostlss"
+version = "0.1.2"
+description = "XGBoostLSS - An extension of XGBoost to probabilistic forecasting"
+authors = [
+    "Alexander März <alex.maerz@gmx.net>",
+]
+maintainers = [
+    "Alexander März <alex.maerz@gmx.net>",
+    "Sebastian Cattes <sebastian.cattes@inwt-statistics.de>",
+]
+license = "Apache License 2.0"
+
+readme = "README.md"
+
+packages = [
+    { include = "xgboostlss", from = "." }
+]
+
+
+homepage = "https://github.com/StatMixedML/XGBoostLSS"
+repository = "https://github.com/StatMixedML/XGBoostLSS"
+documentation = "https://github.com/StatMixedML/XGBoostLSS"
+
+keywords = ["xgboost", "xgboostlss"]
+
+classifiers = [
+            'Development Status :: 3 - Alpha',
+            'Intended Audience :: Developers',
+            'License :: OSI Approved :: Apache Software License',
+            "Operating System :: OS Independent",
+            'Programming Language :: Python :: 3',
+            'Programming Language :: Python :: 3.7',
+            'Programming Language :: Python :: 3.8',
+            'Programming Language :: Python :: 3.9',
+            "Programming Language :: Python :: 3.10",
+            'Programming Language :: Python :: 3 :: Only',
+            ]
+
+[tool.poetry.build]
+generate-setup-file = false
+
+# Requirements
+[tool.poetry.dependencies]
+python = ">=3.8.0,<3.11"
+
+xgboost = "^1.6.1"
+optuna = "^2.10.1"
+torch = "^1.12.0"
+shap = "^0.41.0"
+numpy = "^1.22.4"
+pandas = "^1.4.3"
+scipy = "^1.8.1"
+scikit-learn = "^1.0.2"
+
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+atomicwrites = "^1.4.1"
+tqdm = "^4.64.0"
+matplotlib = "^3.5.2"
+ipywidgets = "^7.7.1"
+plotnine = "^0.9.0"
+ipython = "^7.23.1"

@@ -22,15 +22,11 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        pip install pipenv
-        pipenv install --dev --python ${{ matrix.python-version }}
+        curl -sSL https://install.python-poetry.org | python3 -
+        poetry install
     - name: Build a binary wheel and a source tarball
       run: >-
-        pipenv run python -m
-        build
-        --sdist
-        --wheel
-        --outdir dist/
+        pipenv build
     - name: Publish distribution 📦 to Test PyPI
       uses: pypa/gh-action-pypi-publish@master
       with:
@@ -43,5 +39,4 @@ jobs:
       uses: pypa/gh-action-pypi-publish@master
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}
-        skip_existing: true
         verbose: true

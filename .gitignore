@@ -131,6 +131,9 @@ dmypy.json
 # Pycharm config
 .idea/
 
+# VScode config
+.vscode/
+
 # tex files
 latex_distributions
 
