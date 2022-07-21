@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import t as student_t
 from scipy.special import polygamma
-from xgboostlss.utils import *
+from xgboostlss.utils import identity, soft_plus, soft_plus_inv, stabilize_derivative
 
 np.seterr(all="ignore")
 

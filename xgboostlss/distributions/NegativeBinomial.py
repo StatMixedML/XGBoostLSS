@@ -3,9 +3,8 @@ import numpy as np
 import pandas as pd
 import math
 from scipy.stats import nbinom, poisson
-import scipy.stats as stats
 from scipy.special import digamma
-from xgboostlss.utils import *
+from xgboostlss.utils import soft_plus, soft_plus_inv, stabilize_derivative
 
 np.seterr(all="ignore")
 

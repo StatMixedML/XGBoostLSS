@@ -1,9 +1,9 @@
 import optuna
 import shap
 from optuna.samplers import TPESampler
-
-from xgboostlss.distributions import *
-from xgboostlss.utils import *
+import numpy as np
+import xgboost as xgb
+import pandas as pd
 
 
 class xgboostlss:
@@ -295,7 +295,7 @@ class xgboostlss:
 
         return opt_param.params
 
-    def predict(booster: xgb.Booster, dtest: xgb.DMatrix, dist: DistributionType, pred_type: str,
+    def predict(booster: xgb.Booster, dtest: xgb.DMatrix, dist, pred_type: str,
                 n_samples: int = 1000, quantiles: list = None, seed: int = 123):
         '''A customized xgboostlss prediction function.
 
