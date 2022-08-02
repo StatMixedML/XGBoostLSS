@@ -82,6 +82,11 @@ Check if everything worked with
 poetry run pytest -v
 ```
 
+After adding a new feature, don't forget to increase the version number using [bump2version](https://github.com/c4urself/bump2version).
+```shell
+poetry run bump2version patch
+```
+
 ## Packaging and publishing to pypi
 ```shell
 poetry build
