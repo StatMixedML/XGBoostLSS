@@ -14,7 +14,7 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 
 ## Features
 :white_check_mark: Simultaneous estimation of all distributional parameters. <br/>
-:white_check_mark: Multi-target regression allows modelling og multiple targets and their dependencies. <br/>
+:white_check_mark: Multi-target regression allows modelling of multivariate responses and their dependencies. <br/>
 :white_check_mark: Automatic derivation of Gradients and Hessian of all distributional parameters using [PyTorch](https://pytorch.org/docs/stable/autograd.html). <br/>
 :white_check_mark: Automated hyper-parameter search, including pruning, is done via [Optuna](https://optuna.org/). <br/>
 :white_check_mark: The output of XGBoostLSS is explained using [SHapley Additive exPlanations](https://github.com/slundberg/shap). <br/>
@@ -26,7 +26,7 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 :construction: Estimation of full predictive distribution without relying on a distributional assumption.  <br/>
  
 ## Available Distributions
-Currently, XGBoostLSS supports the following distributions. More continuous distributions, as well as discrete, mixed discrete-continuous and zero-inflated distributions are to come soon.
+Currently, XGBoostLSS supports the following distributions. More continuous (univariate & multivariate) distributions, as well as discrete, mixed discrete-continuous and zero-inflated distributions are to come soon.
 
 <img align="center" src="../master/figures/distr.png">
 
