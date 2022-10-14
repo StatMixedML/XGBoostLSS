@@ -50,5 +50,5 @@ $ pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 We refer to the [examples section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for example notebooks.
 
 ## Reference Paper
-März, Alexander (2022) [*"Multi-Target XGBoostLSS Regression"*](https://arxiv.org/abs/2210.06831). 
+März, Alexander (2022) [*"Multi-Target XGBoostLSS Regression"*](https://arxiv.org/abs/2210.06831). <br/>
 März, Alexander (2019) [*"XGBoostLSS - An extension of XGBoost to probabilistic forecasting"*](https://arxiv.org/abs/1907.03178). 
