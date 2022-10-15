@@ -4,7 +4,7 @@
 We propose a new framework of XGBoost that predicts the entire conditional distribution of univariate and multivariate responses. In particular, **XGBoostLSS** models all moments of a parametric distribution, i.e., mean, location, scale and shape (LSS), instead of the conditional mean only. Choosing from a wide range of continuous, discrete, and mixed discrete-continuous distribution, modelling and predicting the entire conditional distribution greatly enhances the flexibility of XGBoost, as it allows to create probabilistic forecasts from which prediction intervals and quantiles of interest can be derived.
 
 ## News
-:boom: [2022-10-14] XGBoostLSS now supports multi-target regression. <br/>
+:boom: [2022-10-14] XGBoostLSS now supports multi-target regression [code coming soon]. <br/>
 :boom: [2022-01-03] XGBoostLSS now supports estimation of the Gamma distribution. <br/>
 :boom: [2021-12-22] XGBoostLSS now supports estimating the full predictive distribution via [Expectile Regression](https://epub.ub.uni-muenchen.de/31542/1/1471082x14561155.pdf). <br/>
 :boom: [2021-12-20] XGBoostLSS is initialized with suitable starting values to improve convergence of estimation. <br/>
@@ -50,5 +50,5 @@ $ pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 We refer to the [examples section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for example notebooks.
 
 ## Reference Paper
-März, Alexander (2022) [*"Multi-Target XGBoostLSS Regression"*](https://arxiv.org/abs/2210.06831). <br/>
-März, Alexander (2019) [*"XGBoostLSS - An extension of XGBoost to probabilistic forecasting"*](https://arxiv.org/abs/1907.03178). 
+März, Alexander (2022) [*Multi-Target XGBoostLSS Regression*](https://arxiv.org/abs/2210.06831). <br/>
+März, Alexander (2019) [*XGBoostLSS - An extension of XGBoost to probabilistic forecasting*](https://arxiv.org/abs/1907.03178). 
