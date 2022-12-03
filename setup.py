@@ -18,7 +18,7 @@ setup(
     install_requires=[
         "xgboost~=1.4.2",
         "optuna~=2.9.1",
-        "torch~=1.10.0",
+        "torch~=1.13.0",
         "properscoring~=0.1",
         "scikit-learn>=0.24.2",
         "shap~=0.39.0",
