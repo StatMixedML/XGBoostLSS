@@ -50,6 +50,12 @@ $ pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 We refer to the [examples section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for example notebooks.
 
 ## Reference Paper
+[![Arxiv link](https://img.shields.io/badge/arXiv-Multi%20Target%20XGBoostLSS%20Regression-%09%23FF0000)](https://arxiv.org/abs/2210.06831) <br/>
+[![Arxiv link](https://img.shields.io/badge/arXiv-Distributional%20Gradient%20Boosting%20Machines-%09%23FF0000)](https://arxiv.org/abs/2204.00778) <br/>
+[![Arxiv link](https://img.shields.io/badge/arXiv-XGBoostLSS%3A%20An%20extension%20of%20XGBoost%20to%20probabilistic%20forecasting-%09%23FF0000)](https://arxiv.org/abs/1907.03178) <br/>
+
+<!---
 März, Alexander (2022) [*Multi-Target XGBoostLSS Regression*](https://arxiv.org/abs/2210.06831). <br/>
 März, A. and Kneib, T. (2022) [*"Distributional Gradient Boosting Machines"*](https://arxiv.org/abs/2204.00778). <br/>
 März, Alexander (2019) [*XGBoostLSS - An extension of XGBoost to probabilistic forecasting*](https://arxiv.org/abs/1907.03178). 
+--->
