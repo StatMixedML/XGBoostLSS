@@ -56,7 +56,11 @@ We encourage you to provide feedback on how to enhance XGBoostLSS or request the
 
 ## Installation
 ```python
-$ pip install git+https://github.com/StatMixedML/XGBoostLSS.git
+# To install XGBoostLSS
+pip install git+https://github.com/StatMixedML/XGBoostLSS.git
+
+# Since the official SHap package is currently not maintained, we need to install it from 
+pip install git+https://github.com/dsgibbons/shap.git
 ```
 ## How to use
 We refer to the [examples section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for example notebooks.
