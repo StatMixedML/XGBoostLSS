@@ -5,7 +5,7 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 
 ## News
 :boom: [2023-05-18] Release of version "0.2.0". See the [release notes](https://github.com/StatMixedML/XGBoostLSS/releases) for an overview. <br/>
-:boom: [2022-10-14] XGBoostLSS now supports multi-target regression. (Code coming soon, currently available via [Py-BoostLSS](https://github.com/StatMixedML/Py-BoostLSS)). <br/>
+:boom: [2022-10-14] XGBoostLSS now supports multi-target regression. (Currently available via [Py-BoostLSS](https://github.com/StatMixedML/Py-BoostLSS)). <br/>
 :boom: [2022-01-03] XGBoostLSS now supports estimation of the Gamma distribution. <br/>
 :boom: [2021-12-22] XGBoostLSS now supports estimating the full predictive distribution via [Expectile Regression](https://epub.ub.uni-muenchen.de/31542/1/1471082x14561155.pdf). <br/>
 :boom: [2021-12-20] XGBoostLSS is initialized with suitable starting values to improve convergence of estimation. <br/>
