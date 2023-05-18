@@ -4,14 +4,14 @@
 We propose a new framework of XGBoost that predicts the entire conditional distribution of univariate and multivariate responses. In particular, **XGBoostLSS** models all moments of a parametric distribution, i.e., mean, location, scale and shape (LSS), instead of the conditional mean only. Choosing from a wide range of continuous, discrete, and mixed discrete-continuous distribution, modelling and predicting the entire conditional distribution greatly enhances the flexibility of XGBoost, as it allows to create probabilistic forecasts from which prediction intervals and quantiles of interest can be derived.
 
 ## News
-:boom: [2023-05-18] Release of v0.2.0. See the [release notes](https://github.com/StatMixedML/XGBoostLSS/releases) for an overview. <br/>
+:boom: [2023-05-18] Release of v0.1.0. See the [release notes](https://github.com/StatMixedML/XGBoostLSS/releases) for an overview. <br/>
 :boom: [2022-10-14] XGBoostLSS now supports multi-target regression. (Currently available via [Py-BoostLSS](https://github.com/StatMixedML/Py-BoostLSS)). <br/>
 :boom: [2022-01-03] XGBoostLSS now supports estimation of the Gamma distribution. <br/>
 :boom: [2021-12-22] XGBoostLSS now supports estimating the full predictive distribution via [Expectile Regression](https://epub.ub.uni-muenchen.de/31542/1/1471082x14561155.pdf). <br/>
 :boom: [2021-12-20] XGBoostLSS is initialized with suitable starting values to improve convergence of estimation. <br/>
 :boom: [2021-12-04] XGBoostLSS now supports automatic derivation of Gradients and Hessians. <br/>
 :boom: [2021-12-02] XGBoostLSS now supports pruning during hyperparameter optimization. <br/>
-:boom: [2021-11-14] XGBoostLSS v0.1.0 is released!
+:boom: [2021-11-14] XGBoostLSS v0.0.1 is released!
 
 ## Features
 :white_check_mark: Simultaneous estimation of all distributional parameters. <br/>
