@@ -1,26 +1,23 @@
-from torch.distributions import Gamma as Gamma_Torch
+from torch.distributions import Poisson as Poisson_Torch
 from xgboostlss.utils import *
 from .distribution_utils import *
 
-
-class Gamma:
+class Poisson:
     """
-    Gamma distribution class.
+    Poisson distribution class.
 
-     Distributional Parameters
-    --------------------------
-    concentration: torch.Tensor
-        shape parameter of the distribution (often referred to as alpha)
+    Distributional Parameters
+    -------------------------
     rate: torch.Tensor
-        rate = 1 / scale of the distribution (often referred to as beta)
+        Rate parameter of the distribution (often referred to as lambda).
 
     Source
     -------------------------
-    https://pytorch.org/docs/stable/distributions.html#gamma
+    https://pytorch.org/docs/stable/distributions.html#poisson
     """
     def __init__(self,
                  stabilization: str,
-                 response_fn: str = "exp"
+                 response_fn: str = "relu"
                  ):
 
         # When a custom objective and metric are provided, XGBoost doesn't know its response and link function. Hence,
@@ -32,16 +29,19 @@ class Gamma:
         elif response_fn == "softplus":
             response_fn = softplus_fn
             inverse_response_fn = softplusinv_fn
+        elif response_fn == "relu":
+            response_fn = relu_fn
+            inverse_response_fn = reluinv_fn
         else:
-            raise ValueError("Invalid response function. Please choose from 'exp' or 'softplus'.")
+            raise ValueError("Invalid response function for total_count. Please choose from 'exp', 'softplus' or relu.")
 
         # Specify Response and Link Functions
-        param_dict = {"concentration": response_fn, "rate": response_fn}
-        param_dict_inv = {"concentration": inverse_response_fn, "rate": inverse_response_fn}
+        param_dict = {"rate": response_fn}
+        param_dict_inv = {"rate": inverse_response_fn}
         distribution_arg_names = list(param_dict.keys())
 
         # Specify Distribution
-        self.dist_class = DistributionClass(distribution=Gamma_Torch,
+        self.dist_class = DistributionClass(distribution=Poisson_Torch,
                                             n_dist_param=len(param_dict),
                                             stabilization=stabilization,
                                             param_dict=param_dict,

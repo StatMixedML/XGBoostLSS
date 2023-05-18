@@ -1,22 +1,22 @@
-from torch.distributions import Gamma as Gamma_Torch
+from torch.distributions import Weibull as Weibull_Torch
 from xgboostlss.utils import *
 from .distribution_utils import *
 
 
-class Gamma:
+class Weibull:
     """
-    Gamma distribution class.
+    Weibull distribution class.
 
-     Distributional Parameters
-    --------------------------
+    Distributional Parameters
+    -------------------------
+    scale: torch.Tensor
+        Scale parameter of distribution (lambda).
     concentration: torch.Tensor
-        shape parameter of the distribution (often referred to as alpha)
-    rate: torch.Tensor
-        rate = 1 / scale of the distribution (often referred to as beta)
+        Concentration parameter of distribution (k/shape).
 
     Source
     -------------------------
-    https://pytorch.org/docs/stable/distributions.html#gamma
+    https://pytorch.org/docs/stable/distributions.html#weibull
     """
     def __init__(self,
                  stabilization: str,
@@ -36,12 +36,12 @@ class Gamma:
             raise ValueError("Invalid response function. Please choose from 'exp' or 'softplus'.")
 
         # Specify Response and Link Functions
-        param_dict = {"concentration": response_fn, "rate": response_fn}
-        param_dict_inv = {"concentration": inverse_response_fn, "rate": inverse_response_fn}
+        param_dict = {"scale": response_fn, "concentration": response_fn}
+        param_dict_inv = {"scale": inverse_response_fn, "concentration": inverse_response_fn}
         distribution_arg_names = list(param_dict.keys())
 
         # Specify Distribution
-        self.dist_class = DistributionClass(distribution=Gamma_Torch,
+        self.dist_class = DistributionClass(distribution=Weibull_Torch,
                                             n_dist_param=len(param_dict),
                                             stabilization=stabilization,
                                             param_dict=param_dict,

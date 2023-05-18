@@ -1,10 +1,14 @@
 """XGBoostLSS - An extension of XGBoost to probabilistic forecasting"""
 
-from xgboostlss.distributions.Gaussian import *
-from xgboostlss.distributions.Gaussian_AutoGrad import *
-from xgboostlss.distributions.StudentT import *
-from xgboostlss.distributions.BCT import *
-from xgboostlss.distributions.Beta import *
-from xgboostlss.distributions.NegativeBinomial import *
-from xgboostlss.distributions.Expectile import *
-from xgboostlss.distributions.Gamma import *
+from . import distribution_utils
+from . import Gaussian
+from . import StudentT
+from . import Gamma
+from . import Gumbel
+from . import Laplace
+from . import Weibull
+from . import Beta
+from . import NegativeBinomial
+from . import Poisson
+from . import Expectile
+
