@@ -21,7 +21,7 @@ setup(
         "optuna~=3.1.1",
         "properscoring~=0.1",
         "scikit-learn~=1.2.2",
-        "git+https://github.com/dsgibbons/shap.git",
+        # "git+https://github.com/dsgibbons/shap.git",
         "numpy~=1.24.3",
         "pandas~=2.0.1",
         "plotnine~=0.12.1",
