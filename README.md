@@ -22,12 +22,12 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 :boom: [2021-11-14] XGBoostLSS v0.1.0 is released!
 
 ## Installation
-To install XGBoostLSS, please first use 
+Please first use 
 
 ```python
 pip install git+https://github.com/dsgibbons/shap.git
 ```
-Now you can install XGBoostLSS 
+Now install XGBoostLSS 
 ```python
 pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 ```
