@@ -21,10 +21,21 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 :white_check_mark: The output of XGBoostLSS is explained using [SHapley Additive exPlanations](https://github.com/slundberg/shap). <br/>
 :white_check_mark: XGBoostLSS is available in Python. <br/>
 
-## Work in Progress
-:construction: Functions that facilitates the choice and evaluation of a candidate distribution (e.g., quantile residual plots, ...). <br/>
-:construction: Estimation of full predictive distribution without relying on a distributional assumption.  <br/>
- 
+## Installation
+To install XGBoostLSS, please first use 
+
+```python
+pip install git+https://github.com/dsgibbons/shap.git
+```
+Now you can install XGBoostLSS 
+```python
+pip install git+https://github.com/StatMixedML/XGBoostLSS.git
+```
+To ensure a proper installation of XGBoostLSS, it is crucial to **follow the correct installation order from above and avoid installing it in a directory or conda/venv environment that already contains "xgboost/xgboostlss" or any other name related to XGBoost**. This precaution is necessary as the current dependency, https://github.com/dsgibbons/shap.git, may not disable cuda building in its `setup()` call, resulting in potential installation issues.
+
+## How to use
+We refer to the [example section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for example notebooks.
+
 ## Available Distributions
 XGBoostLSS currently supports the following [PyTorch distributions](https://pytorch.org/docs/stable/distributions.html).
 
@@ -41,7 +52,6 @@ XGBoostLSS currently supports the following [PyTorch distributions](https://pyto
 | Student-T                                 | `StudentT()`              | Continous <br /> (Univariate)          | $y \in (-\infty,\infty)$        | 
 | Weibull                                   | `Weibull()`               | Continous <br /> (Univariate)          | $y \in [0, \infty)$             | 
 
-
 ## Some Notes
 ### Stabilization
 Since XGBoostLSS updates the parameter estimates by optimizing Gradients and Hessians, it is important that these are comparable in magnitude for all distributional parameters. Due to variability regarding the ranges, the estimation of Gradients and Hessians might become unstable so that XGBoostLSS might not converge or might converge very slowly. To mitigate these effects, we have implemented a stabilization of Gradients and Hessians. 
@@ -51,28 +61,25 @@ For improved convergence, an alternative approach is to standardize the (continu
 ### Runtime
 Since XGBoostLSS updates all distributional parameters simultaneously, it requires training ```[number of iterations] * [number of distributional parameters]``` trees. Hence, the runtime of XGBoostLSS is generally slightly higher as compared to XGBoost, which requires training ```[number of iterations]``` trees only. 
 
-### Feedback
+## Work in Progress
+:construction: Functions that facilitates the choice and evaluation of a candidate distribution (e.g., quantile residual plots, ...). <br/>
+:construction: Estimation of full predictive distribution without relying on a distributional assumption.  <br/>
+
+## Feedback
 We encourage you to provide feedback on how to enhance XGBoostLSS or request the implementation of additional distributions by opening a new issue.
 
-## Installation
-To install XGBoostLSS, please first use 
-
-```python
-pip install git+https://github.com/dsgibbons/shap.git
-```
-Now you can install XGBoostLSS 
-```python
-pip install git+https://github.com/StatMixedML/XGBoostLSS.git
-```
-To ensure a proper installation of XGBoostLSS, it is crucial to **follow the correct installation order from above and avoid installing it in a directory or conda/venv environment that already contains "xgboost/xgboostlss" or any other name related to XGBoost**. This precaution is necessary as the current dependency, https://github.com/dsgibbons/shap.git, may not disable cuda building in its `setup()` call, resulting in potential installation issues.
-
-## How to use
-We refer to the [examples section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for example notebooks.
-
 ## Reference Paper
+
+März, Alexander (2022) [*Multi-Target XGBoostLSS Regression*](https://arxiv.org/abs/2210.06831). <br/>
+März, A. and Kneib, T. (2022) [*"Distributional Gradient Boosting Machines"*](https://arxiv.org/abs/2204.00778). <br/>
+März, Alexander (2019) [*XGBoostLSS - An extension of XGBoost to probabilistic forecasting*](https://arxiv.org/abs/1907.03178). 
+
+
+<!---
 [![Arxiv link](https://img.shields.io/badge/arXiv-Multi%20Target%20XGBoostLSS%20Regression-color=brightgreen)](https://arxiv.org/abs/2210.06831) <br/>
 [![Arxiv link](https://img.shields.io/badge/arXiv-Distributional%20Gradient%20Boosting%20Machines-color=brightgreen)](https://arxiv.org/abs/2204.00778) <br/>
 [![Arxiv link](https://img.shields.io/badge/arXiv-XGBoostLSS%3A%20An%20extension%20of%20XGBoost%20to%20probabilistic%20forecasting-color=brightgreen)](https://arxiv.org/abs/1907.03178) <br/>
+--->
 
 <!---
 März, Alexander (2022) [*Multi-Target XGBoostLSS Regression*](https://arxiv.org/abs/2210.06831). <br/>
