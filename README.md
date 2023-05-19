@@ -26,7 +26,7 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 :construction: Estimation of full predictive distribution without relying on a distributional assumption.  <br/>
  
 ## Available Distributions
-XGBoostLSS currently supports the following PyTorch distributions.
+XGBoostLSS currently supports the following [PyTorch distributions](https://pytorch.org/docs/stable/distributions.html).
 
 | Distribution                              |  Usage                    |Type                                    | Support                   
 | :---------------------------------------: |:------------------------: |:-------------------------------------: | :-----------------------------: | 
