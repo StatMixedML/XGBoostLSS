@@ -55,10 +55,11 @@ Since XGBoostLSS updates all distributional parameters simultaneously, it requir
 We encourage you to provide feedback on how to enhance XGBoostLSS or request the implementation of additional distributions by opening a new issue.
 
 ## Installation
+To install XGBoostLSS, please use
 ```python
 pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 ```
-XGBoostLSS currently relies on https://github.com/dsgibbons/shap.git. For this package to be properly installed, **please avoid installing xgboostlss in a directory/path or conda/venv environment that contains "xgboost/xgboostlss" or any other xgboost related name**. Otherwise, the `dsgibbons/shap` won't turn off cuda building in `dsgibbons/shap setup()` call and xgboostlss won't install properly. 
+XGBoostLSS currently relies on https://github.com/dsgibbons/shap.git. For this package to be properly installed, **please avoid installing xgboostlss in a directory/path or conda/venv environment that contains "xgboost/xgboostlss" or any other xgboost related name**. Otherwise, the `dsgibbons/shap` won't turn off cuda building in `dsgibbons/shap setup()` call and XGBoostLSS will likely not install properly. 
 
 ## How to use
 We refer to the [examples section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for example notebooks.
