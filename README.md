@@ -55,7 +55,12 @@ Since XGBoostLSS updates all distributional parameters simultaneously, it requir
 We encourage you to provide feedback on how to enhance XGBoostLSS or request the implementation of additional distributions by opening a new issue.
 
 ## Installation
-To install XGBoostLSS, please use
+To install XGBoostLSS, please first intall 
+
+```python
+pip install git+https://github.com/dsgibbons/shap.git
+```
+Now you can install XGBoostLSS using
 ```python
 pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 ```
