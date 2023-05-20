@@ -39,18 +39,18 @@ We refer to the [example section](https://github.com/StatMixedML/XGBoostLSS/tree
 ## Available Distributions
 XGBoostLSS currently supports the following [PyTorch distributions](https://pytorch.org/docs/stable/distributions.html).
 
-| Distribution                              |  Usage                    |Type                                    | Support                   
-| :---------------------------------------: |:------------------------: |:-------------------------------------: | :-----------------------------: | 
-| Beta                                      | `Beta()`                  | Continous <br /> (Univariate)          | $y \in (0, 1)$                  | 
-| Expectile                                 | `Expectile()`             | Continous <br /> (Univariate)          | $y \in (-\infty,\infty)$        |
-| Gamma                                     | `Gamma()`                 | Continous <br /> (Univariate)          | $y \in (0, \infty)$             | 
-| Gaussian                                  | `Gaussian()`              | Continous <br /> (Univariate)          | $y \in (-\infty,\infty)$        | 
-| Gumbel                                    | `Gumbel()`                | Continous <br /> (Univariate)          | $y \in (-\infty,\infty)$        | 
-| Laplace                                   | `Laplace()`               | Continous <br /> (Univariate)          | $y \in (-\infty,\infty)$        | 
-| Negative Binomial                         | `NegativeBinomial()`      | Discrete Count <br /> (Univariate)     | $y \in (0, 1, 2, 3, ...)$       | 
-| Poisson                                   | `Poisson()`               | Discrete Count <br /> (Univariate)     | $y \in (0, 1, 2, 3, ...)$       | 
-| Student-T                                 | `StudentT()`              | Continous <br /> (Univariate)          | $y \in (-\infty,\infty)$        | 
-| Weibull                                   | `Weibull()`               | Continous <br /> (Univariate)          | $y \in [0, \infty)$             | 
+| Distribution                                                                                                                            Usage                    |Type                                    | Support                   
+| :----------------------------------------------------------------------------------------------------------------------------------: |:------------------------: |:-------------------------------------: | :-----------------------------: | 
+| [Beta](https://pytorch.org/docs/stable/distributions.html#beta)                                                                      | `Beta()`                  | Continous <br /> (Univariate)          | $y \in (0, 1)$                  | 
+| [Expectile](https://epub.ub.uni-muenchen.de/31542/1/1471082x14561155.pdf)                                                            | `Expectile()`             | Continous <br /> (Univariate)          | $y \in (-\infty,\infty)$        |
+| [Gamma](https://pytorch.org/docs/stable/distributions.html#gamma)                                                                    | `Gamma()`                 | Continous <br /> (Univariate)          | $y \in (0, \infty)$             | 
+| [Gaussian](https://pytorch.org/docs/stable/distributions.html#normal)                                                                | `Gaussian()`              | Continous <br /> (Univariate)          | $y \in (-\infty,\infty)$        | 
+| [Gumbel](https://pytorch.org/docs/stable/distributions.html#gumbel)                                                                  | `Gumbel()`                | Continous <br /> (Univariate)          | $y \in (-\infty,\infty)$        | 
+| [Laplace](https://pytorch.org/docs/stable/distributions.html#laplace)                                                                | `Laplace()`               | Continous <br /> (Univariate)          | $y \in (-\infty,\infty)$        | 
+| [Negative Binomial](https://pytorch.org/docs/stable/distributions.html#negativebinomial)                                             | `NegativeBinomial()`      | Discrete Count <br /> (Univariate)     | $y \in (0, 1, 2, 3, ...)$       | 
+| [Poisson](https://pytorch.org/docs/stable/distributions.html#poisson)                                                                | `Poisson()`               | Discrete Count <br /> (Univariate)     | $y \in (0, 1, 2, 3, ...)$       | 
+| [Student-T](https://pytorch.org/docs/stable/distributions.html#studentt)                                                             | `StudentT()`              | Continous <br /> (Univariate)          | $y \in (-\infty,\infty)$        | 
+| [Weibull](https://pytorch.org/docs/stable/distributions.html#weibull)                                                                | `Weibull()`               | Continous <br /> (Univariate)          | $y \in [0, \infty)$             | 
 
 ## Some Notes
 ### Stabilization
