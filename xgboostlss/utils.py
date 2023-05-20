@@ -1,107 +1,177 @@
-import numpy as np
 import torch
-from torch.autograd import grad
 
-###
-# Response Functions
-###
-def identity(predt: np.ndarray):
-    """Identity mapping of predt .
 
+def identity_fn(predt: torch.tensor) -> torch.tensor:
     """
-    return predt
+    Identity mapping of predt.
 
-
-def soft_plus(predt: np.ndarray):
-    """Softplus function used to ensure predt is strictly positive.
-
-    """
-    predt = np.log1p(np.exp(-np.abs(predt))) + np.maximum(predt, 0)
-    predt[predt == 0] = 1e-8
-    return predt
-
-
-def soft_plus_inv(predt: np.ndarray):
-    """Inverse of softplus function.
-
-    """
-    predt = np.log(np.exp(predt) - 1)
-    return predt
-
-
-
-###
-# Stabilization of Gradient and Hessian
-###
-def stabilize_derivative(input_der: np.ndarray,  type: str = "None"):
-    """Function that stabilizes Gradients and Hessians.
-
-    As XGBoostLSS updates the parameter estimates by optimizing Gradients and Hessians, it is important
-    that these are comparable in magnitude for all distributional parameters. Due to imbalances regarding the ranges,
-    the algorithm might become unstable so that it does not converge (or converge very slowly) to the optimal solution.
-
-    Another way to improve convergence might be to standardize the response variable. This is especially useful if the
-    range of the response differs strongly from the range of the Gradients and Hessians. Both, the stabilization and
-    the standardization of the response are not always advised but need to be carefully considered given the data at hand.
-
-    Source: https://github.com/boost-R/gamboostLSS/blob/7792951d2984f289ed7e530befa42a2a4cb04d1d/R/helpers.R#L173
-
-
-
-    Parameters
-    ----------
-    input_der : np.ndarray
-        Either Gradient or Hessian.
-    type: str
-        Stabilization method. Can be either "None", "MAD" or "L2".
+    Arguments
+    ---------
+    predt: torch.tensor
+        Predicted values.
 
     Returns
     -------
-    stab_der : np.ndarray
-        Stabilized Gradient or Hessian.
-
+    predt: torch.tensor
+        Predicted values.
     """
-
-    if type == "MAD":
-        div = np.nanmedian(np.abs(input_der - np.nanmedian(input_der)))
-        div = np.where(div < 1e-04, 1e-04, div)
-        stab_der = input_der/div
-
-    if type == "L2":
-        div = np.sqrt(np.nanmean(input_der**2))
-        div = np.where(div < 1e-04, 1e-04, div)
-        div = np.where(div > 10000, 10000, div)
-        stab_der = input_der/div
-
-    if type == "None":
-        stab_der = input_der
-
-    return stab_der
+    return predt
 
 
+def exp_fn(predt: torch.tensor) -> torch.tensor:
+    """
+    Exponential function used to ensure predt is strictly positive.
 
-def auto_grad(metric: torch.Tensor, parameter: torch.Tensor, n: int):
-    """Function for automatic differentiation and calculation of derivatives using PyTorch AutoGrad.
-
-    Parameters
-    ----------
-    metric: Tensor
-        Input, usually sum of negative log-likelihood.
-    parameter: Tensor
-        Distributional parameter for which to calculate derivative.
-    n: int
-        Order of derivative: 1=Gradient, 2=Hessian.
+    Arguments
+    ---------
+    predt: torch.tensor
+        Predicted values.
 
     Returns
     -------
-    deriv : Tensor
-        Tensor of derivatives.
+    predt: torch.tensor
+        Predicted values.
+    """
+    predt = torch.exp(predt)
+    predt = torch.nan_to_num(predt, nan=float(torch.nanmean(predt))) + torch.tensor(1e-6, dtype=predt.dtype)
 
+    return predt
+
+
+def log_fn(predt: torch.tensor) -> torch.tensor:
+    """
+    Inverse of exp_fn function.
+
+    Arguments
+    ---------
+    predt: torch.tensor
+        Predicted values.
+
+    Returns
+    -------
+    predt: torch.tensor
+        Predicted values.
+    """
+    predt = torch.log(predt)
+    predt = torch.nan_to_num(predt, nan=float(torch.nanmean(predt))) + float(1e-6)
+
+    return predt
+
+
+def softplus_fn(predt: torch.tensor) -> torch.tensor:
+    """
+    Softplus function used to ensure predt is strictly positive.
+
+    Arguments
+    ---------
+    predt: torch.tensor
+        Predicted values.
+
+    Returns
+    -------
+    predt: torch.tensor
+        Predicted values.
+    """
+    predt = torch.log1p(torch.exp(-torch.abs(predt))) + torch.maximum(predt, torch.tensor(0.))
+    predt[predt == 0] = torch.tensor(1e-6, dtype=predt.dtype)
+    predt = torch.nan_to_num(predt, nan=float(torch.nanmean(predt))) + torch.tensor(1e-6, dtype=predt.dtype)
+
+    return predt
+
+
+def softplusinv_fn(predt: torch.tensor) -> torch.tensor:
+    """
+    Inverse of softplus_fn function.
+
+    Arguments
+    ---------
+    predt: torch.tensor
+        Predicted values.
+
+    Returns
+    -------
+    predt: torch.tensor
+        Predicted values.
+    """
+    predt = predt + torch.log(-torch.expm1(-predt))
+    predt = torch.nan_to_num(predt, nan=float(torch.nanmean(predt))) + torch.tensor(1e-6, dtype=predt.dtype)
+
+    return predt
+
+
+def sigmoid_fn(predt: torch.tensor) -> torch.tensor:
+    """
+    Function used to ensure predt are scaled to (0,1).
+
+    Arguments
+    ---------
+    predt: torch.tensor
+        Predicted values.
+
+    Returns
+    -------
+    predt: torch.tensor
+        Predicted values.
+    """
+    predt = torch.sigmoid(predt)
+    predt = torch.nan_to_num(predt, nan=float(torch.nanmean(predt))) + torch.tensor(1e-6, dtype=predt.dtype)
+
+    return predt
+
+def sigmoidinv_fn(predt: torch.tensor) -> torch.tensor:
+    """
+    Inverse of sigmoid_fn function.
+
+    Arguments
+    ---------
+    predt: torch.tensor
+        Predicted values.
+
+    Returns
+    -------
+    predt: torch.tensor
+        Predicted values.
+    """
+    predt = torch.log(predt / (1 - predt))
+    predt = torch.nan_to_num(predt, nan=float(torch.nanmean(predt))) + torch.tensor(1e-6, dtype=predt.dtype)
+
+    return predt
+
+def relu_fn(predt: torch.tensor) -> torch.tensor:
+    """
+    Function used to ensure predt are scaled to max(0, predt).
+
+    Arguments
+    ---------
+    predt: torch.tensor
+        Predicted values.
+
+    Returns
+    -------
+    predt: torch.tensor
+        Predicted values.
+    """
+    predt = torch.relu(predt)
+    predt = torch.nan_to_num(predt, nan=float(torch.nanmean(predt))) + torch.tensor(1e-6, dtype=predt.dtype)
+
+    return predt
+
+def reluinv_fn(predt: torch.tensor) -> torch.tensor:
+    """
+    Inverse of relu_fn function. Since ReLU sets all negative values to zero, it loses information about the sign of
+    the input. Therefore, it is not possible to uniquely recover the original input from the output of the ReLU
+    function. As a result, the ReLU function does not have a direct inverse. Hence, we use the identity function as
+    the inverse of the ReLU function.
+
+    Arguments
+    ---------
+    predt: torch.tensor
+        Predicted values.
+
+    Returns
+    -------
+    predt: torch.tensor
+        Predicted values.
     """
 
-    for i in range(n):
-        deriv = grad(metric, parameter, create_graph=True)[0]
-        metric = deriv.nansum()
-    deriv_np = np.round(deriv.detach().numpy(), 5)
-
-    return deriv_np
+    return predt
