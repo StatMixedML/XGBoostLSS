@@ -22,16 +22,16 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 :boom: [2021-11-14] XGBoostLSS v0.1.0 is released!
 
 ## Installation
-Please first use 
+To ensure a proper installation of XGBoostLSS, it is crucial to **follow the correct installation order from below and avoid installing it in a directory or conda/venv environment that already contains "xgboost/xgboostlss" or any other name related to XGBoost**. This precaution is necessary as the current dependency, https://github.com/dsgibbons/shap.git, may not disable cuda building in its `setup()` call, resulting in potential installation issues.
 
 ```python
+# Please first use 
 pip install git+https://github.com/dsgibbons/shap.git
-```
-Now install XGBoostLSS 
-```python
+
+# Now install XGBoostLSS 
 pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 ```
-To ensure a proper installation of XGBoostLSS, it is crucial to **follow the correct installation order from above and avoid installing it in a directory or conda/venv environment that already contains "xgboost/xgboostlss" or any other name related to XGBoost**. This precaution is necessary as the current dependency, https://github.com/dsgibbons/shap.git, may not disable cuda building in its `setup()` call, resulting in potential installation issues.
+
 
 ## How to use
 We refer to the [example section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for example notebooks.
