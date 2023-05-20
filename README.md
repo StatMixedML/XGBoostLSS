@@ -39,7 +39,7 @@ We refer to the [example section](https://github.com/StatMixedML/XGBoostLSS/tree
 ## Available Distributions
 XGBoostLSS currently supports the following [PyTorch distributions](https://pytorch.org/docs/stable/distributions.html).
 
-| Distribution                                                                                                                            Usage                    |Type                                    | Support                   
+| Distribution                                                                                                                         |   Usage                   |Type                                    | Support                         |                   
 | :----------------------------------------------------------------------------------------------------------------------------------: |:------------------------: |:-------------------------------------: | :-----------------------------: | 
 | [Beta](https://pytorch.org/docs/stable/distributions.html#beta)                                                                      | `Beta()`                  | Continous <br /> (Univariate)          | $y \in (0, 1)$                  | 
 | [Expectile](https://epub.ub.uni-muenchen.de/31542/1/1471082x14561155.pdf)                                                            | `Expectile()`             | Continous <br /> (Univariate)          | $y \in (-\infty,\infty)$        |
@@ -50,7 +50,7 @@ XGBoostLSS currently supports the following [PyTorch distributions](https://pyto
 | [Negative Binomial](https://pytorch.org/docs/stable/distributions.html#negativebinomial)                                             | `NegativeBinomial()`      | Discrete Count <br /> (Univariate)     | $y \in (0, 1, 2, 3, ...)$       | 
 | [Poisson](https://pytorch.org/docs/stable/distributions.html#poisson)                                                                | `Poisson()`               | Discrete Count <br /> (Univariate)     | $y \in (0, 1, 2, 3, ...)$       | 
 | [Student-T](https://pytorch.org/docs/stable/distributions.html#studentt)                                                             | `StudentT()`              | Continous <br /> (Univariate)          | $y \in (-\infty,\infty)$        | 
-| [Weibull](https://pytorch.org/docs/stable/distributions.html#weibull)                                                                | `Weibull()`               | Continous <br /> (Univariate)          | $y \in [0, \infty)$             | 
+| [Weibull](https://pytorch.org/docs/stable/distributions.html#weibull)                                                                | `Weibull()`               | Continous <br /> (Univariate)          | $y \in [0, \infty)$             |
 
 ## Some Notes
 ### Stabilization
