@@ -41,6 +41,8 @@ class Gaussian:
 
         # Specify Distribution
         self.dist_class = DistributionClass(distribution=Gaussian_Torch,
+                                            univariate=True,
+                                            discrete=False,
                                             n_dist_param=len(param_dict),
                                             stabilization=stabilization,
                                             param_dict=param_dict,
