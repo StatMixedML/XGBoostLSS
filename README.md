@@ -27,7 +27,7 @@ To install XGBoostLSS, please first run
 ```python
 pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 ```
-Then, to install the shap dependency, run
+Then, to install the shap-dependency, run
 ```python
 pip install git+https://github.com/dsgibbons/shap.git
 ```
