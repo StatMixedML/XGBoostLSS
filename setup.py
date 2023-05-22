@@ -24,10 +24,13 @@ setup(
         "numpy~=1.24.3",
         "pandas~=2.0.1",
         "plotnine~=0.12.1",
-        "git+https://github.com/dsgibbons/shap.git",
+        "shap",
         "scipy",
         "tqdm",
         "matplotlib",
+    ],
+    dependency_links=[
+        "git+https://github.com/dsgibbons/shap.git"
     ],
     test_suite="tests",
     tests_require=["flake8", "pytest"],
