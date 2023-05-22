@@ -11,4 +11,5 @@ from . import Beta
 from . import NegativeBinomial
 from . import Poisson
 from . import Expectile
+from . import Cauchy
 
