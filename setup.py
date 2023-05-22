@@ -24,6 +24,7 @@ setup(
         "numpy~=1.24.3",
         "pandas~=2.0.1",
         "plotnine~=0.12.1",
+        "git+https://github.com/dsgibbons/shap.git",
         "scipy",
         "tqdm",
         "matplotlib",
