@@ -17,6 +17,10 @@ class DistributionClass:
     ---------
     distribution: torch.distributions.Distribution
         PyTorch Distribution class.
+    univariate: bool
+        Whether the distribution is univariate or multivariate.
+    discrete: bool
+        Whether the support of the distribution is discrete or continuous.
     n_dist_param: int
         Number of distributional parameters.
     stabilization: str
@@ -33,6 +37,8 @@ class DistributionClass:
     """
     def __init__(self,
                  distribution: torch.distributions.Distribution = None,
+                 univariate: bool = True,
+                 discrete: bool = False,
                  n_dist_param: int = None,
                  stabilization: str = "None",
                  param_dict: Dict[str, Any] = None,
@@ -42,6 +48,8 @@ class DistributionClass:
                  ):
 
         self.distribution = distribution
+        self.univariate = univariate
+        self.discrete = discrete
         self.n_dist_param = n_dist_param
         self.stabilization = stabilization
         self.param_dict = param_dict
@@ -206,8 +214,9 @@ class DistributionClass:
 
     def draw_samples(self,
                      predt_params: pd.DataFrame,
-                     n_samples: int,
-                     seed: int) -> pd.DataFrame:
+                     n_samples: int = 1000,
+                     seed: int = 123
+                     ) -> pd.DataFrame:
         """
         Function that draws n_samples from a predicted distribution.
 
@@ -237,6 +246,9 @@ class DistributionClass:
             dist_samples.columns = [str("y_sample") + str(i) for i in range(dist_samples.shape[1])]
         else:
             dist_samples = None
+
+        if self.discrete:
+            dist_samples = dist_samples.astype(int)
 
         return dist_samples
 

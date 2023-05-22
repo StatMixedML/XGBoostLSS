@@ -462,6 +462,8 @@ class XGBoostLSS:
         elif pred_type == "quantiles":
             pred_quant_df = pred_samples_df.quantile(quantiles, axis=1).T
             pred_quant_df.columns = [str("quant_") + str(quantiles[i]) for i in range(len(quantiles))]
+            if self.dist.discrete:
+                pred_quant_df = pred_quant_df.astype(int)
             return pred_quant_df
 
     def plot(self,
