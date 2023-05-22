@@ -23,11 +23,14 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 :boom: [2021-11-14] XGBoostLSS v0.1.0 is released!
 
 ## Installation
-
+To install XGBoostLSS, please first run
 ```python
 pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 ```
-
+Then, to install the shap dependency, run
+```python
+pip install git+https://github.com/dsgibbons/shap.git
+```
 
 ## How to use
 We refer to the [example section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for example notebooks.
