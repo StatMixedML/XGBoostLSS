@@ -62,9 +62,11 @@ For improved convergence, an alternative approach is to standardize the (continu
 ### Runtime
 Since XGBoostLSS updates all distributional parameters simultaneously, it requires training ```[number of iterations] * [number of distributional parameters]``` trees. Hence, the runtime of XGBoostLSS is generally slightly higher as compared to XGBoost, which requires training ```[number of iterations]``` trees only. 
 
+<!---
 ## Work in Progress
 :construction: Functions that facilitates the choice and evaluation of a candidate distribution (e.g., quantile residual plots, ...). <br/>
 :construction: Estimation of full predictive distribution without relying on a distributional assumption.  <br/>
+--->
 
 ## Feedback
 We encourage you to provide feedback on how to enhance XGBoostLSS or request the implementation of additional distributions by opening a new issue.
