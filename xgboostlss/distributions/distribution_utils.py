@@ -8,6 +8,9 @@ import xgboost as xgb
 
 from typing import Any, Dict, Optional, List, Tuple
 
+import plotnine
+from plotnine import *
+
 
 class DistributionClass:
     """
@@ -123,6 +126,8 @@ class DistributionClass:
 
         Returns
         -------
+        nll: float
+            Negative log-likelihood.
         start_values: np.ndarray
             Starting values for each distributional parameter.
         """
@@ -150,7 +155,7 @@ class DistributionClass:
             loss.backward()
             return loss
 
-        optimizer.step(closure)
+        nll = optimizer.step(closure).detach().numpy()
 
         # Transform parameters to inverse response scale
         start_values = np.array(
@@ -158,7 +163,7 @@ class DistributionClass:
              for i, (dist_param, inv_response_fun) in enumerate(self.param_dict_inv.items())]
         )
 
-        return start_values
+        return nll, start_values
 
     def get_params_nll(self,
                        predt: np.ndarray,
@@ -241,7 +246,7 @@ class DistributionClass:
             pred_params = torch.tensor(predt_params.values)
             dist_kwargs = {arg_name: param for arg_name, param in zip(self.distribution_arg_names, pred_params.T)}
             dist_pred = self.distribution(**dist_kwargs)
-            dist_samples = dist_pred.sample((n_samples,)).squeeze().T.detach().numpy()
+            dist_samples = dist_pred.sample((n_samples,)).squeeze().detach().numpy().T
             dist_samples = pd.DataFrame(dist_samples)
             dist_samples.columns = [str("y_sample") + str(i) for i in range(dist_samples.shape[1])]
         else:
@@ -347,3 +352,90 @@ def stabilize_derivative(input_der: torch.Tensor, type: str = "MAD") -> torch.Te
         stab_der = torch.nan_to_num(input_der, nan=float(torch.nanmean(input_der)))
 
     return stab_der
+
+
+def dist_select(target: np.ndarray,
+                candidate_distributions: list,
+                plot: bool = False,
+                figure_size: tuple = (10, 5),
+                ) -> pd.DataFrame:
+    """
+    Function that selects the most suitable distribution among the candidate_distributions for the target variable,
+    based on the NegLogLikelihood (lower is better).
+
+    Parameters
+    ----------
+    target: np.ndarray
+        Response variable.
+    candidate_distributions: List
+        List of candidate distributions.
+    plot: bool
+        If True, a density plot of the actual and fitted distribution is created.
+    figure_size: tuple
+        Figure size of the density plot.
+
+    Returns
+    -------
+    dist_nll: pd.DataFrame
+        Dataframe with the negative log-likelihoods of the fitted candidate distributions.
+    """
+    dist_list = []
+    for i in range(len(candidate_distributions)):
+        dist_name = candidate_distributions[i].__name__.split(".")[2]
+        dist_sel = getattr(candidate_distributions[i], dist_name)().dist_class
+        nll, params = dist_sel.calculate_start_values(target)
+        dist_nll = pd.DataFrame.from_dict({"NegLogLikelihood": nll.reshape(-1,),
+                                           "distribution": str(dist_name)
+                                           })
+        dist_nll["params"] = [params] * len(dist_nll)
+        dist_list.append(dist_nll)
+        dist_nll = pd.concat(dist_list).sort_values(by="NegLogLikelihood", ascending=True)
+        dist_nll["rank"] = dist_nll["NegLogLikelihood"].rank().astype(int)
+        dist_nll.set_index(dist_nll["rank"], inplace=True)
+
+    if plot:
+        # Select best distribution
+        best_dist = dist_nll[dist_nll["rank"] == 1].reset_index(drop=True)
+        for dist in candidate_distributions:
+            if dist.__name__.split(".")[2] == best_dist["distribution"].values[0]:
+                best_dist_sel = dist
+                break
+        best_dist_sel = getattr(best_dist_sel, best_dist["distribution"].values[0])().dist_class
+        params = torch.tensor(best_dist["params"][0]).reshape(-1, best_dist_sel.n_dist_param)
+
+        # Transform parameters to the response scale and draw samples
+        fitted_params = np.concatenate(
+            [
+                response_fun(params[:, i].reshape(-1, 1)).numpy()
+                for i, (dist_param, response_fun) in enumerate(best_dist_sel.param_dict.items())
+            ],
+            axis=1,
+        )
+        fitted_params = pd.DataFrame(fitted_params, columns=best_dist_sel.param_dict.keys())
+        fitted_params.columns = best_dist_sel.param_dict.keys()
+        dist_samples = best_dist_sel.draw_samples(fitted_params,
+                                                  n_samples=1000,
+                                                  seed=123).values
+
+        # Plot actual and fitted distribution
+        plot_df_actual = pd.DataFrame({"y": target, "type": "Actual"})
+        plot_df_fitted = pd.DataFrame({"y": dist_samples.reshape(-1,),
+                                       "type": f"Best-Fit: {best_dist['distribution'].values[0]}"})
+        plot_df = pd.concat([plot_df_actual, plot_df_fitted])
+
+        print(
+            ggplot(plot_df,
+                   aes(x="y",
+                       color="type")) +
+            geom_density(alpha=0.5) +
+            theme_bw(base_size=15) +
+            theme(figure_size=figure_size,
+                  legend_position="right",
+                  legend_title=element_blank(),
+                  plot_title=element_text(hjust=0.5)) +
+            labs(title=f"Actual vs. Fitted Density")
+        )
+
+    dist_nll.drop(columns=["rank", "params"], inplace=True)
+
+    return dist_nll
