@@ -16,15 +16,17 @@ class Expectile:
     expectile: List
         List of specified expectiles.
 
+    Parameters
+    -------------------------
+    stabilization: str
+        Stabilization method for the Gradient and Hessian. Options are "None", "MAD", "L2".
+    expectiles: List
+        List of expectiles.
     """
     def __init__(self,
-                 stabilization: str,
-                 expectiles: List
+                 stabilization: str = "None",
+                 expectiles: List = [0.1, 0.5, 0.9],
                  ):
-
-        # When a custom objective and metric are provided, XGBoost doesn't know its response and link function. Hence,
-        # the user is responsible for specifying the transformations.
-
         # Specify Response and Link Functions
         param_dict = {}
         for expectile in expectiles:

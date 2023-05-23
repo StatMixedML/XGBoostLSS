@@ -19,16 +19,24 @@ class NegativeBinomial:
     Source
     -------------------------
     https://pytorch.org/docs/stable/distributions.html#negativebinomial
+
+    Parameters
+    -------------------------
+    stabilization: str
+        Stabilization method for the Gradient and Hessian. Options are "None", "MAD", "L2".
+    response_fn_total_count: str
+        When a custom objective and metric are provided, XGBoost doesn't know its response and link function. Hence,
+        the user is responsible for specifying the transformations. Options are "exp", "softplus" or "relu".
+    response_fn_probs: str
+        When a custom objective and metric are provided, XGBoost doesn't know its response and link function. Hence,
+        the user is responsible for specifying the transformations. Options are "sigmoid".
+
     """
     def __init__(self,
-                 stabilization: str,
+                 stabilization: str = "None",
                  response_fn_total_count: str = "relu",
                  response_fn_probs: str = "sigmoid"
                  ):
-
-        # When a custom objective and metric are provided, XGBoost doesn't know its response and link function. Hence,
-        # the user is responsible for specifying the transformations.
-
         # Specify Response and Link Functions for total_count
         if response_fn_total_count == "exp":
             response_fn_total_count = exp_fn

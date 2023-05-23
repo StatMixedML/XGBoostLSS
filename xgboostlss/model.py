@@ -119,7 +119,7 @@ class XGBoostLSS:
             params.update(params_adj)
 
             # Set base_margin as starting point for each distributional parameter. Requires base_score=0 in parameters.
-            self.start_values = self.dist.calculate_start_values(dtrain.get_label())
+            _, self.start_values = self.dist.calculate_start_values(dtrain.get_label())
             base_margin = (np.ones(shape=(dtrain.num_row(), 1))) * self.start_values
             dtrain.set_base_margin(base_margin.flatten())
 
@@ -229,7 +229,7 @@ class XGBoostLSS:
         params.update(params_adj)
 
         # Set base_margin as starting point for each distributional parameter. Requires base_score=0 in parameters.
-        self.start_values = self.dist.calculate_start_values(dtrain.get_label())
+        _, self.start_values = self.dist.calculate_start_values(dtrain.get_label())
         base_margin = (np.ones(shape=(dtrain.num_row(), 1))) * self.start_values
         dtrain.set_base_margin(base_margin.flatten())
 

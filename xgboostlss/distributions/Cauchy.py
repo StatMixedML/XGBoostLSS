@@ -16,15 +16,20 @@ class Cauchy:
     Source
     -------------------------
     https://pytorch.org/docs/stable/distributions.html#cauchy
+
+    Parameters
+    -------------------------
+    stabilization: str
+        Stabilization method for the Gradient and Hessian. Options are "None", "MAD", "L2".
+    response_fn: str
+        When a custom objective and metric are provided, XGBoost doesn't know its response and link function. Hence,
+        the user is responsible for specifying the transformations. Options are "exp" or "softplus".
     """
     def __init__(self,
-                 stabilization: str,
+                 stabilization: str = "None",
                  response_fn: str = "exp"
                  ):
-
-        # When a custom objective and metric are provided, XGBoost doesn't know its response and link function. Hence,
-        # the user is responsible for specifying the transformations.
-
+        # Check Response Function
         if response_fn == "exp":
             response_fn = exp_fn
             inverse_response_fn = log_fn
