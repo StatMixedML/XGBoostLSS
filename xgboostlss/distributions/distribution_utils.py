@@ -312,12 +312,6 @@ class DistributionClass:
                                             n_samples=n_samples,
                                             seed=seed)
 
-        # Calculate quantiles from predicted response distribution
-        pred_quant_df = pred_samples_df.quantile(quantiles, axis=1).T
-        pred_quant_df.columns = [str("quant_") + str(quantiles[i]) for i in range(len(quantiles))]
-        if self.discrete:
-            pred_quant_df = pred_quant_df.astype(int)
-
         if pred_type == "parameters":
             return dist_params_predt
 
@@ -328,6 +322,11 @@ class DistributionClass:
             return pred_samples_df
 
         elif pred_type == "quantiles":
+            # Calculate quantiles from predicted response distribution
+            pred_quant_df = pred_samples_df.quantile(quantiles, axis=1).T
+            pred_quant_df.columns = [str("quant_") + str(quantiles[i]) for i in range(len(quantiles))]
+            if self.discrete:
+                pred_quant_df = pred_quant_df.astype(int)
             return pred_quant_df
 
 
