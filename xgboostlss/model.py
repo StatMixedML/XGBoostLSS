@@ -402,12 +402,12 @@ class XGBoostLSS:
 
     def predict(self,
                 dtest: xgb.DMatrix, 
-                pred_type: str,
+                pred_type: str = "parameters",
                 n_samples: int = 1000, 
                 quantiles: list = [0.1, 0.5, 0.9], 
                 seed: str = 123):
         """
-        Predicts the distributional parameters of the specified distribution.
+        Function that predicts from the trained model.
 
         Arguments
         ---------
@@ -415,56 +415,31 @@ class XGBoostLSS:
             Test data.
         pred_type : str
             Type of prediction:
-            "samples" draws n_samples from the predicted distribution.
-            "quantile" calculates the quantiles from the predicted distribution.
-            "parameters" returns the predicted distributional parameters.
-            "expectiles" returns the predicted expectiles.
+            - "samples" draws n_samples from the predicted distribution.
+            - "quantile" calculates the quantiles from the predicted distribution.
+            - "parameters" returns the predicted distributional parameters.
+            - "expectiles" returns the predicted expectiles.
         n_samples : int
             Number of samples to draw from the predicted distribution.
-        quantiles : list
+        quantiles : List[float]
             List of quantiles to calculate from the predicted distribution.
         seed : int
             Seed for random number generator used to draw samples from the predicted distribution.
+
+        Returns
+        -------
+        predt_df : pd.DataFrame
+            Predictions.
         """
 
         # Set base_margin as starting point for each distributional parameter. Requires base_score=0 in parameters.
         base_margin = (np.ones(shape=(dtest.num_row(), 1))) * self.start_values
         dtest.set_base_margin(base_margin.flatten())
 
-        predt = np.array(self.booster.predict(dtest, output_margin=True)).reshape(-1, self.dist.n_dist_param)
-        predt = torch.tensor(predt, dtype=torch.float32)
+        # Predict
+        predt_df = self.dist.predict_dist(self.booster, dtest, pred_type, n_samples, quantiles, seed)
 
-        dist_params_predt = np.concatenate(
-            [
-                response_fun(
-                    predt[:, i].reshape(-1, 1)).numpy() for i, (dist_param, response_fun) in enumerate(self.dist.param_dict.items())
-            ],
-            axis=1,
-        )
-
-        dist_params_predt = pd.DataFrame(dist_params_predt)
-        dist_params_predt.columns = self.dist.param_dict.keys()
-
-        # Draw samples from predicted response distribution
-        pred_samples_df = self.dist.draw_samples(predt_params=dist_params_predt,
-                                                 n_samples=n_samples,
-                                                 seed=seed)
-
-        if pred_type == "parameters":
-            return dist_params_predt
-
-        elif pred_type == "expectiles":
-            return dist_params_predt
-
-        elif pred_type == "samples":
-            return pred_samples_df
-
-        elif pred_type == "quantiles":
-            pred_quant_df = pred_samples_df.quantile(quantiles, axis=1).T
-            pred_quant_df.columns = [str("quant_") + str(quantiles[i]) for i in range(len(quantiles))]
-            if self.dist.discrete:
-                pred_quant_df = pred_quant_df.astype(int)
-            return pred_quant_df
+        return predt_df
 
     def plot(self,
              X: pd.DataFrame, 
