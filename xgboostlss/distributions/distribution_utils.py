@@ -142,7 +142,6 @@ class DistributionClass:
             # Replace NaNs with 0.5
             nan_indices = torch.isnan(torch.stack(params))
             params = torch.where(nan_indices, torch.tensor(0.5), torch.stack(params))
-
             if self.tau is None:
                 dist = self.distribution(*params)
                 nll = -torch.nansum(dist.log_prob(target))
