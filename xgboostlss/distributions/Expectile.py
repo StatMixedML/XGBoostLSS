@@ -21,13 +21,17 @@ class Expectile:
     stabilization: str
         Stabilization method for the Gradient and Hessian. Options are "None", "MAD", "L2".
     expectiles: List
-        List of expectiles.
+        List of expectiles in increasing order.
+    penalize_crossing: bool
+        Whether to include a penalty term to discourage crossing of expectiles.
     """
     def __init__(self,
                  stabilization: str = "None",
                  expectiles: List = [0.1, 0.5, 0.9],
+                 penalize_crossing: bool = False,
                  ):
         # Specify Response and Link Functions
+        expectiles.sort()
         param_dict = {}
         for expectile in expectiles:
             key = f"expectile_{expectile}"
@@ -44,7 +48,8 @@ class Expectile:
                                             param_dict=param_dict,
                                             param_dict_inv=param_dict_inv,
                                             distribution_arg_names=distribution_arg_names,
-                                            tau=torch.tensor(expectiles)
+                                            tau=torch.tensor(expectiles),
+                                            penalize_crossing=penalize_crossing
                                             )
 
 
@@ -56,15 +61,21 @@ class Expectile_Torch(Distribution):
     ---------
     expectiles : List[torch.Tensor]
         List of expectiles.
+    penalize_crossing : bool
+        Whether to include a penalty term to discourage crossing of expectiles.
     """
-    def __init__(self, expectiles: List[torch.Tensor]):
+    def __init__(self,
+                 expectiles: List[torch.Tensor],
+                 penalize_crossing: bool = False,
+                 ):
         super(Expectile_Torch).__init__()
         self.expectiles = expectiles
+        self.penalize_crossing = penalize_crossing
         self.__class__.__name__ = "Expectile"
 
     def log_prob(self, value: torch.Tensor, tau: List[torch.Tensor]) -> torch.Tensor:
         """
-        Returns the log of the probability density/mass function evaluated at `value`.
+        Returns the log of the probability density function evaluated at `value`.
 
         Arguments
         ---------
@@ -78,13 +89,26 @@ class Expectile_Torch(Distribution):
         torch.Tensor
             Log probability of `value`.
         """
+        value = value.reshape(-1, 1)
         loss = torch.tensor(0.0, dtype=torch.float32)
+        penalty = torch.tensor(0.0, dtype=torch.float32)
 
-        for expectile, tau in zip(self.expectiles, tau):
-            loss += torch.nansum(
-                tau * (value - expectile) ** 2 * (value - expectile >= 0) +
-                (1 - tau) * (value - expectile) ** 2 * (value - expectile < 0)
+        # Calculate loss
+        predt_expectiles = []
+        for expectile, tau_value in zip(self.expectiles, tau):
+            weight = torch.where(value - expectile >= 0, tau_value, 1 - tau_value)
+            loss += torch.nansum(weight * (value - expectile) ** 2)
+            predt_expectiles.append(expectile.reshape(-1, 1))
+
+        # Penalty term to discourage crossing of expectiles
+        if self.penalize_crossing:
+            predt_expectiles = torch.cat(predt_expectiles, dim=1)
+            penalty = torch.mean(
+                (~torch.all(torch.diff(predt_expectiles, dim=1) > 0, dim=1)).float()
             )
+
+        loss = (loss * (1 + penalty)) / len(self.expectiles)
+
         return -loss
 
 

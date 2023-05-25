@@ -36,7 +36,8 @@ class DistributionClass:
         List of distributional parameter names.
     tau: List
         List of expectiles. Only used for Expectile distributon.
-
+    penalize_crossing: bool
+        Whether to include a penalty term to discourage crossing of expectiles. Only used for Expectile distribution.
     """
     def __init__(self,
                  distribution: torch.distributions.Distribution = None,
@@ -48,6 +49,7 @@ class DistributionClass:
                  param_dict_inv: Dict[str, Any] = None,
                  distribution_arg_names: List = None,
                  tau: Optional[List[torch.Tensor]] = None,
+                 penalize_crossing: bool = False,
                  ):
 
         self.distribution = distribution
@@ -59,6 +61,7 @@ class DistributionClass:
         self.param_dict_inv = param_dict_inv
         self.distribution_arg_names = distribution_arg_names
         self.tau = tau
+        self.penalize_crossing = penalize_crossing
 
     def objective_fn(self, predt: np.ndarray, data: xgb.DMatrix) -> Tuple[np.ndarray, np.ndarray]:
 
@@ -132,11 +135,15 @@ class DistributionClass:
             Starting values for each distributional parameter.
         """
         def neg_log_likelihood(params, target):
+            # Transform parameters to response scale
+            params = [
+                response_fn(params[i].reshape(-1, 1)) for i, response_fn in enumerate(self.param_dict.values())
+            ]
             if self.tau is None:
                 dist = self.distribution(*params)
                 nll = -torch.nansum(dist.log_prob(target))
             else:
-                dist = self.distribution(params)
+                dist = self.distribution(params, self.penalize_crossing)
                 nll = -torch.nansum(dist.log_prob(target, self.tau))
             return nll
 
@@ -157,11 +164,7 @@ class DistributionClass:
 
         nll = optimizer.step(closure).detach().numpy()
 
-        # Transform parameters to inverse response scale
-        start_values = np.array(
-            [inv_response_fun(params[i]).detach()
-             for i, (dist_param, inv_response_fun) in enumerate(self.param_dict_inv.items())]
-        )
+        start_values = np.array([params[i].detach() for i in range(self.n_dist_param)])
 
         return nll, start_values
 
@@ -211,8 +214,7 @@ class DistributionClass:
             nll = -torch.nansum(dist_fit.log_prob(target))
         else:
             # Specify Distribution and NLL
-            dist_kwargs = predt_transformed
-            dist_fit = self.distribution(dist_kwargs)
+            dist_fit = self.distribution(predt_transformed, self.penalize_crossing)
             nll = -torch.nansum(dist_fit.log_prob(target, self.tau))
 
         return predt, nll
@@ -259,6 +261,7 @@ class DistributionClass:
 
     def predict_dist(self,
                      booster: xgb.Booster,
+                     start_values: np.ndarray,
                      dtest: xgb.DMatrix,
                      pred_type: str = "parameters",
                      n_samples: int = 1000,
@@ -272,6 +275,8 @@ class DistributionClass:
         ---------
         booster : xgb.Booster
             Trained model.
+        start_values : np.ndarray
+            Starting values for each distributional parameter.
         dtest : xgb.DMatrix
             Test data.
         pred_type : str
@@ -292,6 +297,10 @@ class DistributionClass:
         pred : pd.DataFrame
             Predictions.
         """
+        # Set base_margin as starting point for each distributional parameter. Requires base_score=0 in parameters.
+        base_margin_test = (np.ones(shape=(dtest.num_row(), 1))) * start_values
+        dtest.set_base_margin(base_margin_test.flatten())
+
         predt = np.array(booster.predict(dtest, output_margin=True)).reshape(-1, self.n_dist_param)
         predt = torch.tensor(predt, dtype=torch.float32)
 
