@@ -139,7 +139,6 @@ class DistributionClass:
             params = [
                 response_fn(params[i].reshape(-1, 1)) for i, response_fn in enumerate(self.param_dict.values())
             ]
-
             # Replace NaNs with 0.5
             nan_indices = torch.isnan(torch.stack(params))
             params = torch.where(nan_indices, torch.tensor(0.5), torch.stack(params))
