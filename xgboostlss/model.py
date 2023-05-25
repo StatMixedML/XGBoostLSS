@@ -27,9 +27,24 @@ from typing import Any, Dict, Optional, Sequence, Tuple, Union
 class XGBoostLSS:
     """
     XGBoostLSS model class
+
+    Parameters
+    ----------
+    dist : Distribution
+        DistributionClass object.
+    start_values : np.ndarray
+        Starting values for each distributional parameter.
     """
     def __init__(self, dist):
         self.dist = dist.dist_class  # Distribution object
+        self.start_values = None     # Starting values for distributional parameters
+
+    def __getstate__(self):
+        state = self.__dict__.copy()  # Copy the object's state
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)  # Restore the object's state
 
     def train(
             self,
@@ -119,9 +134,10 @@ class XGBoostLSS:
             params.update(params_adj)
 
             # Set base_margin as starting point for each distributional parameter. Requires base_score=0 in parameters.
-            _, self.start_values = self.dist.calculate_start_values(dtrain.get_label())
-            base_margin = (np.ones(shape=(dtrain.num_row(), 1))) * self.start_values
-            dtrain.set_base_margin(base_margin.flatten())
+            if self.start_values is None:
+                _, self.start_values = self.dist.calculate_start_values(dtrain.get_label())
+            base_margin_train = (np.ones(shape=(dtrain.num_row(), 1))) * self.start_values
+            dtrain.set_base_margin(base_margin_train.flatten())
 
             self.booster = xgb.train(params,
                                      dtrain,
@@ -229,9 +245,10 @@ class XGBoostLSS:
         params.update(params_adj)
 
         # Set base_margin as starting point for each distributional parameter. Requires base_score=0 in parameters.
-        _, self.start_values = self.dist.calculate_start_values(dtrain.get_label())
-        base_margin = (np.ones(shape=(dtrain.num_row(), 1))) * self.start_values
-        dtrain.set_base_margin(base_margin.flatten())
+        if self.start_values is None:
+            _, self.start_values = self.dist.calculate_start_values(dtrain.get_label())
+        base_margin_cv = (np.ones(shape=(dtrain.num_row(), 1))) * self.start_values
+        dtrain.set_base_margin(base_margin_cv.flatten())
 
         bstLSS_cv = xgb.cv(params,
                            dtrain,
@@ -432,12 +449,14 @@ class XGBoostLSS:
             Predictions.
         """
 
-        # Set base_margin as starting point for each distributional parameter. Requires base_score=0 in parameters.
-        base_margin = (np.ones(shape=(dtest.num_row(), 1))) * self.start_values
-        dtest.set_base_margin(base_margin.flatten())
-
         # Predict
-        predt_df = self.dist.predict_dist(self.booster, dtest, pred_type, n_samples, quantiles, seed)
+        predt_df = self.dist.predict_dist(booster=self.booster,
+                                          start_values=self.start_values,
+                                          dtest=dtest,
+                                          pred_type=pred_type,
+                                          n_samples=n_samples,
+                                          quantiles=quantiles,
+                                          seed=seed)
 
         return predt_df
 
