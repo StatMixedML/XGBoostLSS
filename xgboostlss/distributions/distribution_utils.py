@@ -92,7 +92,7 @@ class DistributionClass:
             weights = data.get_weight()
 
         predt, nll = self.get_params_nll(predt, data, requires_grad=True)
-        grad, hess = self.compute_gradients_and_hessians(nll, predt, weights, self.stabilization)
+        grad, hess = self.compute_gradients_and_hessians(nll, predt, weights)
 
         return grad, hess
 
@@ -114,6 +114,7 @@ class DistributionClass:
         nll: float
             Negative log-likelihood.
         """
+
         _, nll = self.get_params_nll(predt, data, requires_grad=False)
 
         return "NegLogLikelihood", nll
@@ -201,6 +202,10 @@ class DistributionClass:
 
         # Predicted Parameters
         predt = predt.reshape(-1, self.n_dist_param)
+
+        # Replace NaNs with 0.5
+        predt[np.isnan(predt)] = np.array([0.5], dtype=type(predt))
+
         predt = [
             torch.tensor(predt[:, i].reshape(-1, 1), requires_grad=requires_grad) for i in range(self.n_dist_param)
         ]
@@ -345,8 +350,7 @@ class DistributionClass:
     def compute_gradients_and_hessians(self,
                                        nll: torch.tensor,
                                        predt: torch.tensor,
-                                       weights: np.ndarray,
-                                       stabilization: str) -> Tuple[np.ndarray, np.ndarray]:
+                                       weights: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
 
         """
         Calculates gradients and hessians.
@@ -361,8 +365,6 @@ class DistributionClass:
             List of predicted parameters.
         weights: np.ndarray
             Weights.
-        stabilization: str
-            Specifies the type of stabilization for gradients and hessians.
 
         Returns:
         -------
@@ -377,9 +379,9 @@ class DistributionClass:
         hess = [autograd(grad[i].nansum(), inputs=predt[i], retain_graph=True)[0] for i in range(len(grad))]
 
         # Stabilization of Derivatives
-        if stabilization != "None":
-            grad = [stabilize_derivative(grad[i], type=stabilization) for i in range(len(grad))]
-            hess = [stabilize_derivative(hess[i], type=stabilization) for i in range(len(hess))]
+        if self.stabilization != "None":
+            grad = [stabilize_derivative(grad[i], type=self.stabilization) for i in range(len(grad))]
+            hess = [stabilize_derivative(hess[i], type=self.stabilization) for i in range(len(hess))]
 
         # Reshape
         grad = torch.cat(grad, axis=1).detach().numpy()
@@ -469,7 +471,7 @@ def dist_select(target: np.ndarray,
     for i in range(len(candidate_distributions)):
         dist_name = candidate_distributions[i].__name__.split(".")[2]
         dist_sel = getattr(candidate_distributions[i], dist_name)().dist_class
-        nll, params = dist_sel.calculate_start_values(target)
+        nll, params = dist_sel.calculate_start_values(target.reshape(-1,1))
         dist_nll = pd.DataFrame.from_dict({"NegLogLikelihood": nll.reshape(-1,),
                                            "distribution": str(dist_name)
                                            })
@@ -504,7 +506,7 @@ def dist_select(target: np.ndarray,
                                                   seed=123).values
 
         # Plot actual and fitted distribution
-        plot_df_actual = pd.DataFrame({"y": target, "type": "Actual"})
+        plot_df_actual = pd.DataFrame({"y": target.reshape(-1,), "type": "Actual"})
         plot_df_fitted = pd.DataFrame({"y": dist_samples.reshape(-1,),
                                        "type": f"Best-Fit: {best_dist['distribution'].values[0]}"})
         plot_df = pd.concat([plot_df_actual, plot_df_fitted])
