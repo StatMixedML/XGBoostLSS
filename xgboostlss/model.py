@@ -255,25 +255,25 @@ class XGBoostLSS:
         base_margin_cv = (np.ones(shape=(dtrain.num_row(), 1))) * self.start_values
         dtrain.set_base_margin(base_margin_cv.flatten())
 
-        bstLSS_cv = xgb.cv(params,
-                           dtrain,
-                           num_boost_round=num_boost_round,
-                           nfold=nfold,
-                           stratified=stratified,
-                           folds=folds,
-                           obj=self.dist.objective_fn,
-                           custom_metric=self.dist.metric_fn,
-                           maximize=False,
-                           early_stopping_rounds=early_stopping_rounds,
-                           fpreproc=fpreproc,
-                           as_pandas=as_pandas,
-                           verbose_eval=verbose_eval,
-                           show_stdv=show_stdv,
-                           seed=seed,
-                           callbacks=callbacks,
-                           shuffle=shuffle)
+        self.cv_booster = xgb.cv(params,
+                                dtrain,
+                                num_boost_round=num_boost_round,
+                                nfold=nfold,
+                                stratified=stratified,
+                                folds=folds,
+                                obj=self.dist.objective_fn,
+                                custom_metric=self.dist.metric_fn,
+                                maximize=False,
+                                early_stopping_rounds=early_stopping_rounds,
+                                fpreproc=fpreproc,
+                                as_pandas=as_pandas,
+                                verbose_eval=verbose_eval,
+                                show_stdv=show_stdv,
+                                seed=seed,
+                                callbacks=callbacks,
+                                shuffle=shuffle)
 
-        return bstLSS_cv
+        return self.cv_booster
 
     def hyper_opt(
         self,
