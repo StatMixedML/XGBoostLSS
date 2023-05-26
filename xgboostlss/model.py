@@ -17,6 +17,8 @@ from xgboost._typing import FPreProcCallable
 from xgboost.compat import DataFrame, XGBStratifiedKFold
 
 import os
+import re
+import pickle
 from xgboostlss.utils import *
 import optuna
 from optuna.samplers import TPESampler
@@ -138,6 +140,9 @@ class XGBoostLSS:
                 _, self.start_values = self.dist.calculate_start_values(dtrain.get_label())
             base_margin_train = (np.ones(shape=(dtrain.num_row(), 1))) * self.start_values
             dtrain.set_base_margin(base_margin_train.flatten())
+
+            if evals is not None:
+                evals = self.set_eval_margin(evals, base_margin_train)
 
             self.booster = xgb.train(params,
                                      dtrain,
@@ -274,12 +279,12 @@ class XGBoostLSS:
         self,
         hp_dict: Dict,
         dtrain: DMatrix,
-        num_boost_round=500, 
-        nfold=10, 
+        num_boost_round=500,
+        nfold=10,
         early_stopping_rounds=20,
-        max_minutes=10, 
-        n_trials=None, 
-        study_name=None, 
+        max_minutes=10,
+        n_trials=None,
+        study_name=None,
         silence=False,
         seed=None,
         hp_seed=None
@@ -315,14 +320,14 @@ class XGBoostLSS:
         seed: int
             Seed used to generate the folds (passed to numpy.random.seed).
         hp_seed: int
-            Seed for random number generator used in the Bayesian hyper-parameter search.  
+            Seed for random number generator used in the Bayesian hyper-parameter search.
 
         Returns
         -------
         opt_params : dict
             Optimal hyper-parameters.
-        """       
-        
+        """
+
         def objective(trial):
 
             hyper_params = {}
@@ -330,7 +335,7 @@ class XGBoostLSS:
             for param_name, param_value in hp_dict.items():
 
                 param_type = param_value[0]
-    
+
                 if param_type == "categorical" or param_type == "none":
                     hyper_params.update({param_name: trial.suggest_categorical(param_name, param_value[1])})
 
@@ -359,11 +364,11 @@ class XGBoostLSS:
                                                        log=param_log
                                                        )
                          })
-                    
+
             # Add booster if not included in dictionary
-            if "booster" not in hyper_params.keys():  
+            if "booster" not in hyper_params.keys():
                 hyper_params.update({"booster": trial.suggest_categorical("booster", ["gbtree"])})
-            
+
             # Add pruning
             pruning_callback = optuna.integration.XGBoostPruningCallback(trial, "test-NegLogLikelihood")
 
@@ -384,17 +389,17 @@ class XGBoostLSS:
             best_score = np.min(xgblss_param_tuning["test-NegLogLikelihood-mean"])
 
             return best_score
-        
+
         if study_name is None:
             study_name = "XGBoostLSS Hyper-Parameter Optimization"
 
         if silence:
             optuna.logging.set_verbosity(optuna.logging.WARNING)
-            
+
         if hp_seed is not None:
-            sampler = TPESampler(seed=hp_seed) 
+            sampler = TPESampler(seed=hp_seed)
         else:
-            sampler = TPESampler()  
+            sampler = TPESampler()
 
         pruner = optuna.pruners.MedianPruner(n_startup_trials=10, n_warmup_steps=20)
         study = optuna.create_study(sampler=sampler, pruner=pruner, direction="minimize", study_name=study_name)
@@ -408,7 +413,7 @@ class XGBoostLSS:
         # Add optimal stopping round
         opt_param.params["opt_rounds"] = study.trials_dataframe()["user_attrs_opt_round"][
             study.trials_dataframe()["value"].idxmin()]
-        opt_param.params["opt_rounds"] = int(opt_param.params["opt_rounds"])            
+        opt_param.params["opt_rounds"] = int(opt_param.params["opt_rounds"])
 
         print("    Value: {}".format(opt_param.value))
         print("    Params: ")
@@ -418,10 +423,10 @@ class XGBoostLSS:
         return opt_param.params
 
     def predict(self,
-                dtest: xgb.DMatrix, 
+                dtest: xgb.DMatrix,
                 pred_type: str = "parameters",
-                n_samples: int = 1000, 
-                quantiles: list = [0.1, 0.5, 0.9], 
+                n_samples: int = 1000,
+                quantiles: list = [0.1, 0.5, 0.9],
                 seed: str = 123):
         """
         Function that predicts from the trained model.
@@ -461,8 +466,8 @@ class XGBoostLSS:
         return predt_df
 
     def plot(self,
-             X: pd.DataFrame, 
-             feature: str = "x", 
+             X: pd.DataFrame,
+             feature: str = "x",
              parameter: str = "loc",
              plot_type: str = "Partial_Dependence"):
         """
@@ -499,9 +504,9 @@ class XGBoostLSS:
                 shap.plots.bar(shap_values[:, :, param_pos], max_display=15 if X.shape[1] > 15 else X.shape[1])
 
     def expectile_plot(self,
-                       X: pd.DataFrame, 
+                       X: pd.DataFrame,
                        feature: str = "x",
-                       expectile: str = "0.05", 
+                       expectile: str = "0.05",
                        plot_type: str = "Partial_Dependence"):
         """
         XGBoostLSS function for plotting expectile SHapley values.
@@ -527,3 +532,70 @@ class XGBoostLSS:
             shap.plots.scatter(shap_values[:, feature][:, expect_pos], color=shap_values[:, feature][:, expect_pos])
         elif plot_type == "Feature_Importance":
             shap.plots.bar(shap_values[:, :, expect_pos], max_display=15 if X.shape[1] > 15 else X.shape[1])
+
+
+    def set_eval_margin (self,
+                         eval_set: list,
+                         base_margin: np.ndarray
+                         ) -> list:
+
+        """
+        Function that sets the base margin for the evaluation set.
+
+        Arguments
+        ---------
+        eval_set : list
+            List of tuples containing the train and evaluation set.
+        base_margin : np.ndarray
+            Base margin.
+
+        Returns
+        -------
+        eval_set : list
+            List of tuples containing the train and evaluation set.
+        """
+        train_pattern = re.compile(r".*train|training.*", re.IGNORECASE)
+        test_pattern = re.compile(r".*test|eval|evaluation.*", re.IGNORECASE)
+
+        Dtrain_eval, train_label = [(item, label) for item, label in eval_set if re.match(train_pattern, label)][0]
+        Dtest_eval, test_label = [(item, label) for item, label in eval_set if re.match(test_pattern, label)][0]
+
+        Dtrain_eval.set_base_margin(base_margin.flatten())
+        Dtest_eval.set_base_margin(base_margin.flatten())
+
+        eval_set = [(Dtrain_eval, train_label), (Dtest_eval, test_label)]
+
+        return eval_set
+
+    def save_model(self, model_path):
+        """
+        Save the model to a file.
+
+        Parameters
+        ----------
+        model_path : str
+            The path to save the model.
+
+        Returns
+        -------
+        None
+        """
+        with open(model_path, "wb") as f:
+            pickle.dump(self, f)
+
+    @staticmethod
+    def load_model(model_path):
+        """
+        Load the model from a file.
+
+        Parameters
+        ----------
+        model_path : str
+            The path to the saved model.
+
+        Returns
+        -------
+        The loaded model.
+        """
+        with open(model_path, "rb") as f:
+            return pickle.load(f)
