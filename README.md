@@ -13,6 +13,7 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 :white_check_mark: XGBoostLSS is available in Python. <br/>
 
 ## News
+:boom: [2023-05-18] Release of v0.2.1. See the [release notes](https://github.com/StatMixedML/XGBoostLSS/releases) for an overview. <br/>
 :boom: [2023-05-18] Release of v0.2.0. See the [release notes](https://github.com/StatMixedML/XGBoostLSS/releases) for an overview. <br/>
 :boom: [2022-10-14] XGBoostLSS now supports multi-target regression. (Currently available via [Py-BoostLSS](https://github.com/StatMixedML/Py-BoostLSS)). <br/>
 :boom: [2022-01-03] XGBoostLSS now supports estimation of the Gamma distribution. <br/>
