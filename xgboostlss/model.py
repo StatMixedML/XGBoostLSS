@@ -17,7 +17,6 @@ from xgboost._typing import FPreProcCallable
 from xgboost.compat import DataFrame, XGBStratifiedKFold
 
 import os
-import re
 import pickle
 from xgboostlss.utils import *
 import optuna
@@ -142,7 +141,7 @@ class XGBoostLSS:
             dtrain.set_base_margin(base_margin_train.flatten())
 
             if evals is not None:
-                evals = self.set_eval_margin(evals, base_margin_train)
+                evals = self.set_eval_margin(evals, self.start_values)
 
             self.booster = xgb.train(params,
                                      dtrain,
@@ -370,7 +369,7 @@ class XGBoostLSS:
                 hyper_params.update({"booster": trial.suggest_categorical("booster", ["gbtree"])})
 
             # Add pruning
-            pruning_callback = optuna.integration.XGBoostPruningCallback(trial, "test-NegLogLikelihood")
+            pruning_callback = optuna.integration.XGBoostPruningCallback(trial, f"test-{self.dist.loss_fn}")
 
             xgblss_param_tuning = self.cv(params=hyper_params,
                                           dtrain=dtrain,
@@ -382,11 +381,11 @@ class XGBoostLSS:
                                           verbose_eval=False
                                           )
 
-            opt_rounds = xgblss_param_tuning["test-NegLogLikelihood-mean"].idxmin() + 1
+            opt_rounds = xgblss_param_tuning[f"test-{self.dist.loss_fn}-mean"].idxmin() + 1
             trial.set_user_attr("opt_round", int(opt_rounds))
 
             # Extract the best score
-            best_score = np.min(xgblss_param_tuning["test-NegLogLikelihood-mean"])
+            best_score = np.min(xgblss_param_tuning[f"test-{self.dist.loss_fn}-mean"])
 
             return best_score
 
@@ -536,7 +535,7 @@ class XGBoostLSS:
 
     def set_eval_margin (self,
                          eval_set: list,
-                         base_margin: np.ndarray
+                         start_values: np.ndarray
                          ) -> list:
 
         """
@@ -546,24 +545,26 @@ class XGBoostLSS:
         ---------
         eval_set : list
             List of tuples containing the train and evaluation set.
-        base_margin : np.ndarray
-            Base margin.
+        start_values : np.ndarray
+            Array containing the start values for each distributional parameter.
 
         Returns
         -------
         eval_set : list
             List of tuples containing the train and evaluation set.
         """
-        train_pattern = re.compile(r".*train|training.*", re.IGNORECASE)
-        test_pattern = re.compile(r".*test|eval|evaluation.*", re.IGNORECASE)
+        sets = [(item, label) for item, label in eval_set]
 
-        Dtrain_eval, train_label = [(item, label) for item, label in eval_set if re.match(train_pattern, label)][0]
-        Dtest_eval, test_label = [(item, label) for item, label in eval_set if re.match(test_pattern, label)][0]
+        eval_set1, label1 = sets[0]
+        eval_set2, label2 = sets[1]
 
-        Dtrain_eval.set_base_margin(base_margin.flatten())
-        Dtest_eval.set_base_margin(base_margin.flatten())
+        base_margin_set1 = (np.ones(shape=(eval_set1.num_row(), 1))) * start_values
+        eval_set1.set_base_margin(base_margin_set1.flatten())
 
-        eval_set = [(Dtrain_eval, train_label), (Dtest_eval, test_label)]
+        base_margin_set2 = (np.ones(shape=(eval_set2.num_row(), 1))) * start_values
+        eval_set2.set_base_margin(base_margin_set2.flatten())
+
+        eval_set = [(eval_set1, label1), (eval_set2, label2)]
 
         return eval_set
 
