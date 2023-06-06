@@ -369,7 +369,7 @@ class XGBoostLSS:
                 hyper_params.update({"booster": trial.suggest_categorical("booster", ["gbtree"])})
 
             # Add pruning
-            pruning_callback = optuna.integration.XGBoostPruningCallback(trial, f"test-{self.dist.loss_fn}")
+            pruning_callback = optuna.integration.XGBoostPruningCallback(trial, "test-NegLogLikelihood")
 
             xgblss_param_tuning = self.cv(params=hyper_params,
                                           dtrain=dtrain,
@@ -381,11 +381,11 @@ class XGBoostLSS:
                                           verbose_eval=False
                                           )
 
-            opt_rounds = xgblss_param_tuning[f"test-{self.dist.loss_fn}-mean"].idxmin() + 1
+            opt_rounds = xgblss_param_tuning["test-NegLogLikelihood-mean"].idxmin() + 1
             trial.set_user_attr("opt_round", int(opt_rounds))
 
             # Extract the best score
-            best_score = np.min(xgblss_param_tuning[f"test-{self.dist.loss_fn}-mean"])
+            best_score = np.min(xgblss_param_tuning["test-NegLogLikelihood-mean"])
 
             return best_score
 
