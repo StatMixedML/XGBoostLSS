@@ -618,7 +618,7 @@ def crps_score(observations: torch.tensor, forecasts: torch.tensor, weights: tor
 #
 #     Source
 #     ------
-#     - https://github.com/elephaint/pgbm/blob/main/pgbm/torch/pgbm_dist.py
+#     https://github.com/elephaint/pgbm/blob/main/pgbm/torch/pgbm_dist.py
 #     """
 #     # Get the number of observations
 #     n_samples = yhat_dist.shape[0]
