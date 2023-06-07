@@ -54,6 +54,7 @@ XGBoostLSS currently supports the following [PyTorch distributions](https://pyto
 | [Poisson](https://pytorch.org/docs/stable/distributions.html#poisson)                                                                | `Poisson()`               | Discrete Count <br /> (Univariate)     | $y \in (0, 1, 2, 3, ...)$       | 1                               |
 | [Student-T](https://pytorch.org/docs/stable/distributions.html#studentt)                                                             | `StudentT()`              | Continuous <br /> (Univariate)         | $y \in (-\infty,\infty)$        | 3                               |
 | [Weibull](https://pytorch.org/docs/stable/distributions.html#weibull)                                                                | `Weibull()`               | Continuous <br /> (Univariate)         | $y \in [0, \infty)$             | 2                               |
+| [Zero-Inflated Negative Binomial](https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py#L150)                | `ZINB()`                  | Discrete Count <br /> (Univariate)     | $y \in [0, 1, 2, 3, ...)$       | 3                               |
 | [Zero-Inflated Poisson](https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py#L121)                          | `ZIP()`                   | Discrete Count <br /> (Univariate)     | $y \in [0, 1, 2, 3, ...)$       | 2                               |
 
 ## Some Notes
