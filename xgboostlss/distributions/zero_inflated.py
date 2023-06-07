@@ -11,7 +11,7 @@ from torch.distributions.utils import (
 )
 from torch.nn.functional import softplus
 
-from torch.distributions import NegativeBinomial, Poisson, Gamma
+from torch.distributions import NegativeBinomial, Poisson, Gamma, LogNormal
 from pyro.distributions import TorchDistribution
 from pyro.distributions.util import broadcast_shape
 
@@ -220,7 +220,7 @@ class ZeroAdjustedGamma(ZeroInflatedDistribution):
 
     Source
     ------
-    - https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py#L121
+    - https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py
     """
     arg_constraints = {
         "concentration": constraints.positive,
@@ -242,3 +242,42 @@ class ZeroAdjustedGamma(ZeroInflatedDistribution):
     @property
     def rate(self):
         return self.base_dist.rate
+
+
+class ZeroAdjustedLogNormal(ZeroInflatedDistribution):
+    """
+    A Zero-Adjusted Log-Normal distribution.
+
+    Parameter
+    ---------
+    loc: torch.Tensor
+        Mean of log of distribution.
+    scale: torch.Tensor
+        Standard deviation of log of the distribution.
+    gate: torch.Tensor
+        Probability of zeros given via a Bernoulli distribution.
+
+    Source
+    ------
+    - https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py
+    """
+    arg_constraints = {
+        "loc": constraints.real,
+        "scale": constraints.positive,
+        "gate": constraints.unit_interval,
+    }
+    support = constraints.nonnegative
+
+    def __init__(self, loc, scale, gate=None, validate_args=None):
+        base_dist = LogNormal(loc=loc, scale=scale, validate_args=False)
+        base_dist._validate_args = validate_args
+
+        super().__init__(base_dist, gate=gate, validate_args=validate_args)
+
+    @property
+    def loc(self):
+        return self.base_dist.loc
+
+    @property
+    def scale(self):
+        return self.base_dist.scale

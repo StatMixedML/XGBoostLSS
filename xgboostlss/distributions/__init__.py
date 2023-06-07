@@ -17,4 +17,5 @@ from . import LogNormal
 from . import ZIP
 from . import ZINB
 from . import ZAGA
+from . import ZALN
 
