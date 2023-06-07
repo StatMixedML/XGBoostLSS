@@ -32,7 +32,7 @@ class ZeroInflatedDistribution(TorchDistribution):
 
     Source
     ------
-    - https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py#L18
+    https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py#L18
     """
 
     arg_constraints = {
@@ -139,7 +139,7 @@ class ZeroInflatedPoisson(ZeroInflatedDistribution):
 
     Source
     ------
-    - https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py#L121
+    https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py#L121
     """
     arg_constraints = {
         "rate": constraints.positive,
@@ -220,7 +220,7 @@ class ZeroAdjustedGamma(ZeroInflatedDistribution):
 
     Source
     ------
-    - https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py
+    https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py
     """
     arg_constraints = {
         "concentration": constraints.positive,
@@ -259,7 +259,7 @@ class ZeroAdjustedLogNormal(ZeroInflatedDistribution):
 
     Source
     ------
-    - https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py
+    https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py
     """
     arg_constraints = {
         "loc": constraints.real,

@@ -48,6 +48,7 @@ class Expectile:
                                             param_dict=param_dict,
                                             param_dict_inv=param_dict_inv,
                                             distribution_arg_names=distribution_arg_names,
+                                            loss_fn="nll",
                                             tau=torch.tensor(expectiles),
                                             penalize_crossing=penalize_crossing
                                             )

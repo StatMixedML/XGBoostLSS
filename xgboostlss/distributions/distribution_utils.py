@@ -34,6 +34,8 @@ class DistributionClass:
         Dictionary that maps distributional parameters to their inverse response scale.
     distribution_arg_names: List
         List of distributional parameter names.
+    loss_fn: str
+        Loss function. Options are "nll" (negative log-likelihood).
     tau: List
         List of expectiles. Only used for Expectile distributon.
     penalize_crossing: bool
@@ -48,6 +50,7 @@ class DistributionClass:
                  param_dict: Dict[str, Any] = None,
                  param_dict_inv: Dict[str, Any] = None,
                  distribution_arg_names: List = None,
+                 loss_fn: str = "nll",
                  tau: Optional[List[torch.Tensor]] = None,
                  penalize_crossing: bool = False,
                  ):
@@ -60,6 +63,7 @@ class DistributionClass:
         self.param_dict = param_dict
         self.param_dict_inv = param_dict_inv
         self.distribution_arg_names = distribution_arg_names
+        self.loss_fn = loss_fn
         self.tau = tau
         self.penalize_crossing = penalize_crossing
 
@@ -89,10 +93,10 @@ class DistributionClass:
             # Use 1 as weight if no weights are specified
             weights = np.ones_like(target, dtype=target.dtype)
         else:
-            weights = data.get_weight()
+            weights = data.get_weight().reshape(-1, 1)
 
-        predt, nll = self.get_params_nll(predt, data, requires_grad=True)
-        grad, hess = self.compute_gradients_and_hessians(nll, predt, weights)
+        predt, loss = self.get_params_loss(predt, data, requires_grad=True)
+        grad, hess = self.compute_gradients_and_hessians(loss, predt, weights)
 
         return grad, hess
 
@@ -111,13 +115,13 @@ class DistributionClass:
         -------
         name: str
             Name of the evaluation metric.
-        nll: float
-            Negative log-likelihood.
+        loss: float
+            Loss value.
         """
 
-        _, nll = self.get_params_nll(predt, data, requires_grad=False)
+        _, loss = self.get_params_loss(predt, data, requires_grad=False)
 
-        return "NegLogLikelihood", nll
+        return self.loss_fn, loss
 
     def calculate_start_values(self, target: np.ndarray) -> np.ndarray:
         """
@@ -172,13 +176,13 @@ class DistributionClass:
 
         return nll, start_values
 
-    def get_params_nll(self,
-                       predt: np.ndarray,
-                       data: xgb.DMatrix,
-                       requires_grad: bool
-                       ) -> Tuple[np.ndarray, np.ndarray]:
+    def get_params_loss(self,
+                        predt: np.ndarray,
+                        data: xgb.DMatrix,
+                        requires_grad: bool
+                        ) -> Tuple[np.ndarray, np.ndarray]:
         """
-        Function that returns the predicted parameters and the negative log-likelihood.
+        Function that returns the predicted parameters and the loss.
 
         Arguments
         ---------
@@ -193,8 +197,8 @@ class DistributionClass:
         -------
         predt: torch.Tensor
             Predicted parameters.
-        nll: torch.tensor
-            Negative log-likelihood.
+        loss: torch.Tensor
+            Loss value.
         """
 
         # Target
@@ -216,16 +220,23 @@ class DistributionClass:
         ]
 
         if self.tau is None:
-            # Specify Distribution and NLL
+            # Specify Distribution
             dist_kwargs = dict(zip(self.distribution_arg_names, predt_transformed))
             dist_fit = self.distribution(**dist_kwargs)
-            nll = -torch.nansum(dist_fit.log_prob(target))
+            # Specify Loss
+            if self.loss_fn == "nll":
+                loss = -torch.nansum(dist_fit.log_prob(target))
+            # elif self.loss_fn == "crps":
+            #     dist_samples = dist_fit.rsample((30,)).squeeze(-1)
+            #     loss = torch.nansum(crps_score(target, dist_samples))
+            else:
+                raise ValueError("Invalid loss function. Please select 'nll'.")
         else:
             # Specify Distribution and NLL
             dist_fit = self.distribution(predt_transformed, self.penalize_crossing)
-            nll = -torch.nansum(dist_fit.log_prob(target, self.tau))
+            loss = -torch.nansum(dist_fit.log_prob(target, self.tau))
 
-        return predt, nll
+        return predt, loss
 
     def draw_samples(self,
                      predt_params: pd.DataFrame,
@@ -346,21 +357,20 @@ class DistributionClass:
                 pred_quant_df = pred_quant_df.astype(int)
             return pred_quant_df
 
-
     def compute_gradients_and_hessians(self,
-                                       nll: torch.tensor,
+                                       loss: torch.tensor,
                                        predt: torch.tensor,
                                        weights: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
 
         """
         Calculates gradients and hessians.
 
-        Output gradients and hessians have shape (n_samples, n_outputs).
+        Output gradients and hessians have shape (n_samples*n_outputs, 1).
 
         Arguments:
         ---------
-        nll: torch.Tensor
-            Calculated NLL.
+        loss: torch.Tensor
+            Loss.
         predt: torch.Tensor
             List of predicted parameters.
         weights: np.ndarray
@@ -375,7 +385,7 @@ class DistributionClass:
         """
 
         # Gradient and Hessian
-        grad = autograd(nll, inputs=predt, create_graph=True)
+        grad = autograd(loss, inputs=predt, create_graph=True)
         hess = [autograd(grad[i].nansum(), inputs=predt[i], retain_graph=True)[0] for i in range(len(grad))]
 
         # Stabilization of Derivatives
@@ -471,7 +481,7 @@ def dist_select(target: np.ndarray,
     for i in range(len(candidate_distributions)):
         dist_name = candidate_distributions[i].__name__.split(".")[2]
         dist_sel = getattr(candidate_distributions[i], dist_name)().dist_class
-        nll, params = dist_sel.calculate_start_values(target.reshape(-1,1))
+        nll, params = dist_sel.calculate_start_values(target.reshape(-1, 1))
         dist_nll = pd.DataFrame.from_dict({"NegLogLikelihood": nll.reshape(-1,),
                                            "distribution": str(dist_name)
                                            })
@@ -527,3 +537,114 @@ def dist_select(target: np.ndarray,
     dist_nll.drop(columns=["rank", "params"], inplace=True)
 
     return dist_nll
+
+
+def crps_score(observations: torch.tensor, forecasts: torch.tensor, weights: torch.tensor = 1) -> torch.tensor:
+    """
+    Function that calculates the Continuous Ranked Probability Score (CRPS) for a given set of predicted samples.
+
+    This implementation is based on the identity:
+
+    .. math::
+        CRPS(F, x) = E_F|X - x| - 1/2 * E_F|X - X'|
+
+    where X and X' denote independent random variables drawn from the forecast distribution F, and E_F denotes the
+    expectation value under F.
+
+    Parameters
+    ----------
+    forecasts: torch.Tensor
+        Predicted samples of shape (n_samples, n_observations).
+    observations: torch.Tensor
+        Response variable of shape (n_observations,1).
+    weights: torch.Tensor
+        Weight of each observation.
+
+    Returns
+    -------
+    crps: torch.Tensor
+        CRPS score.
+
+    References
+    ----------
+    Gneiting, Tilmann & Raftery, Adrian. (2007). Strictly Proper Scoring Rules, Prediction, and Estimation.
+    Journal of the American Statistical Association. 102. 359-378.
+
+    Source
+    ------
+    - https://github.com/properscoring/properscoring/blob/master/properscoring/_crps.py#L187
+    """
+    observations = observations.T.expand(forecasts.size())
+    weights = torch.as_tensor(weights).float()
+
+    if weights.ndim > 0:
+        weights = torch.where(~torch.isnan(forecasts), weights, torch.nan)
+        weights = weights / torch.nanmean(weights, dim=-1, keepdim=True)
+
+    if observations.ndim == forecasts.ndim - 1:
+        assert observations.shape == forecasts.shape[:-1]
+        observations = observations[..., None]
+        crps = torch.nanmean(weights * torch.abs(forecasts - observations), -1)
+        forecasts_diff = (forecasts.unsqueeze(-1) - forecasts.unsqueeze(-2))
+        weights_matrix = (weights.unsqueeze(-1) * weights.unsqueeze(-2))
+        crps += -0.5 * torch.nanmean(weights_matrix * torch.abs(forecasts_diff), dim=(-2, -1))
+        return torch.nansum(crps)
+
+    elif observations.ndim == forecasts.ndim:
+        crps = torch.nansum(torch.abs(observations - forecasts))
+        return crps
+
+
+# def crps_score(yhat_dist: torch.tensor, y: torch.tensor) -> torch.tensor:
+#     """
+#     Function that calculates the Continuous Ranked Probability Score (CRPS) for a given set of predicted samples.
+#
+#     Parameters
+#     ----------
+#     yhat_dist: torch.Tensor
+#         Predicted samples of shape (n_samples, n_observations).
+#     y: torch.Tensor
+#         Response variable of shape (n_observations,1).
+#
+#     Returns
+#     -------
+#     crps: torch.Tensor
+#         CRPS score.
+#
+#     References
+#     ----------
+#     Gneiting, Tilmann & Raftery, Adrian. (2007). Strictly Proper Scoring Rules, Prediction, and Estimation.
+#     Journal of the American Statistical Association. 102. 359-378.
+#
+#     Source
+#     ------
+#     - https://github.com/elephaint/pgbm/blob/main/pgbm/torch/pgbm_dist.py
+#     """
+#     # Get the number of observations
+#     n_samples = yhat_dist.shape[0]
+#
+#     # Sort the forecasts in ascending order
+#     yhat_dist_sorted, _ = torch.sort(yhat_dist, 0)
+#
+#     # Create temporary tensors
+#     y_cdf = torch.zeros_like(y)
+#     yhat_cdf = torch.zeros_like(y)
+#     yhat_prev = torch.zeros_like(y)
+#     crps = torch.zeros_like(y)
+#
+#     # Loop over the predicted samples generated per observation
+#     for yhat in yhat_dist_sorted:
+#         yhat = yhat.reshape(-1, 1)
+#         flag = (y_cdf == 0) * (y < yhat)
+#         crps += flag * ((y - yhat_prev) * yhat_cdf ** 2)
+#         crps += flag * ((yhat - y) * (yhat_cdf - 1) ** 2)
+#         crps += (~flag) * ((yhat - yhat_prev) * (yhat_cdf - y_cdf) ** 2)
+#         y_cdf += flag
+#         yhat_cdf += 1 / n_samples
+#         yhat_prev = yhat
+#
+#     # In case y_cdf == 0 after the loop
+#     flag = (y_cdf == 0)
+#     crps += flag * (y - yhat)
+#
+#     return crps

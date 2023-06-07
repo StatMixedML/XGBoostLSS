@@ -19,7 +19,7 @@ class ZALN:
 
     Source
     -------------------------
-    - https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py#L150
+    https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py#L150
 
     Parameters
     -------------------------
@@ -28,10 +28,13 @@ class ZALN:
     response_fn: str
         When a custom objective and metric are provided, XGBoost doesn't know its response and link function. Hence,
         the user is responsible for specifying the transformations. Options are "exp" or "softplus".
+    loss_fn: str
+        Loss function. Options are "nll" (negative log-likelihood).
     """
     def __init__(self,
                  stabilization: str = "None",
-                 response_fn: str = "exp"
+                 response_fn: str = "exp",
+                 loss_fn: str = "nll"
                  ):
         # Check Response Function
         if response_fn == "exp":
@@ -56,5 +59,6 @@ class ZALN:
                                             stabilization=stabilization,
                                             param_dict=param_dict,
                                             param_dict_inv=param_dict_inv,
-                                            distribution_arg_names=distribution_arg_names
+                                            distribution_arg_names=distribution_arg_names,
+                                            loss_fn=loss_fn
                                             )

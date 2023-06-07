@@ -59,8 +59,7 @@ class XGBoostLSS:
             verbose_eval: Optional[Union[bool, int]] = True,
             xgb_model: Optional[Union[str, os.PathLike, Booster, bytearray]] = None,
             callbacks: Optional[Sequence[TrainingCallback]] = None,
-
-        ) -> Booster:
+    ) -> Booster:
             """
             Train a booster with given parameters.
 
@@ -255,22 +254,22 @@ class XGBoostLSS:
         dtrain.set_base_margin(base_margin_cv.flatten())
 
         self.cv_booster = xgb.cv(params,
-                                dtrain,
-                                num_boost_round=num_boost_round,
-                                nfold=nfold,
-                                stratified=stratified,
-                                folds=folds,
-                                obj=self.dist.objective_fn,
-                                custom_metric=self.dist.metric_fn,
-                                maximize=False,
-                                early_stopping_rounds=early_stopping_rounds,
-                                fpreproc=fpreproc,
-                                as_pandas=as_pandas,
-                                verbose_eval=verbose_eval,
-                                show_stdv=show_stdv,
-                                seed=seed,
-                                callbacks=callbacks,
-                                shuffle=shuffle)
+                                 dtrain,
+                                 num_boost_round=num_boost_round,
+                                 nfold=nfold,
+                                 stratified=stratified,
+                                 folds=folds,
+                                 obj=self.dist.objective_fn,
+                                 custom_metric=self.dist.metric_fn,
+                                 maximize=False,
+                                 early_stopping_rounds=early_stopping_rounds,
+                                 fpreproc=fpreproc,
+                                 as_pandas=as_pandas,
+                                 verbose_eval=verbose_eval,
+                                 show_stdv=show_stdv,
+                                 seed=seed,
+                                 callbacks=callbacks,
+                                 shuffle=shuffle)
 
         return self.cv_booster
 
@@ -369,7 +368,7 @@ class XGBoostLSS:
                 hyper_params.update({"booster": trial.suggest_categorical("booster", ["gbtree"])})
 
             # Add pruning
-            pruning_callback = optuna.integration.XGBoostPruningCallback(trial, "test-NegLogLikelihood")
+            pruning_callback = optuna.integration.XGBoostPruningCallback(trial, f"test-{self.dist.loss_fn}")
 
             xgblss_param_tuning = self.cv(params=hyper_params,
                                           dtrain=dtrain,
@@ -381,11 +380,14 @@ class XGBoostLSS:
                                           verbose_eval=False
                                           )
 
-            opt_rounds = xgblss_param_tuning["test-NegLogLikelihood-mean"].idxmin() + 1
+            # Add the optimal number of rounds
+            opt_rounds = xgblss_param_tuning[f"test-{self.dist.loss_fn}-mean"].idxmin() + 1
             trial.set_user_attr("opt_round", int(opt_rounds))
 
             # Extract the best score
-            best_score = np.min(xgblss_param_tuning["test-NegLogLikelihood-mean"])
+            best_score = np.min(xgblss_param_tuning[f"test-{self.dist.loss_fn}-mean"])
+            # Replace -inf with 1e8 (to avoid -inf in the log)
+            best_score = np.where(best_score == float('-inf'), float(1e8), best_score)
 
             return best_score
 
@@ -532,11 +534,10 @@ class XGBoostLSS:
         elif plot_type == "Feature_Importance":
             shap.plots.bar(shap_values[:, :, expect_pos], max_display=15 if X.shape[1] > 15 else X.shape[1])
 
-
-    def set_eval_margin (self,
-                         eval_set: list,
-                         start_values: np.ndarray
-                         ) -> list:
+    def set_eval_margin(self,
+                        eval_set: list,
+                        start_values: np.ndarray
+                        ) -> list:
 
         """
         Function that sets the base margin for the evaluation set.

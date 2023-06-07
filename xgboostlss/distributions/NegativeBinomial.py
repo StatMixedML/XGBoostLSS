@@ -30,12 +30,14 @@ class NegativeBinomial:
     response_fn_probs: str
         When a custom objective and metric are provided, XGBoost doesn't know its response and link function. Hence,
         the user is responsible for specifying the transformations. Options are "sigmoid".
-
+    loss_fn: str
+        Loss function. Options are "nll" (negative log-likelihood).
     """
     def __init__(self,
                  stabilization: str = "None",
                  response_fn_total_count: str = "relu",
-                 response_fn_probs: str = "sigmoid"
+                 response_fn_probs: str = "sigmoid",
+                 loss_fn: str = "nll"
                  ):
         # Specify Response and Link Functions for total_count
         if response_fn_total_count == "exp":
@@ -69,5 +71,6 @@ class NegativeBinomial:
                                             stabilization=stabilization,
                                             param_dict=param_dict,
                                             param_dict_inv=param_dict_inv,
-                                            distribution_arg_names=distribution_arg_names
+                                            distribution_arg_names=distribution_arg_names,
+                                            loss_fn=loss_fn
                                             )
