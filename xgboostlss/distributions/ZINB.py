@@ -13,8 +13,6 @@ class ZINB:
         Non-negative number of negative Bernoulli trials to stop, although the distribution is still valid for real valued count.
     probs: torch.Tensor
         Event probabilities of success in the half open interval [0, 1).
-    logits: torch.Tensor
-        Event log-odds for probabilities of success.
     gate: torch.Tensor
         Probability of extra zeros given via a Bernoulli distribution.
 
