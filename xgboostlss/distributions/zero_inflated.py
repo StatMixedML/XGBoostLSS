@@ -11,7 +11,7 @@ from torch.distributions.utils import (
 )
 from torch.nn.functional import softplus
 
-from torch.distributions import NegativeBinomial, Poisson
+from torch.distributions import NegativeBinomial, Poisson, Gamma
 from pyro.distributions import TorchDistribution
 from pyro.distributions.util import broadcast_shape
 
@@ -203,3 +203,42 @@ class ZeroInflatedNegativeBinomial(ZeroInflatedDistribution):
     @property
     def logits(self):
         return self.base_dist.logits
+
+
+class ZeroAdjustedGamma(ZeroInflatedDistribution):
+    """
+    A Zero-Adjusted Gamma distribution.
+
+    Parameter
+    ---------
+    concentration: torch.Tensor
+        shape parameter of the distribution (often referred to as alpha)
+    rate: torch.Tensor
+        rate = 1 / scale of the distribution (often referred to as beta)
+    gate: torch.Tensor
+        Probability of zeros given via a Bernoulli distribution.
+
+    Source
+    ------
+    - https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py#L121
+    """
+    arg_constraints = {
+        "concentration": constraints.positive,
+        "rate": constraints.positive,
+        "gate": constraints.unit_interval,
+    }
+    support = constraints.nonnegative
+
+    def __init__(self, concentration, rate, gate=None, validate_args=None):
+        base_dist = Gamma(concentration=concentration, rate=rate, validate_args=False)
+        base_dist._validate_args = validate_args
+
+        super().__init__(base_dist, gate=gate, validate_args=validate_args)
+
+    @property
+    def concentration(self):
+        return self.base_dist.concentration
+
+    @property
+    def rate(self):
+        return self.base_dist.rate
