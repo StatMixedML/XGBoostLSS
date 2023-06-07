@@ -13,7 +13,7 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 :white_check_mark: XGBoostLSS is available in Python. <br/>
 
 ## News
-:boom: [2023-06-07] XGBoostLSS now supports Zero-Inflated Distributions. <br/>
+:boom: [2023-06-07] XGBoostLSS now supports Zero-Inflated and Zero-Adjusted Distributions. <br/>
 :boom: [2023-05-26] Release of v0.2.1. See the [release notes](https://github.com/StatMixedML/XGBoostLSS/releases) for an overview. <br/>
 :boom: [2023-05-18] Release of v0.2.0. See the [release notes](https://github.com/StatMixedML/XGBoostLSS/releases) for an overview. <br/>
 :boom: [2022-10-14] XGBoostLSS now supports multi-target regression. (Currently available via [Py-BoostLSS](https://github.com/StatMixedML/Py-BoostLSS)). <br/>
@@ -54,6 +54,7 @@ XGBoostLSS currently supports the following [PyTorch distributions](https://pyto
 | [Poisson](https://pytorch.org/docs/stable/distributions.html#poisson)                                                                | `Poisson()`               | Discrete Count <br /> (Univariate)     | $y \in (0, 1, 2, 3, ...)$       | 1                               |
 | [Student-T](https://pytorch.org/docs/stable/distributions.html#studentt)                                                             | `StudentT()`              | Continuous <br /> (Univariate)         | $y \in (-\infty,\infty)$        | 3                               |
 | [Weibull](https://pytorch.org/docs/stable/distributions.html#weibull)                                                                | `Weibull()`               | Continuous <br /> (Univariate)         | $y \in [0, \infty)$             | 2                               |
+| [Zero-Adjusted Gamma](https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py)                                 | `ZAGA()`                  | Continuous <br /> (Univariate)         | $y \in [0, \infty)$             | 3                               |
 | [Zero-Inflated Negative Binomial](https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py#L150)                | `ZINB()`                  | Discrete Count <br /> (Univariate)     | $y \in [0, 1, 2, 3, ...)$       | 3                               |
 | [Zero-Inflated Poisson](https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py#L121)                          | `ZIP()`                   | Discrete Count <br /> (Univariate)     | $y \in [0, 1, 2, 3, ...)$       | 2                               |
 
