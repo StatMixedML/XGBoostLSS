@@ -114,8 +114,8 @@ def sigmoid_fn(predt: torch.tensor) -> torch.tensor:
         Predicted values.
     """
     predt = torch.sigmoid(predt)
-    predt = torch.clamp(predt, 1e-06, 1-1e-06)
     predt = torch.nan_to_num(predt, nan=float(torch.nanmean(predt))) + torch.tensor(1e-06, dtype=predt.dtype)
+    predt = torch.clamp(predt, 1e-03, 1-1e-03)
 
     return predt
 
@@ -134,7 +134,7 @@ def sigmoidinv_fn(predt: torch.tensor) -> torch.tensor:
         Predicted values.
     """
     predt = torch.log(predt / (1 - predt))
-    predt = torch.nan_to_num(predt, nan=float(torch.nanmean(predt))) + torch.tensor(1e-6, dtype=predt.dtype)
+    predt = torch.nan_to_num(predt, nan=float(torch.nanmean(predt))) + torch.tensor(1e-06, dtype=predt.dtype)
 
     return predt
 
