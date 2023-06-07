@@ -1,6 +1,7 @@
 """XGBoostLSS - An extension of XGBoost to probabilistic forecasting"""
 
 from . import distribution_utils
+from . import zero_inflated
 from . import Gaussian
 from . import StudentT
 from . import Gamma
@@ -13,4 +14,6 @@ from . import Poisson
 from . import Expectile
 from . import Cauchy
 from . import LogNormal
+from . import ZIP
+from . import ZINB
 

@@ -151,9 +151,7 @@ class ZeroInflatedPoisson(ZeroInflatedDistribution):
         base_dist = Poisson(rate=rate, validate_args=False)
         base_dist._validate_args = validate_args
 
-        super().__init__(
-            base_dist, gate=gate, validate_args=validate_args
-        )
+        super().__init__(base_dist, gate=gate, validate_args=validate_args)
 
     @property
     def rate(self):
@@ -174,8 +172,6 @@ class ZeroInflatedNegativeBinomial(ZeroInflatedDistribution):
         Event log-odds of success (log(p/(1-p))).
     gate: torch.Tensor
         Probability of extra zeros given via a Bernoulli distribution.
-    gate_logits: torch.Tensor
-        Logit of the probability of extra zeros given via a Bernoulli distribution.
 
     Source
     ------
@@ -187,31 +183,14 @@ class ZeroInflatedNegativeBinomial(ZeroInflatedDistribution):
         "probs": constraints.half_open_interval(0.0, 1.0),
         "logits": constraints.real,
         "gate": constraints.unit_interval,
-        "gate_logits": constraints.real,
     }
     support = constraints.nonnegative_integer
 
-    def __init__(
-            self,
-            total_count,
-            *,
-            probs=None,
-            logits=None,
-            gate=None,
-            gate_logits=None,
-            validate_args=None
-    ):
-        base_dist = NegativeBinomial(
-            total_count=total_count,
-            probs=probs,
-            logits=logits,
-            validate_args=False,
-        )
+    def __init__(self, total_count, probs=None, gate=None, validate_args=None):
+        base_dist = NegativeBinomial(total_count=total_count, probs=probs, logits=None, validate_args=False)
         base_dist._validate_args = validate_args
 
-        super().__init__(
-            base_dist, gate=gate, gate_logits=gate_logits, validate_args=validate_args
-        )
+        super().__init__(base_dist, gate=gate, validate_args=validate_args)
 
     @property
     def total_count(self):
