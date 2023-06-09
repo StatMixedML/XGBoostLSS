@@ -28,7 +28,9 @@ class StudentT:
         When a custom objective and metric are provided, XGBoost doesn't know its response and link function. Hence,
         the user is responsible for specifying the transformations. Options are "exp" or "softplus".
     loss_fn: str
-        Loss function. Options are "nll" (negative log-likelihood).
+        Loss function. Options are "nll" (negative log-likelihood) or "crps" (continuous ranked probability score).
+        Note that if "crps" is used, the Hessian is set to 1, as the current CRPS version is not twice differentiable.
+        Hence, using the CRPS disregards any variation in the curvature of the loss function.
     """
     def __init__(self,
                  stabilization: str = "None",

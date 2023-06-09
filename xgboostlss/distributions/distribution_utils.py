@@ -35,7 +35,9 @@ class DistributionClass:
     distribution_arg_names: List
         List of distributional parameter names.
     loss_fn: str
-        Loss function. Options are "nll" (negative log-likelihood).
+        Loss function. Options are "nll" (negative log-likelihood) or "crps" (continuous ranked probability score).
+        Note that if "crps" is used, the Hessian is set to 1, as the current CRPS version is not twice differentiable.
+        Hence, using the CRPS disregards any variation in the curvature of the loss function.
     tau: List
         List of expectiles. Only used for Expectile distributon.
     penalize_crossing: bool
@@ -203,6 +205,7 @@ class DistributionClass:
 
         # Target
         target = torch.tensor(data.get_label().reshape(-1, 1))
+        self.target = target
 
         # Predicted Parameters
         predt = predt.reshape(-1, self.n_dist_param)
@@ -226,11 +229,11 @@ class DistributionClass:
             # Specify Loss
             if self.loss_fn == "nll":
                 loss = -torch.nansum(dist_fit.log_prob(target))
-            # elif self.loss_fn == "crps":
-            #     dist_samples = dist_fit.rsample((30,)).squeeze(-1)
-            #     loss = torch.nansum(crps_score(target, dist_samples))
+            elif self.loss_fn == "crps":
+                dist_samples = dist_fit.rsample((30,)).squeeze(-1)
+                loss = torch.nansum(crps_score(target, dist_samples))
             else:
-                raise ValueError("Invalid loss function. Please select 'nll'.")
+                raise ValueError("Invalid loss function. Please select 'nll' or 'crps'.")
         else:
             # Specify Distribution and NLL
             dist_fit = self.distribution(predt_transformed, self.penalize_crossing)
@@ -383,10 +386,14 @@ class DistributionClass:
         hess: torch.Tensor
             Hessians.
         """
-
-        # Gradient and Hessian
-        grad = autograd(loss, inputs=predt, create_graph=True)
-        hess = [autograd(grad[i].nansum(), inputs=predt[i], retain_graph=True)[0] for i in range(len(grad))]
+        if self.loss_fn == "nll":
+            # Gradient and Hessian
+            grad = autograd(loss, inputs=predt, create_graph=True)
+            hess = [autograd(grad[i].nansum(), inputs=predt[i], retain_graph=True)[0] for i in range(len(grad))]
+        elif self.loss_fn == "crps":
+            # Gradient and Hessian
+            grad = autograd(loss, inputs=predt, create_graph=True)
+            hess = [torch.ones_like(grad[i]) for i in range(len(grad))]
 
         # Stabilization of Derivatives
         if self.stabilization != "None":
@@ -539,26 +546,16 @@ def dist_select(target: np.ndarray,
     return dist_nll
 
 
-def crps_score(observations: torch.tensor, forecasts: torch.tensor, weights: torch.tensor = 1) -> torch.tensor:
+def crps_score(y: torch.tensor, yhat_dist: torch.tensor) -> torch.tensor:
     """
     Function that calculates the Continuous Ranked Probability Score (CRPS) for a given set of predicted samples.
 
-    This implementation is based on the identity:
-
-    .. math::
-        CRPS(F, x) = E_F|X - x| - 1/2 * E_F|X - X'|
-
-    where X and X' denote independent random variables drawn from the forecast distribution F, and E_F denotes the
-    expectation value under F.
-
     Parameters
     ----------
-    forecasts: torch.Tensor
-        Predicted samples of shape (n_samples, n_observations).
-    observations: torch.Tensor
+    y: torch.Tensor
         Response variable of shape (n_observations,1).
-    weights: torch.Tensor
-        Weight of each observation.
+    yhat_dist: torch.Tensor
+        Predicted samples of shape (n_samples, n_observations).
 
     Returns
     -------
@@ -572,79 +569,33 @@ def crps_score(observations: torch.tensor, forecasts: torch.tensor, weights: tor
 
     Source
     ------
-    - https://github.com/properscoring/properscoring/blob/master/properscoring/_crps.py#L187
+    https://github.com/elephaint/pgbm/blob/main/pgbm/torch/pgbm_dist.py
     """
-    observations = observations.T.expand(forecasts.size())
-    weights = torch.as_tensor(weights).float()
+    # Get the number of observations
+    n_samples = yhat_dist.shape[0]
 
-    if weights.ndim > 0:
-        weights = torch.where(~torch.isnan(forecasts), weights, torch.nan)
-        weights = weights / torch.nanmean(weights, dim=-1, keepdim=True)
+    # Sort the forecasts in ascending order
+    yhat_dist_sorted, _ = torch.sort(yhat_dist, 0)
 
-    if observations.ndim == forecasts.ndim - 1:
-        assert observations.shape == forecasts.shape[:-1]
-        observations = observations[..., None]
-        crps = torch.nanmean(weights * torch.abs(forecasts - observations), -1)
-        forecasts_diff = (forecasts.unsqueeze(-1) - forecasts.unsqueeze(-2))
-        weights_matrix = (weights.unsqueeze(-1) * weights.unsqueeze(-2))
-        crps += -0.5 * torch.nanmean(weights_matrix * torch.abs(forecasts_diff), dim=(-2, -1))
-        return torch.nansum(crps)
+    # Create temporary tensors
+    y_cdf = torch.zeros_like(y)
+    yhat_cdf = torch.zeros_like(y)
+    yhat_prev = torch.zeros_like(y)
+    crps = torch.zeros_like(y)
 
-    elif observations.ndim == forecasts.ndim:
-        crps = torch.nansum(torch.abs(observations - forecasts))
-        return crps
+    # Loop over the predicted samples generated per observation
+    for yhat in yhat_dist_sorted:
+        yhat = yhat.reshape(-1, 1)
+        flag = (y_cdf == 0) * (y < yhat)
+        crps += flag * ((y - yhat_prev) * yhat_cdf ** 2)
+        crps += flag * ((yhat - y) * (yhat_cdf - 1) ** 2)
+        crps += (~flag) * ((yhat - yhat_prev) * (yhat_cdf - y_cdf) ** 2)
+        y_cdf += flag
+        yhat_cdf += 1 / n_samples
+        yhat_prev = yhat
 
+    # In case y_cdf == 0 after the loop
+    flag = (y_cdf == 0)
+    crps += flag * (y - yhat)
 
-# def crps_score(yhat_dist: torch.tensor, y: torch.tensor) -> torch.tensor:
-#     """
-#     Function that calculates the Continuous Ranked Probability Score (CRPS) for a given set of predicted samples.
-#
-#     Parameters
-#     ----------
-#     yhat_dist: torch.Tensor
-#         Predicted samples of shape (n_samples, n_observations).
-#     y: torch.Tensor
-#         Response variable of shape (n_observations,1).
-#
-#     Returns
-#     -------
-#     crps: torch.Tensor
-#         CRPS score.
-#
-#     References
-#     ----------
-#     Gneiting, Tilmann & Raftery, Adrian. (2007). Strictly Proper Scoring Rules, Prediction, and Estimation.
-#     Journal of the American Statistical Association. 102. 359-378.
-#
-#     Source
-#     ------
-#     https://github.com/elephaint/pgbm/blob/main/pgbm/torch/pgbm_dist.py
-#     """
-#     # Get the number of observations
-#     n_samples = yhat_dist.shape[0]
-#
-#     # Sort the forecasts in ascending order
-#     yhat_dist_sorted, _ = torch.sort(yhat_dist, 0)
-#
-#     # Create temporary tensors
-#     y_cdf = torch.zeros_like(y)
-#     yhat_cdf = torch.zeros_like(y)
-#     yhat_prev = torch.zeros_like(y)
-#     crps = torch.zeros_like(y)
-#
-#     # Loop over the predicted samples generated per observation
-#     for yhat in yhat_dist_sorted:
-#         yhat = yhat.reshape(-1, 1)
-#         flag = (y_cdf == 0) * (y < yhat)
-#         crps += flag * ((y - yhat_prev) * yhat_cdf ** 2)
-#         crps += flag * ((yhat - y) * (yhat_cdf - 1) ** 2)
-#         crps += (~flag) * ((yhat - yhat_prev) * (yhat_cdf - y_cdf) ** 2)
-#         y_cdf += flag
-#         yhat_cdf += 1 / n_samples
-#         yhat_prev = yhat
-#
-#     # In case y_cdf == 0 after the loop
-#     flag = (y_cdf == 0)
-#     crps += flag * (y - yhat)
-#
-#     return crps
+    return crps
