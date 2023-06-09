@@ -205,7 +205,7 @@ class DistributionClass:
 
         # Target
         target = torch.tensor(data.get_label().reshape(-1, 1))
-        self.target = target
+        # self.target = torch.tensor(data.get_label().reshape(-1, 1))
 
         # Predicted Parameters
         predt = predt.reshape(-1, self.n_dist_param)
@@ -231,7 +231,7 @@ class DistributionClass:
                 loss = -torch.nansum(dist_fit.log_prob(target))
             elif self.loss_fn == "crps":
                 dist_samples = dist_fit.rsample((50,)).squeeze(-1)
-                loss = torch.nansum(crps_score(target, dist_samples))
+                loss = torch.nansum(self.crps_score(target, dist_samples))
             else:
                 raise ValueError("Invalid loss function. Please select 'nll' or 'crps'.")
         else:
@@ -395,10 +395,34 @@ class DistributionClass:
             grad = autograd(loss, inputs=predt, create_graph=True)
             hess = [torch.ones_like(grad[i]) for i in range(len(grad))]
 
+            # # Approximation of Hessian
+            # step_size = 1e-6
+            # predt_upper = [
+            #     response_fn(predt[i] + step_size).reshape(-1, 1) for i, response_fn in
+            #     enumerate(self.param_dict.values())
+            # ]
+            # dist_kwargs_upper = dict(zip(self.distribution_arg_names, predt_upper))
+            # dist_fit_upper = self.distribution(**dist_kwargs_upper)
+            # dist_samples_upper = dist_fit_upper.rsample((30,)).squeeze(-1)
+            # loss_upper = torch.nansum(self.crps_score(self.target, dist_samples_upper))
+            #
+            # predt_lower = [
+            #     response_fn(predt[i] - step_size).reshape(-1, 1) for i, response_fn in
+            #     enumerate(self.param_dict.values())
+            # ]
+            # dist_kwargs_lower = dict(zip(self.distribution_arg_names, predt_lower))
+            # dist_fit_lower = self.distribution(**dist_kwargs_lower)
+            # dist_samples_lower = dist_fit_lower.rsample((30,)).squeeze(-1)
+            # loss_lower = torch.nansum(self.crps_score(self.target, dist_samples_lower))
+            #
+            # grad_upper = autograd(loss_upper, inputs=predt_upper)
+            # grad_lower = autograd(loss_lower, inputs=predt_lower)
+            # hess = [(grad_upper[i] - grad_lower[i]) / (2 * step_size) for i in range(len(grad))]
+
         # Stabilization of Derivatives
         if self.stabilization != "None":
-            grad = [stabilize_derivative(grad[i], type=self.stabilization) for i in range(len(grad))]
-            hess = [stabilize_derivative(hess[i], type=self.stabilization) for i in range(len(hess))]
+            grad = [self.stabilize_derivative(grad[i], type=self.stabilization) for i in range(len(grad))]
+            hess = [self.stabilize_derivative(hess[i], type=self.stabilization) for i in range(len(hess))]
 
         # Reshape
         grad = torch.cat(grad, axis=1).detach().numpy()
@@ -415,48 +439,103 @@ class DistributionClass:
         return grad, hess
 
 
-def stabilize_derivative(input_der: torch.Tensor, type: str = "MAD") -> torch.Tensor:
-    """
-    Function that stabilizes Gradients and Hessians.
+    def stabilize_derivative(self, input_der: torch.Tensor, type: str = "MAD") -> torch.Tensor:
+        """
+        Function that stabilizes Gradients and Hessians.
 
-    As XGBoostLSS updates the parameter estimates by optimizing Gradients and Hessians, it is important
-    that these are comparable in magnitude for all distributional parameters. Due to imbalances regarding the ranges,
-    the estimation might become unstable so that it does not converge (or converge very slowly) to the optimal solution.
-    Another way to improve convergence might be to standardize the response variable. This is especially useful if the
-    range of the response differs strongly from the range of the Gradients and Hessians. Both, the stabilization and
-    the standardization of the response are not always advised but need to be carefully considered.
-    Source: https://github.com/boost-R/gamboostLSS/blob/7792951d2984f289ed7e530befa42a2a4cb04d1d/R/helpers.R#L173
+        As XGBoostLSS updates the parameter estimates by optimizing Gradients and Hessians, it is important
+        that these are comparable in magnitude for all distributional parameters. Due to imbalances regarding the ranges,
+        the estimation might become unstable so that it does not converge (or converge very slowly) to the optimal solution.
+        Another way to improve convergence might be to standardize the response variable. This is especially useful if the
+        range of the response differs strongly from the range of the Gradients and Hessians. Both, the stabilization and
+        the standardization of the response are not always advised but need to be carefully considered.
+        Source: https://github.com/boost-R/gamboostLSS/blob/7792951d2984f289ed7e530befa42a2a4cb04d1d/R/helpers.R#L173
 
-    Parameters
-    ----------
-    input_der : torch.Tensor
-        Input derivative, either Gradient or Hessian.
-    type: str
-        Stabilization method. Can be either "None", "MAD" or "L2".
+        Parameters
+        ----------
+        input_der : torch.Tensor
+            Input derivative, either Gradient or Hessian.
+        type: str
+            Stabilization method. Can be either "None", "MAD" or "L2".
 
-    Returns
-    -------
-    stab_der : torch.Tensor
-        Stabilized Gradient or Hessian.
-    """
+        Returns
+        -------
+        stab_der : torch.Tensor
+            Stabilized Gradient or Hessian.
+        """
 
-    if type == "MAD":
-        input_der = torch.nan_to_num(input_der, nan=float(torch.nanmean(input_der)))
-        div = torch.nanmedian(torch.abs(input_der - torch.nanmedian(input_der)))
-        div = torch.where(div < torch.tensor(1e-04), torch.tensor(1e-04), div)
-        stab_der = input_der / div
+        if type == "MAD":
+            input_der = torch.nan_to_num(input_der, nan=float(torch.nanmean(input_der)))
+            div = torch.nanmedian(torch.abs(input_der - torch.nanmedian(input_der)))
+            div = torch.where(div < torch.tensor(1e-04), torch.tensor(1e-04), div)
+            stab_der = input_der / div
 
-    if type == "L2":
-        input_der = torch.nan_to_num(input_der, nan=float(torch.nanmean(input_der)))
-        div = torch.sqrt(torch.nanmean(input_der.pow(2)))
-        div = torch.where(div < torch.tensor(1e-04), torch.tensor(1e-04), div)
-        div = torch.where(div > torch.tensor(10000.0), torch.tensor(10000.0), div)
-        stab_der = input_der / div
+        if type == "L2":
+            input_der = torch.nan_to_num(input_der, nan=float(torch.nanmean(input_der)))
+            div = torch.sqrt(torch.nanmean(input_der.pow(2)))
+            div = torch.where(div < torch.tensor(1e-04), torch.tensor(1e-04), div)
+            div = torch.where(div > torch.tensor(10000.0), torch.tensor(10000.0), div)
+            stab_der = input_der / div
 
-    if type == "None":
-        stab_der = torch.nan_to_num(input_der, nan=float(torch.nanmean(input_der)))
+        if type == "None":
+            stab_der = torch.nan_to_num(input_der, nan=float(torch.nanmean(input_der)))
 
-    return stab_der
+        return stab_der
+
+
+    def crps_score(self, y: torch.tensor, yhat_dist: torch.tensor) -> torch.tensor:
+        """
+        Function that calculates the Continuous Ranked Probability Score (CRPS) for a given set of predicted samples.
+
+        Parameters
+        ----------
+        y: torch.Tensor
+            Response variable of shape (n_observations,1).
+        yhat_dist: torch.Tensor
+            Predicted samples of shape (n_samples, n_observations).
+
+        Returns
+        -------
+        crps: torch.Tensor
+            CRPS score.
+
+        References
+        ----------
+        Gneiting, Tilmann & Raftery, Adrian. (2007). Strictly Proper Scoring Rules, Prediction, and Estimation.
+        Journal of the American Statistical Association. 102. 359-378.
+
+        Source
+        ------
+        https://github.com/elephaint/pgbm/blob/main/pgbm/torch/pgbm_dist.py#L549
+        """
+        # Get the number of observations
+        n_samples = yhat_dist.shape[0]
+
+        # Sort the forecasts in ascending order
+        yhat_dist_sorted, _ = torch.sort(yhat_dist, 0)
+
+        # Create temporary tensors
+        y_cdf = torch.zeros_like(y)
+        yhat_cdf = torch.zeros_like(y)
+        yhat_prev = torch.zeros_like(y)
+        crps = torch.zeros_like(y)
+
+        # Loop over the predicted samples generated per observation
+        for yhat in yhat_dist_sorted:
+            yhat = yhat.reshape(-1, 1)
+            flag = (y_cdf == 0) * (y < yhat)
+            crps += flag * ((y - yhat_prev) * yhat_cdf ** 2)
+            crps += flag * ((yhat - y) * (yhat_cdf - 1) ** 2)
+            crps += (~flag) * ((yhat - yhat_prev) * (yhat_cdf - y_cdf) ** 2)
+            y_cdf += flag
+            yhat_cdf += 1 / n_samples
+            yhat_prev = yhat
+
+        # In case y_cdf == 0 after the loop
+        flag = (y_cdf == 0)
+        crps += flag * (y - yhat)
+
+        return crps
 
 
 def dist_select(target: np.ndarray,
@@ -544,58 +623,3 @@ def dist_select(target: np.ndarray,
     dist_nll.drop(columns=["rank", "params"], inplace=True)
 
     return dist_nll
-
-
-def crps_score(y: torch.tensor, yhat_dist: torch.tensor) -> torch.tensor:
-    """
-    Function that calculates the Continuous Ranked Probability Score (CRPS) for a given set of predicted samples.
-
-    Parameters
-    ----------
-    y: torch.Tensor
-        Response variable of shape (n_observations,1).
-    yhat_dist: torch.Tensor
-        Predicted samples of shape (n_samples, n_observations).
-
-    Returns
-    -------
-    crps: torch.Tensor
-        CRPS score.
-
-    References
-    ----------
-    Gneiting, Tilmann & Raftery, Adrian. (2007). Strictly Proper Scoring Rules, Prediction, and Estimation.
-    Journal of the American Statistical Association. 102. 359-378.
-
-    Source
-    ------
-    https://github.com/elephaint/pgbm/blob/main/pgbm/torch/pgbm_dist.py#L549
-    """
-    # Get the number of observations
-    n_samples = yhat_dist.shape[0]
-
-    # Sort the forecasts in ascending order
-    yhat_dist_sorted, _ = torch.sort(yhat_dist, 0)
-
-    # Create temporary tensors
-    y_cdf = torch.zeros_like(y)
-    yhat_cdf = torch.zeros_like(y)
-    yhat_prev = torch.zeros_like(y)
-    crps = torch.zeros_like(y)
-
-    # Loop over the predicted samples generated per observation
-    for yhat in yhat_dist_sorted:
-        yhat = yhat.reshape(-1, 1)
-        flag = (y_cdf == 0) * (y < yhat)
-        crps += flag * ((y - yhat_prev) * yhat_cdf ** 2)
-        crps += flag * ((yhat - y) * (yhat_cdf - 1) ** 2)
-        crps += (~flag) * ((yhat - yhat_prev) * (yhat_cdf - y_cdf) ** 2)
-        y_cdf += flag
-        yhat_cdf += 1 / n_samples
-        yhat_prev = yhat
-
-    # In case y_cdf == 0 after the loop
-    flag = (y_cdf == 0)
-    crps += flag * (y - yhat)
-
-    return crps
