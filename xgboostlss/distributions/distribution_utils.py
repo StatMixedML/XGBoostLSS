@@ -569,7 +569,7 @@ def crps_score(y: torch.tensor, yhat_dist: torch.tensor) -> torch.tensor:
 
     Source
     ------
-    https://github.com/elephaint/pgbm/blob/main/pgbm/torch/pgbm_dist.py
+    https://github.com/elephaint/pgbm/blob/main/pgbm/torch/pgbm_dist.py#L549
     """
     # Get the number of observations
     n_samples = yhat_dist.shape[0]
