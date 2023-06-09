@@ -230,7 +230,7 @@ class DistributionClass:
             if self.loss_fn == "nll":
                 loss = -torch.nansum(dist_fit.log_prob(target))
             elif self.loss_fn == "crps":
-                dist_samples = dist_fit.rsample((30,)).squeeze(-1)
+                dist_samples = dist_fit.rsample((50,)).squeeze(-1)
                 loss = torch.nansum(crps_score(target, dist_samples))
             else:
                 raise ValueError("Invalid loss function. Please select 'nll' or 'crps'.")
