@@ -132,6 +132,7 @@ class DistributionClass:
         # Start values
         start_values = data.get_base_margin().reshape(-1, self.n_dist_param)[0, :].tolist()
 
+        # Calculate loss
         _, loss = self.get_params_loss(predt, target, start_values, requires_grad=False)
 
         return self.loss_fn, loss
@@ -141,7 +142,8 @@ class DistributionClass:
                              params: torch.Tensor,
                              target: torch.Tensor) -> torch.Tensor:
         """
-        Function that calculates the loss for a given set of distributional parameters.
+        Function that calculates the loss for a given set of distributional parameters. Only used for calculating
+        the loss for the start values.
 
         Parameter
         ---------
@@ -235,7 +237,7 @@ class DistributionClass:
         start_values = np.array([params[i].detach() for i in range(self.n_dist_param)])
 
         # Replace any remaining NaNs with 0.5
-        start_values[np.isnan(start_values)] = np.array([0.5], dtype=type(start_values))
+        start_values = np.nan_to_num(start_values, nan=0.5)
 
         return loss, start_values
 
