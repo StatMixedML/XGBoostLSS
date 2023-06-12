@@ -655,6 +655,7 @@ class DistributionClass:
                 fit_df["rank"] = fit_df[self.loss_fn].rank().astype(int)
                 fit_df.set_index(fit_df["rank"], inplace=True)
                 pbar.update(1)
+            pbar.set_description(f"Fitting of candidate distributions completed")
 
         if plot:
             # Select best distribution
