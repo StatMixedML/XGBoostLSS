@@ -209,7 +209,7 @@ class DistributionClass:
         params = [torch.tensor(0.5, requires_grad=True) for _ in range(self.n_dist_param)]
 
         # Specify optimizer
-        optimizer = LBFGS(params, lr=0.1, line_search_fn="strong_wolfe")
+        optimizer = LBFGS(params, lr=0.1, max_iter=np.min([int(max_iter/4), 20]), line_search_fn="strong_wolfe")
 
         # Define learning rate scheduler
         lr_scheduler = ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=10)
