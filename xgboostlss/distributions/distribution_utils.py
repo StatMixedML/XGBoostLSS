@@ -99,7 +99,7 @@ class DistributionClass:
         else:
             weights = data.get_weight().reshape(-1, 1)
 
-        # Start values
+        # Start values (needed to replace NaNs in predt)
         start_values = data.get_base_margin().reshape(-1, self.n_dist_param)[0, :].tolist()
 
         # Calculate gradients and hessians
@@ -110,7 +110,7 @@ class DistributionClass:
 
     def metric_fn(self, predt: np.ndarray, data: xgb.DMatrix) -> Tuple[str, np.ndarray]:
         """
-        Function that evaluates the predictions using the negative log-likelihood.
+        Function that evaluates the predictions using the specified loss function.
 
         Arguments
         ---------
@@ -129,7 +129,7 @@ class DistributionClass:
         # Target
         target = torch.tensor(data.get_label().reshape(-1, 1))
 
-        # Start values
+        # Start values (needed to replace NaNs in predt)
         start_values = data.get_base_margin().reshape(-1, self.n_dist_param)[0, :].tolist()
 
         # Calculate loss
