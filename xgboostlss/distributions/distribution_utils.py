@@ -199,8 +199,8 @@ class DistributionClass:
 
         Returns
         -------
-        nll: float
-            Negative log-likelihood.
+        loss: float
+            Loss value.
         start_values: np.ndarray
             Starting values for each distributional parameter.
         """
