@@ -14,8 +14,10 @@ from . import Poisson
 from . import Expectile
 from . import Cauchy
 from . import LogNormal
-from . import ZIP
+from . import ZIPoisson
 from . import ZINB
-from . import ZAGA
+from . import ZAGamma
 from . import ZALN
+from . import ZABeta
+
 

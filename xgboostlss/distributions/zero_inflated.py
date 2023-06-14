@@ -11,9 +11,14 @@ from torch.distributions.utils import (
 )
 from torch.nn.functional import softplus
 
-from torch.distributions import NegativeBinomial, Poisson, Gamma, LogNormal
+from torch.distributions import NegativeBinomial, Poisson, Gamma, LogNormal, Beta
 from pyro.distributions import TorchDistribution
 from pyro.distributions.util import broadcast_shape
+
+from torch.distributions.exp_family import ExponentialFamily
+from torch.distributions.utils import broadcast_all
+from torch.distributions.dirichlet import Dirichlet
+from numbers import Number
 
 
 class ZeroInflatedDistribution(TorchDistribution):
@@ -77,6 +82,17 @@ class ZeroInflatedDistribution(TorchDistribution):
     def log_prob(self, value):
         if self._validate_args:
             self._validate_sample(value)
+
+        support = self.support
+        epsilon = abs(torch.finfo(value.dtype).eps)
+
+        if hasattr(support, "lower_bound"):
+            if support.lower_bound == 0.0:
+                value = value.clamp_min(epsilon)
+
+        if hasattr(support, "upper_bound"):
+            if support.upper_bound == 1.0:
+                value = value.clamp_max(1 - epsilon)
 
         if "gate" in self.__dict__:
             gate, value = broadcast_all(self.gate, value)
@@ -205,6 +221,53 @@ class ZeroInflatedNegativeBinomial(ZeroInflatedDistribution):
         return self.base_dist.logits
 
 
+class ZeroInflatedNegativeBinomial(ZeroInflatedDistribution):
+    """
+    A Zero Inflated Negative Binomial distribution.
+
+    Parameter
+    ---------
+    total_count: torch.Tensor
+        Non-negative number of negative Bernoulli trial.
+    probs: torch.Tensor
+        Event probabilities of success in the half open interval [0, 1).
+    logits: torch.Tensor
+        Event log-odds of success (log(p/(1-p))).
+    gate: torch.Tensor
+        Probability of extra zeros given via a Bernoulli distribution.
+
+    Source
+    ------
+    - https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py#L150
+    """
+
+    arg_constraints = {
+        "total_count": constraints.greater_than_eq(0),
+        "probs": constraints.half_open_interval(0.0, 1.0),
+        "logits": constraints.real,
+        "gate": constraints.unit_interval,
+    }
+    support = constraints.nonnegative_integer
+
+    def __init__(self, total_count, probs=None, gate=None, validate_args=None):
+        base_dist = NegativeBinomial(total_count=total_count, probs=probs, logits=None, validate_args=False)
+        base_dist._validate_args = validate_args
+
+        super().__init__(base_dist, gate=gate, validate_args=validate_args)
+
+    @property
+    def total_count(self):
+        return self.base_dist.total_count
+
+    @property
+    def probs(self):
+        return self.base_dist.probs
+
+    @property
+    def logits(self):
+        return self.base_dist.logits
+
+
 class ZeroAdjustedGamma(ZeroInflatedDistribution):
     """
     A Zero-Adjusted Gamma distribution.
@@ -281,3 +344,42 @@ class ZeroAdjustedLogNormal(ZeroInflatedDistribution):
     @property
     def scale(self):
         return self.base_dist.scale
+
+
+class ZeroAdjustedBeta(ZeroInflatedDistribution):
+    """
+    A Zero-Adjusted Beta distribution.
+
+    Parameter
+    ---------
+    concentration1: torch.Tensor
+        1st concentration parameter of the distribution (often referred to as alpha).
+    concentration0: torch.Tensor
+        2nd concentration parameter of the distribution (often referred to as beta).
+    gate: torch.Tensor
+        Probability of zeros given via a Bernoulli distribution.
+
+    Source
+    ------
+    https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py
+    """
+    arg_constraints = {
+        "concentration1": constraints.positive,
+        "concentration0": constraints.positive,
+        "gate": constraints.unit_interval,
+    }
+    support = constraints.unit_interval
+
+    def __init__(self, concentration1, concentration0, gate=None, validate_args=None):
+        base_dist = Beta(concentration1=concentration1, concentration0=concentration0, validate_args=False)
+        base_dist._validate_args = validate_args
+
+        super().__init__(base_dist, gate=gate, validate_args=validate_args)
+
+    @property
+    def concentration1(self):
+        return self.base_dist.concentration1
+
+    @property
+    def concentration0(self):
+        return self.base_dist.concentration0
