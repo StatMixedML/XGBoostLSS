@@ -15,11 +15,6 @@ from torch.distributions import NegativeBinomial, Poisson, Gamma, LogNormal, Bet
 from pyro.distributions import TorchDistribution
 from pyro.distributions.util import broadcast_shape
 
-from torch.distributions.exp_family import ExponentialFamily
-from torch.distributions.utils import broadcast_all
-from torch.distributions.dirichlet import Dirichlet
-from numbers import Number
-
 
 class ZeroInflatedDistribution(TorchDistribution):
     """
