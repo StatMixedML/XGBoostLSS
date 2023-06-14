@@ -17,7 +17,5 @@ from . import LogNormal
 from . import ZIPoisson
 from . import ZINB
 from . import ZAGamma
-from . import ZALN
 from . import ZABeta
-
-
+# from . import ZALN
