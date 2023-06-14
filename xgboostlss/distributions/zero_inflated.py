@@ -14,6 +14,7 @@ from torch.nn.functional import softplus
 from torch.distributions import NegativeBinomial, Poisson, Gamma, LogNormal, Beta
 from pyro.distributions import TorchDistribution
 from pyro.distributions.util import broadcast_shape
+from pyro.distributions.util import is_identically_one, is_identically_zero
 
 
 class ZeroInflatedDistribution(TorchDistribution):
@@ -83,16 +84,16 @@ class ZeroInflatedDistribution(TorchDistribution):
         epsilon = abs(torch.finfo(value.dtype).eps)
 
         if hasattr(support, "lower_bound"):
-            if support.lower_bound == 0.0:
+            if is_identically_zero(getattr(support, "lower_bound", None)):
                 value = value.clamp_min(epsilon)
 
         if hasattr(support, "upper_bound"):
-            if (support.upper_bound == 1.0) & (value.max() == 1.0):
+            if is_identically_one(getattr(support, "upper_bound", None)) & (value.max() == 1.0):
                 value = value.clamp_max(1 - epsilon)
 
         if "gate" in self.__dict__:
             gate, value = broadcast_all(self.gate, value)
-            log_prob = torch.log1p(1-gate) + self.base_dist.log_prob(value)
+            log_prob = torch.log1p(1 - gate) + self.base_dist.log_prob(value)
             log_prob = torch.where(zero_idx, torch.log1p(gate), log_prob)
             # log_prob = (-gate).log1p() + self.base_dist.log_prob(value)
             # log_prob = torch.where(zero_idx == True, (gate + log_prob.exp()).log(), log_prob)
