@@ -78,29 +78,31 @@ class ZeroInflatedDistribution(TorchDistribution):
         if self._validate_args:
             self._validate_sample(value)
 
+        zero_idx = (value == 0)
         support = self.support
         epsilon = abs(torch.finfo(value.dtype).eps)
-        zero_idx = (value == 0)
 
         if hasattr(support, "lower_bound"):
             if support.lower_bound == 0.0:
                 value = value.clamp_min(epsilon)
 
         if hasattr(support, "upper_bound"):
-            if support.upper_bound == 1.0:
+            if (support.upper_bound == 1.0) & (value.max() == 1.0):
                 value = value.clamp_max(1 - epsilon)
 
         if "gate" in self.__dict__:
             gate, value = broadcast_all(self.gate, value)
-            log_prob = (-gate).log1p() + self.base_dist.log_prob(value)
-            log_prob = torch.where(zero_idx == True, (gate + log_prob.exp()).log(), log_prob)
+            log_prob = torch.log1p(1-gate) + self.base_dist.log_prob(value)
+            log_prob = torch.where(zero_idx, torch.log1p(gate), log_prob)
+            # log_prob = (-gate).log1p() + self.base_dist.log_prob(value)
+            # log_prob = torch.where(zero_idx == True, (gate + log_prob.exp()).log(), log_prob)
         else:
             gate_logits, value = broadcast_all(self.gate_logits, value)
             log_prob_minus_log_gate = -gate_logits + self.base_dist.log_prob(value)
             log_gate = -softplus(-gate_logits)
             log_prob = log_prob_minus_log_gate + log_gate
             zero_log_prob = softplus(log_prob_minus_log_gate) + log_gate
-            log_prob = torch.where(zero_idx == True, zero_log_prob, log_prob)
+            log_prob = torch.where(zero_idx, zero_log_prob, log_prob)
         return log_prob
 
     def sample(self, sample_shape=torch.Size()):
