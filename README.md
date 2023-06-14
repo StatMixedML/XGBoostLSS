@@ -56,10 +56,10 @@ XGBoostLSS currently supports the following [PyTorch distributions](https://pyto
 | [Weibull](https://pytorch.org/docs/stable/distributions.html#weibull)                                                                | `Weibull()`               | Continuous <br /> (Univariate)             | $y \in [0, \infty)$             | 2                               |
 | [Zero-Adjusted Beta](https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py)                                  | `ZABeta()`                | Discrete-Continuous <br /> (Univariate)    | $y \in [0, 1)$                  | 3                               |
 | [Zero-Adjusted Gamma](https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py)                                 | `ZAGamma()`               | Discrete-Continuous <br /> (Univariate)    | $y \in [0, \infty)$             | 3                               |
+| [Zero-Adjusted LogNormal](https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py)                             | `ZALN()`                  | Discrete-Continuous <br /> (Univariate)    | $y \in [0, \infty)$             | 3                               |
 | [Zero-Inflated Negative Binomial](https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py#L150)                | `ZINB()`                  | Discrete-Count <br /> (Univariate)         | $y \in [0, 1, 2, 3, \ldots)$    | 3                               |
 | [Zero-Inflated Poisson](https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py#L121)                          | `ZIPoisson()`             | Discrete-Count <br /> (Univariate)         | $y \in [0, 1, 2, 3, \ldots)$    | 2                               |
 
-<!---| [Zero-Adjusted LogNormal](https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py)                             | `ZALN()`                  | Discrete-Continuous <br /> (Univariate)    | $y \in [0, \infty)$             | 3                               |--->
 
 ## Some Notes
 ### Stabilization
