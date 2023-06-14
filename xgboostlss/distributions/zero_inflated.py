@@ -85,6 +85,7 @@ class ZeroInflatedDistribution(TorchDistribution):
 
         support = self.support
         epsilon = abs(torch.finfo(value.dtype).eps)
+        zero_idx = (value == 0)
 
         if hasattr(support, "lower_bound"):
             if support.lower_bound == 0.0:
@@ -97,14 +98,14 @@ class ZeroInflatedDistribution(TorchDistribution):
         if "gate" in self.__dict__:
             gate, value = broadcast_all(self.gate, value)
             log_prob = (-gate).log1p() + self.base_dist.log_prob(value)
-            log_prob = torch.where(value == 0, (gate + log_prob.exp()).log(), log_prob)
+            log_prob = torch.where(zero_idx == True, (gate + log_prob.exp()).log(), log_prob)
         else:
             gate_logits, value = broadcast_all(self.gate_logits, value)
             log_prob_minus_log_gate = -gate_logits + self.base_dist.log_prob(value)
             log_gate = -softplus(-gate_logits)
             log_prob = log_prob_minus_log_gate + log_gate
             zero_log_prob = softplus(log_prob_minus_log_gate) + log_gate
-            log_prob = torch.where(value == 0, zero_log_prob, log_prob)
+            log_prob = torch.where(zero_idx == True, zero_log_prob, log_prob)
         return log_prob
 
     def sample(self, sample_shape=torch.Size()):
