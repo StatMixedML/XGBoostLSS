@@ -96,7 +96,7 @@ class ZeroInflatedDistribution(TorchDistribution):
             # log_prob = torch.log1p(1 - gate) + self.base_dist.log_prob(value)
             # log_prob = torch.where(zero_idx, torch.log1p(gate), log_prob)
             log_prob = (-gate).log1p() + self.base_dist.log_prob(value)
-            log_prob = torch.where(zero_idx == True, (gate + log_prob.exp()).log(), log_prob)
+            log_prob = torch.where(zero_idx, (gate + log_prob.exp()).log(), log_prob)
         else:
             gate_logits, value = broadcast_all(self.gate_logits, value)
             log_prob_minus_log_gate = -gate_logits + self.base_dist.log_prob(value)
