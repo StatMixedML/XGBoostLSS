@@ -162,9 +162,9 @@ class DistributionClass:
             response_fn(params[i].reshape(-1, 1)) for i, response_fn in enumerate(self.param_dict.values())
         ]
 
-        # Replace NaNs with 0.5
-        nan_indices = torch.isnan(torch.stack(params))
-        params = torch.where(nan_indices, torch.tensor(0.5), torch.stack(params))
+        # Replace NaNs and infinity values with 0.5
+        nan_inf_idx = torch.isnan(torch.stack(params)) | torch.isinf(torch.stack(params))
+        params = torch.where(nan_inf_idx, torch.tensor(0.5), torch.stack(params))
 
         # Specify Distribution and Loss
         if self.tau is None:
@@ -236,8 +236,8 @@ class DistributionClass:
         # Get start values
         start_values = np.array([params[i].detach() for i in range(self.n_dist_param)])
 
-        # Replace any remaining NaNs with 0.5
-        start_values = np.nan_to_num(start_values, nan=0.5)
+        # Replace any remaining NaNs or infinity values with 0.5
+        start_values = np.nan_to_num(start_values, nan=0.5, posinf=0.5, neginf=0.5)
 
         return loss, start_values
 
@@ -271,9 +271,9 @@ class DistributionClass:
         # Predicted Parameters
         predt = predt.reshape(-1, self.n_dist_param)
 
-        # Replace NaNs with unconditional start values
-        nan_mask = np.isnan(predt)
-        predt[nan_mask] = np.take(start_values, np.where(nan_mask)[1])
+        # Replace NaNs and infinity values with unconditional start values
+        nan_inf_mask = np.isnan(predt) | np.isinf(predt)
+        predt[nan_inf_mask] = np.take(start_values, np.where(nan_inf_mask)[1])
 
         # Convert to torch.tensor
         predt = [
