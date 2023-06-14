@@ -18,4 +18,4 @@ from . import ZIPoisson
 from . import ZINB
 from . import ZAGamma
 from . import ZABeta
-# from . import ZALN
+from . import ZALN
