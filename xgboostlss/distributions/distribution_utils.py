@@ -169,14 +169,7 @@ class DistributionClass:
         # Specify Distribution and Loss
         if self.tau is None:
             dist = self.distribution(*params)
-            if self.loss_fn == "nll":
-                loss = -torch.nansum(dist.log_prob(target))
-            elif self.loss_fn == "crps":
-                torch.manual_seed(123)
-                dist_samples = dist.rsample((50,)).squeeze(-1)
-                loss = torch.nansum(self.crps_score(target, dist_samples))
-            else:
-                raise ValueError("Invalid loss function. Please select 'nll' or 'crps'.")
+            loss = -torch.nansum(dist.log_prob(target))
         else:
             dist = self.distribution(params, self.penalize_crossing)
             loss = -torch.nansum(dist.log_prob(target, self.tau))
