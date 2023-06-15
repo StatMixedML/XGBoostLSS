@@ -178,7 +178,7 @@ class DistributionClass:
 
     def calculate_start_values(self,
                                target: np.ndarray,
-                               max_iter: int = 100
+                               max_iter: int = 50
                                ) -> Tuple[float, np.ndarray]:
         """
         Function that calculates the starting values for each distributional parameter.
