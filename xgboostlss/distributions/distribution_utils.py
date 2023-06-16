@@ -15,7 +15,7 @@ import warnings
 
 class DistributionClass:
     """
-    Generic class that contains general functions for all distributions.
+    Generic class that contains general functions for univariate distributions.
 
     Arguments
     ---------
