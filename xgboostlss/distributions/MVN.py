@@ -132,18 +132,17 @@ class MVN:
         params: List[torch.Tensor]
             List of parameters.
         """
+        # Transform Parameters to respective scale
+        params = [
+            response_fun(params[i].reshape(-1, 1)) for i, (dist_param, response_fun) in enumerate(param_dict.items())
+        ]
 
         # Location
         loc = torch.cat(params[:n_targets], axis=1)
 
         # Scale Tril
-        tril_predt = params[n_targets:]
-        tril_param_dict = dict(list(param_dict.items())[n_targets:])
+        tril_predt = torch.cat(params[n_targets:], axis=1)
         tril_indices = torch.tril_indices(row=n_targets, col=n_targets, offset=0)
-        tril_predt = [
-            response_fun(tril_predt[i]) for i, (dist_param, response_fun) in enumerate(tril_param_dict.items())
-        ]
-        tril_predt = torch.cat(tril_predt, axis=1)
         scale_tril = torch.zeros(n_obs, n_targets, n_targets, dtype=tril_predt.dtype)
         scale_tril[:, tril_indices[0], tril_indices[1]] = tril_predt
 
