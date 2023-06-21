@@ -38,7 +38,7 @@ pip install git+https://github.com/dsgibbons/shap.git
 We refer to the [example section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for example notebooks.
 
 ## Available Distributions
-XGBoostLSS currently supports the following [PyTorch distributions](https://pytorch.org/docs/stable/distributions.html).
+XGBoostLSS currently supports the following distributions.
 
 | Distribution                                                                                                                         |   Usage                   |Type                                        | Support                         | Number of Parameters            |
 | :----------------------------------------------------------------------------------------------------------------------------------: |:------------------------: |:-------------------------------------:     | :-----------------------------: | :-----------------------------: | 
