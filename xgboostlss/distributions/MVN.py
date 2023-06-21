@@ -167,7 +167,7 @@ class MVN:
 
         Returns
         -------
-        predt_df: pd.DataFrame
+        dist_params_df: pd.DataFrame
             DataFrame with predicted distributional parameters.
         """
 
