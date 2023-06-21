@@ -17,7 +17,6 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 :boom: [2023-06-07] XGBoostLSS now supports Zero-Inflated and Zero-Adjusted Distributions. <br/>
 :boom: [2023-05-26] Release of v0.2.1. See the [release notes](https://github.com/StatMixedML/XGBoostLSS/releases) for an overview. <br/>
 :boom: [2023-05-18] Release of v0.2.0. See the [release notes](https://github.com/StatMixedML/XGBoostLSS/releases) for an overview. <br/>
-:boom: [2022-01-03] XGBoostLSS now supports estimation of the Gamma distribution. <br/>
 :boom: [2021-12-22] XGBoostLSS now supports estimating the full predictive distribution via [Expectile Regression](https://epub.ub.uni-muenchen.de/31542/1/1471082x14561155.pdf). <br/>
 :boom: [2021-12-20] XGBoostLSS is initialized with suitable starting values to improve convergence of estimation. <br/>
 :boom: [2021-12-04] XGBoostLSS now supports automatic derivation of Gradients and Hessians. <br/>
