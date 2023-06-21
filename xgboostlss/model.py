@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import xgboost as xgb
 from xgboost.core import (
-    Booster,
+    Booster, 
     DMatrix,
 )
 
@@ -39,6 +39,8 @@ class XGBoostLSS:
     def __init__(self, dist):
         self.dist = dist.dist_class  # Distribution object
         self.start_values = None     # Starting values for distributional parameters
+        self.multivariate_label_expand = False
+        self.multivariate_eval_label_expand = False
 
     def __getstate__(self):
         state = self.__dict__.copy()  # Copy the object's state
@@ -125,13 +127,17 @@ class XGBoostLSS:
             Booster:
                 The trained booster model.
             """
-
             params_adj = {"objective": None,
                           "base_score": 0,
                           "num_target": self.dist.n_dist_param,
                           "disable_default_eval_metric": True}
-
             params.update(params_adj)
+
+            # Adjust labels to number of distributional parameters
+            if not (self.dist.univariate or self.multivariate_label_expand):
+                self.multivariate_label_expand = True
+                label = self.dist.target_append(dtrain.get_label(), self.dist.n_targets, self.dist.n_dist_param)
+                dtrain.set_label(label)
 
             # Set base_margin as starting point for each distributional parameter. Requires base_score=0 in parameters.
             if self.start_values is None:
@@ -139,8 +145,10 @@ class XGBoostLSS:
             base_margin_train = (np.ones(shape=(dtrain.num_row(), 1))) * self.start_values
             dtrain.set_base_margin(base_margin_train.flatten())
 
+            # Set base_margin for evals
             if evals is not None:
                 evals = self.set_eval_margin(evals, self.start_values)
+
 
             self.booster = xgb.train(params,
                                      dtrain,
@@ -154,7 +162,7 @@ class XGBoostLSS:
                                      evals_result=evals_result,
                                      maximize=False,
                                      early_stopping_rounds=early_stopping_rounds)
-            return self.booster
+            # return self.booster
 
     def cv(
         self,
@@ -244,8 +252,13 @@ class XGBoostLSS:
                       "base_score": 0,
                       "num_target": self.dist.n_dist_param,
                       "disable_default_eval_metric": True}
-
         params.update(params_adj)
+
+        # Adjust labels to number of distributional parameters
+        if not (self.dist.univariate or self.multivariate_label_expand):
+            self.multivariate_label_expand = True
+            label = self.dist.target_append(dtrain.get_label(), self.dist.n_targets, self.dist.n_dist_param)
+            dtrain.set_label(label)
 
         # Set base_margin as starting point for each distributional parameter. Requires base_score=0 in parameters.
         if self.start_values is None:
@@ -424,7 +437,7 @@ class XGBoostLSS:
         return opt_param.params
 
     def predict(self,
-                dtest: xgb.DMatrix,
+                data: xgb.DMatrix,
                 pred_type: str = "parameters",
                 n_samples: int = 1000,
                 quantiles: list = [0.1, 0.5, 0.9],
@@ -434,8 +447,8 @@ class XGBoostLSS:
 
         Arguments
         ---------
-        dtest : xgb.DMatrix
-            Test data.
+        data : xgb.DMatrix
+            Data to predict from.
         pred_type : str
             Type of prediction:
             - "samples" draws n_samples from the predicted distribution.
@@ -458,7 +471,7 @@ class XGBoostLSS:
         # Predict
         predt_df = self.dist.predict_dist(booster=self.booster,
                                           start_values=self.start_values,
-                                          dtest=dtest,
+                                          data=data,
                                           pred_type=pred_type,
                                           n_samples=n_samples,
                                           quantiles=quantiles,
@@ -470,6 +483,7 @@ class XGBoostLSS:
              X: pd.DataFrame,
              feature: str = "x",
              parameter: str = "loc",
+             max_display: int = 15,
              plot_type: str = "Partial_Dependence"):
         """
         XGBoostLSS SHap plotting function.
@@ -482,6 +496,8 @@ class XGBoostLSS:
             Specifies which feature is to be plotted.
         parameter: str
             Specifies which parameter is to be plotted. Valid parameters are "location", "scale", "df", "tau".
+        max_display: int
+            Specifies the maximum number of features to be displayed.
         plot_type: str
             Specifies the type of plot:
                 "Partial_Dependence" plots the partial dependence of the parameter on the feature.
@@ -500,9 +516,11 @@ class XGBoostLSS:
                 shap.plots.scatter(shap_values[:, feature][:, param_pos], color=shap_values[:, feature][:, param_pos])
         elif plot_type == "Feature_Importance":
             if self.dist.n_dist_param == 1:
-                shap.plots.bar(shap_values, max_display=15 if X.shape[1] > 15 else X.shape[1])
+                shap.plots.bar(shap_values, max_display=max_display if X.shape[1] > max_display else X.shape[1])
             else:
-                shap.plots.bar(shap_values[:, :, param_pos], max_display=15 if X.shape[1] > 15 else X.shape[1])
+                shap.plots.bar(
+                    shap_values[:, :, param_pos], max_display=max_display if X.shape[1] > max_display else X.shape[1]
+                )
 
     def expectile_plot(self,
                        X: pd.DataFrame,
@@ -559,9 +577,15 @@ class XGBoostLSS:
         eval_set1, label1 = sets[0]
         eval_set2, label2 = sets[1]
 
+        # Adjust labels to number of distributional parameters
+        if not (self.dist.univariate or self.multivariate_eval_label_expand):
+            self.multivariate_eval_label_expand = True
+            eval_set2_label = self.dist.target_append(eval_set2.get_label(), self.dist.n_targets, self.dist.n_dist_param)
+            eval_set2.set_label(eval_set2_label)
+
+        # Set base margins
         base_margin_set1 = (np.ones(shape=(eval_set1.num_row(), 1))) * start_values
         eval_set1.set_base_margin(base_margin_set1.flatten())
-
         base_margin_set2 = (np.ones(shape=(eval_set2.num_row(), 1))) * start_values
         eval_set2.set_base_margin(base_margin_set2.flatten())
 

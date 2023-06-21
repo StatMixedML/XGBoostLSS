@@ -157,14 +157,14 @@ class DistributionClass:
         loss: torch.Tensor
             Loss value.
         """
+        # Replace NaNs and infinity values with 0.5
+        nan_inf_idx = torch.isnan(torch.stack(params)) | torch.isinf(torch.stack(params))
+        params = torch.where(nan_inf_idx, torch.tensor(0.5), torch.stack(params))
+
         # Transform parameters to response scale
         params = [
             response_fn(params[i].reshape(-1, 1)) for i, response_fn in enumerate(self.param_dict.values())
         ]
-
-        # Replace NaNs and infinity values with 0.5
-        nan_inf_idx = torch.isnan(torch.stack(params)) | torch.isinf(torch.stack(params))
-        params = torch.where(nan_inf_idx, torch.tensor(0.5), torch.stack(params))
 
         # Specify Distribution and Loss
         if self.tau is None:
@@ -339,7 +339,7 @@ class DistributionClass:
     def predict_dist(self,
                      booster: xgb.Booster,
                      start_values: np.ndarray,
-                     dtest: xgb.DMatrix,
+                     data: xgb.DMatrix,
                      pred_type: str = "parameters",
                      n_samples: int = 1000,
                      quantiles: list = [0.1, 0.5, 0.9],
@@ -354,8 +354,8 @@ class DistributionClass:
             Trained model.
         start_values : np.ndarray
             Starting values for each distributional parameter.
-        dtest : xgb.DMatrix
-            Test data.
+        data : xgb.DMatrix
+            Data to predict from.
         pred_type : str
             Type of prediction:
             - "samples" draws n_samples from the predicted distribution.
@@ -375,10 +375,10 @@ class DistributionClass:
             Predictions.
         """
         # Set base_margin as starting point for each distributional parameter. Requires base_score=0 in parameters.
-        base_margin_test = (np.ones(shape=(dtest.num_row(), 1))) * start_values
-        dtest.set_base_margin(base_margin_test.flatten())
+        base_margin_test = (np.ones(shape=(data.num_row(), 1))) * start_values
+        data.set_base_margin(base_margin_test.flatten())
 
-        predt = np.array(booster.predict(dtest, output_margin=True)).reshape(-1, self.n_dist_param)
+        predt = np.array(booster.predict(data, output_margin=True)).reshape(-1, self.n_dist_param)
         predt = torch.tensor(predt, dtype=torch.float32)
 
         # Transform predicted parameters to response scale
@@ -597,6 +597,7 @@ class DistributionClass:
                     target: np.ndarray,
                     candidate_distributions: List,
                     max_iter: int = 100,
+                    n_samples: int = 1000,
                     plot: bool = False,
                     figure_size: tuple = (10, 5),
                     ) -> pd.DataFrame:
@@ -612,6 +613,8 @@ class DistributionClass:
             List of candidate distributions.
         max_iter: int
             Maximum number of iterations for the optimization.
+        n_samples: int
+            Number of samples to draw from the fitted distribution.
         plot: bool
             If True, a density plot of the actual and fitted distribution is created.
         figure_size: tuple
@@ -673,7 +676,7 @@ class DistributionClass:
             fitted_params = pd.DataFrame(fitted_params, columns=best_dist_sel.param_dict.keys())
             fitted_params.columns = best_dist_sel.param_dict.keys()
             dist_samples = best_dist_sel.draw_samples(fitted_params,
-                                                      n_samples=1000,
+                                                      n_samples=n_samples,
                                                       seed=123).values
 
             # Plot actual and fitted distribution
