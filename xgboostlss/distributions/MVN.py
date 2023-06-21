@@ -6,7 +6,7 @@ from itertools import combinations
 
 class MVN:
     """
-    Multivariate Normal distribution class.
+    Multivariate Normal distribution class. 
 
     The multivariate normal distribution is parameterized by a mean vector and a lower-triangular matrix L with
     positive-valued diagonal entries, such that Σ=LL'. This triangular matrix can be obtained via, e.g., a Cholesky
