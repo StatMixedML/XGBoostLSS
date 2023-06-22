@@ -31,8 +31,6 @@ class DistributionClass:
         Stabilization method.
     param_dict: Dict[str, Any]
         Dictionary that maps distributional parameters to their response scale.
-    param_dict_inv: Dict[str, Any]
-        Dictionary that maps distributional parameters to their inverse response scale.
     distribution_arg_names: List
         List of distributional parameter names.
     loss_fn: str
@@ -51,7 +49,6 @@ class DistributionClass:
                  n_dist_param: int = None,
                  stabilization: str = "None",
                  param_dict: Dict[str, Any] = None,
-                 param_dict_inv: Dict[str, Any] = None,
                  distribution_arg_names: List = None,
                  loss_fn: str = "nll",
                  tau: Optional[List[torch.Tensor]] = None,
@@ -64,7 +61,6 @@ class DistributionClass:
         self.n_dist_param = n_dist_param
         self.stabilization = stabilization
         self.param_dict = param_dict
-        self.param_dict_inv = param_dict_inv
         self.distribution_arg_names = distribution_arg_names
         self.loss_fn = loss_fn
         self.tau = tau
@@ -631,7 +627,7 @@ class DistributionClass:
             for i in range(len(candidate_distributions)):
                 dist_name = candidate_distributions[i].__name__.split(".")[2]
                 pbar.set_description(f"Fitting {dist_name} distribution")
-                dist_sel = getattr(candidate_distributions[i], dist_name)().dist_class
+                dist_sel = getattr(candidate_distributions[i], dist_name)()
                 try:
                     loss, params = dist_sel.calculate_start_values(target=target.reshape(-1, 1), max_iter=max_iter)
                     fit_df = pd.DataFrame.from_dict(
@@ -662,7 +658,7 @@ class DistributionClass:
                 if dist.__name__.split(".")[2] == best_dist["distribution"].values[0]:
                     best_dist_sel = dist
                     break
-            best_dist_sel = getattr(best_dist_sel, best_dist["distribution"].values[0])().dist_class
+            best_dist_sel = getattr(best_dist_sel, best_dist["distribution"].values[0])()
             params = torch.tensor(best_dist["params"][0]).reshape(-1, best_dist_sel.n_dist_param)
 
             # Transform parameters to the response scale and draw samples

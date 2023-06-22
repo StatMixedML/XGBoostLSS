@@ -37,7 +37,7 @@ class XGBoostLSS:
         Starting values for each distributional parameter.
     """
     def __init__(self, dist):
-        self.dist = dist.dist_class  # Distribution object
+        self.dist = dist             # Distribution object
         self.start_values = None     # Starting values for distributional parameters
         self.multivariate_label_expand = False
         self.multivariate_eval_label_expand = False

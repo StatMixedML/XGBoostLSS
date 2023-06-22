@@ -1,16 +1,16 @@
 from torch.distributions import NegativeBinomial as NegativeBinomial_Torch
 from xgboostlss.utils import *
-from .distribution_utils import *
+from .distribution_utils import DistributionClass
 
 
-class NegativeBinomial:
+class NegativeBinomial(DistributionClass):
     """
     NegativeBinomial distribution class.
 
     Distributional Parameters
     -------------------------
     total_count: torch.Tensor
-        non-negative number of negative Bernoulli trials to stop,  although the distribution is still valid for real valued count
+        Non-negative number of negative Bernoulli trials to stop.
     probs: torch.Tensor
         Event probabilities of success in the half open interval [0, 1).
     logits: torch.Tensor
@@ -41,38 +41,33 @@ class NegativeBinomial:
                  response_fn_probs: str = "sigmoid",
                  loss_fn: str = "nll"
                  ):
-        # Specify Response and Link Functions for total_count
+        #  Specify Response Functions for total_count
         if response_fn_total_count == "exp":
             response_fn_total_count = exp_fn
-            inverse_response_fn_total_count = log_fn
         elif response_fn_total_count == "softplus":
             response_fn_total_count = softplus_fn
-            inverse_response_fn_total_count = softplusinv_fn
         elif response_fn_total_count == "relu":
             response_fn_total_count = relu_fn
-            inverse_response_fn_total_count = reluinv_fn
         else:
             raise ValueError("Invalid response function for total_count. Please choose from 'exp', 'softplus' or relu.")
 
-        # Specify Response and Link Functions for probs
+        #  Specify Response Functions for probs
         if response_fn_probs == "sigmoid":
             response_fn_probs = sigmoid_fn
-            inverse_response_fn_probs = sigmoidinv_fn
         else:
             raise ValueError("Invalid response function for probs. Please select 'sigmoid'.")
 
+        # Set the parameters specific to the distribution
+        distribution = NegativeBinomial_Torch
         param_dict = {"total_count": response_fn_total_count, "probs": response_fn_probs}
-        param_dict_inv = {"total_count": inverse_response_fn_total_count, "probs": inverse_response_fn_probs}
-        distribution_arg_names = list(param_dict.keys())
 
-        # Specify Distribution
-        self.dist_class = DistributionClass(distribution=NegativeBinomial_Torch,
-                                            univariate=True,
-                                            discrete=True,
-                                            n_dist_param=len(param_dict),
-                                            stabilization=stabilization,
-                                            param_dict=param_dict,
-                                            param_dict_inv=param_dict_inv,
-                                            distribution_arg_names=distribution_arg_names,
-                                            loss_fn=loss_fn
-                                            )
+        # Specify Distribution Class
+        super().__init__(distribution=distribution,
+                         univariate=True,
+                         discrete=False,
+                         n_dist_param=len(param_dict),
+                         stabilization=stabilization,
+                         param_dict=param_dict,
+                         distribution_arg_names=list(param_dict.keys()),
+                         loss_fn=loss_fn
+                         )

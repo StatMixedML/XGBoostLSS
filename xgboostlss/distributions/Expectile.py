@@ -2,12 +2,13 @@ import torch
 from torch.distributions import Distribution
 from scipy.stats import norm
 from xgboostlss.utils import *
-from .distribution_utils import *
+from .distribution_utils import DistributionClass
+import numpy as np
 
 from typing import List
 
 
-class Expectile:
+class Expectile(DistributionClass):
     """
     Expectile distribution class.
 
@@ -30,28 +31,26 @@ class Expectile:
                  expectiles: List = [0.1, 0.5, 0.9],
                  penalize_crossing: bool = False,
                  ):
-        # Specify Response and Link Functions
+        # Set the parameters specific to the distribution
+        distribution = Expectile_Torch
         expectiles.sort()
         param_dict = {}
         for expectile in expectiles:
             key = f"expectile_{expectile}"
             param_dict[key] = identity_fn
-        param_dict_inv = param_dict
-        distribution_arg_names = list(param_dict.keys())
 
-        # Specify Distribution
-        self.dist_class = DistributionClass(distribution=Expectile_Torch,
-                                            univariate=True,
-                                            discrete=False,
-                                            n_dist_param=len(param_dict),
-                                            stabilization=stabilization,
-                                            param_dict=param_dict,
-                                            param_dict_inv=param_dict_inv,
-                                            distribution_arg_names=distribution_arg_names,
-                                            loss_fn="nll",
-                                            tau=torch.tensor(expectiles),
-                                            penalize_crossing=penalize_crossing
-                                            )
+        # Specify Distribution Class
+        super().__init__(distribution=distribution,
+                         univariate=True,
+                         discrete=False,
+                         n_dist_param=len(param_dict),
+                         stabilization=stabilization,
+                         param_dict=param_dict,
+                         distribution_arg_names=list(param_dict.keys()),
+                         loss_fn="nll",
+                         tau=torch.tensor(expectiles),
+                         penalize_crossing=penalize_crossing
+                         )
 
 
 class Expectile_Torch(Distribution):
