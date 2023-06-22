@@ -149,7 +149,6 @@ class XGBoostLSS:
             if evals is not None:
                 evals = self.set_eval_margin(evals, self.start_values)
 
-
             self.booster = xgb.train(params,
                                      dtrain,
                                      num_boost_round=num_boost_round,
@@ -593,7 +592,9 @@ class XGBoostLSS:
 
         return eval_set
 
-    def save_model(self, model_path):
+    def save_model(self,
+                   model_path: str
+                   ) -> None:
         """
         Save the model to a file.
 
