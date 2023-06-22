@@ -139,7 +139,6 @@ class Multivariate_DistributionClass:
 
         return self.loss_fn, loss
 
-
     def loss_fn_start_values(self,
                              params: torch.Tensor,
                              target: torch.Tensor) -> torch.Tensor:
@@ -291,7 +290,6 @@ class Multivariate_DistributionClass:
         loss = -torch.nansum(dist_fit.log_prob(target))
 
         return predt, loss
-
 
     def draw_samples(self,
                      dist_pred: torch.distributions.Distribution,
@@ -460,7 +458,6 @@ class Multivariate_DistributionClass:
 
         return grad, hess
 
-
     def stabilize_derivative(self, input_der: torch.Tensor, type: str = "MAD") -> torch.Tensor:
         """
         Function that stabilizes Gradients and Hessians.
@@ -547,9 +544,9 @@ class Multivariate_DistributionClass:
             for i in range(len(candidate_distributions)):
                 dist_name = candidate_distributions[i].__class__.__name__
                 if dist_name == "MVN_LoRa":
-                    dist_name = dist_name + f"(rank={candidate_distributions[i].dist_class.rank})"
+                    dist_name = dist_name + f"(rank={candidate_distributions[i].rank})"
                 pbar.set_description(f"Fitting {dist_name} distribution")
-                dist_sel = candidate_distributions[i].dist_class
+                dist_sel = candidate_distributions[i]
                 target_expand = dist_sel.target_append(target, dist_sel.n_targets, dist_sel.n_dist_param)
                 try:
                     loss, params = dist_sel.calculate_start_values(target=target_expand, max_iter=max_iter)
@@ -580,9 +577,9 @@ class Multivariate_DistributionClass:
             for dist in candidate_distributions:
                 dist_name = dist.__class__.__name__
                 if dist_name == "MVN_LoRa":
-                    dist_name = dist_name + f"(rank={dist.dist_class.rank})"
+                    dist_name = dist_name + f"(rank={dist.rank})"
                 if dist_name == best_dist["distribution"].values[0]:
-                    best_dist_sel = dist.dist_class
+                    best_dist_sel = dist
                     break
 
             # Draw samples from distribution

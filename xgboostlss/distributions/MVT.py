@@ -1,10 +1,14 @@
 from pyro.distributions import MultivariateStudentT as MultivariateStudentT_Torch
 from xgboostlss.utils import *
-from .multivariate_distribution_utils import *
+from .multivariate_distribution_utils import Multivariate_DistributionClass
+
+from typing import Dict, Optional, List, Callable
+import numpy as np
+import pandas as pd
 from itertools import combinations
 
 
-class MVT:
+class MVT(Multivariate_DistributionClass):
     """
     Multivariate Student-T distribution class.
 
@@ -43,7 +47,7 @@ class MVT:
                  response_fn: str = "exp",
                  loss_fn: str = "nll"
                  ):
-        # Select Response Function
+        # Specify Response Functions
         if response_fn == "exp":
             response_fn = exp_fn
         elif response_fn == "softplus":
@@ -51,23 +55,24 @@ class MVT:
         else:
             raise ValueError("Invalid response function. Please choose from 'exp' or 'softplus'.")
 
-        # Create Parameter Dictionary
+        # Set the parameters specific to the distribution
+        distribution = MultivariateStudentT_Torch
         param_dict = MVT.create_param_dict(n_targets=D, response_fn=response_fn)
         distribution_arg_names = ["df", "loc", "scale_tril"]
 
-        # Specify Distribution
-        self.dist_class = Multivariate_DistributionClass(distribution=MultivariateStudentT_Torch,
-                                                         univariate=False,
-                                                         distribution_arg_names=distribution_arg_names,
-                                                         n_targets=D,
-                                                         n_dist_param=len(param_dict),
-                                                         param_dict=param_dict,
-                                                         param_transform=MVT.param_transform,
-                                                         get_dist_params=MVT.get_dist_params,
-                                                         discrete=False,
-                                                         stabilization=stabilization,
-                                                         loss_fn=loss_fn
-                                                         )
+        # Specify Distribution Class
+        super().__init__(distribution=distribution,
+                         univariate=False,
+                         distribution_arg_names=distribution_arg_names,
+                         n_targets=D,
+                         n_dist_param=len(param_dict),
+                         param_dict=param_dict,
+                         param_transform=MVT.param_transform,
+                         get_dist_params=MVT.get_dist_params,
+                         discrete=False,
+                         stabilization=stabilization,
+                         loss_fn=loss_fn
+                         )
 
     @staticmethod
     def create_param_dict(n_targets: int,

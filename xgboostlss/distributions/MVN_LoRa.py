@@ -1,10 +1,14 @@
 from torch.distributions import LowRankMultivariateNormal as LowRankMultivariateNormal_Torch
 from xgboostlss.utils import *
-from .multivariate_distribution_utils import *
+from .multivariate_distribution_utils import Multivariate_DistributionClass
+
+from typing import Dict, Optional, List, Callable
+import numpy as np
+import pandas as pd
 from itertools import combinations
 
 
-class MVN_LoRa:
+class MVN_LoRa(Multivariate_DistributionClass):
     """
     Multivariate Normal distribution class.
 
@@ -48,7 +52,7 @@ class MVN_LoRa:
                  response_fn: str = "exp",
                  loss_fn: str = "nll"
                  ):
-        # Select Response Function
+        # Specify Response Function
         if response_fn == "exp":
             response_fn = exp_fn
         elif response_fn == "softplus":
@@ -56,24 +60,25 @@ class MVN_LoRa:
         else:
             raise ValueError("Invalid response function. Please choose from 'exp' or 'softplus'.")
 
-        # Create Parameter Dictionary
+        # Set the parameters specific to the distribution
+        distribution = LowRankMultivariateNormal_Torch
         param_dict = MVN_LoRa.create_param_dict(n_targets=D, rank=rank, response_fn=response_fn)
         distribution_arg_names = ["loc", "cov_factor", "cov_diag"]
 
-        # Specify Distribution
-        self.dist_class = Multivariate_DistributionClass(distribution=LowRankMultivariateNormal_Torch,
-                                                         univariate=False,
-                                                         distribution_arg_names=distribution_arg_names,
-                                                         n_targets=D,
-                                                         rank=rank,
-                                                         n_dist_param=len(param_dict),
-                                                         param_dict=param_dict,
-                                                         param_transform=MVN_LoRa.param_transform,
-                                                         get_dist_params=MVN_LoRa.get_dist_params,
-                                                         discrete=False,
-                                                         stabilization=stabilization,
-                                                         loss_fn=loss_fn
-                                                         )
+        # Specify Distribution Class
+        super().__init__(distribution=distribution,
+                         univariate=False,
+                         distribution_arg_names=distribution_arg_names,
+                         n_targets=D,
+                         rank=rank,
+                         n_dist_param=len(param_dict),
+                         param_dict=param_dict,
+                         param_transform=MVN_LoRa.param_transform,
+                         get_dist_params=MVN_LoRa.get_dist_params,
+                         discrete=False,
+                         stabilization=stabilization,
+                         loss_fn=loss_fn
+                         )
 
     @staticmethod
     def create_param_dict(n_targets: int,

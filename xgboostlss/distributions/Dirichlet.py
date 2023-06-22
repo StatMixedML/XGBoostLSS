@@ -1,16 +1,18 @@
 from torch.distributions import Dirichlet as Dirichlet_Torch
 from xgboostlss.utils import *
-from .multivariate_distribution_utils import *
-from itertools import combinations
+from .multivariate_distribution_utils import Multivariate_DistributionClass
+
+from typing import Dict, Optional, List, Callable
+import pandas as pd
 
 
-class Dirichlet:
+class Dirichlet(Multivariate_DistributionClass):
     """
     Dirichlet distribution class.
 
     The Dirichlet distribution is commonly used for modelling non-negative compositional data, i.e., data that consist
     of sub-sets that are fractions of some total. Compositional data are typically represented as proportions or
-    percentages summing to 100%, so that the Dirichlet extends the univariate beta-distribution to the multivariate case.
+    percentages summing to 1, so that the Dirichlet extends the univariate beta-distribution to the multivariate case.
 
     Distributional Parameters
     -------------------------
@@ -39,7 +41,7 @@ class Dirichlet:
                  response_fn: str = "exp",
                  loss_fn: str = "nll"
                  ):
-        # Select Response Function
+        # Specify Response Functions
         if response_fn == "exp":
             response_fn = exp_fn
         elif response_fn == "softplus":
@@ -49,23 +51,24 @@ class Dirichlet:
         else:
             raise ValueError("Invalid response function. Please choose from 'exp', 'relu' or 'softplus'.")
 
-        # Create Parameter Dictionary
+        # Set the parameters specific to the distribution
+        distribution = Dirichlet_Torch
         param_dict = Dirichlet.create_param_dict(n_targets=D, response_fn=response_fn)
         distribution_arg_names = ["concentration"]
 
-        # Specify Distribution
-        self.dist_class = Multivariate_DistributionClass(distribution=Dirichlet_Torch,
-                                                         univariate=False,
-                                                         distribution_arg_names=distribution_arg_names,
-                                                         n_targets=D,
-                                                         n_dist_param=len(param_dict),
-                                                         param_dict=param_dict,
-                                                         param_transform=Dirichlet.param_transform,
-                                                         get_dist_params=Dirichlet.get_dist_params,
-                                                         discrete=False,
-                                                         stabilization=stabilization,
-                                                         loss_fn=loss_fn
-                                                         )
+        # Specify Distribution Class
+        super().__init__(distribution=distribution,
+                         univariate=False,
+                         distribution_arg_names=distribution_arg_names,
+                         n_targets=D,
+                         n_dist_param=len(param_dict),
+                         param_dict=param_dict,
+                         param_transform=Dirichlet.param_transform,
+                         get_dist_params=Dirichlet.get_dist_params,
+                         discrete=False,
+                         stabilization=stabilization,
+                         loss_fn=loss_fn
+                         )
 
     @staticmethod
     def create_param_dict(n_targets: int,
