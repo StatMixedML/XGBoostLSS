@@ -218,53 +218,6 @@ class ZeroInflatedNegativeBinomial(ZeroInflatedDistribution):
         return self.base_dist.logits
 
 
-class ZeroInflatedNegativeBinomial(ZeroInflatedDistribution):
-    """
-    A Zero Inflated Negative Binomial distribution.
-
-    Parameter
-    ---------
-    total_count: torch.Tensor
-        Non-negative number of negative Bernoulli trial.
-    probs: torch.Tensor
-        Event probabilities of success in the half open interval [0, 1).
-    logits: torch.Tensor
-        Event log-odds of success (log(p/(1-p))).
-    gate: torch.Tensor
-        Probability of extra zeros given via a Bernoulli distribution.
-
-    Source
-    ------
-    - https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py#L150
-    """
-
-    arg_constraints = {
-        "total_count": constraints.greater_than_eq(0),
-        "probs": constraints.half_open_interval(0.0, 1.0),
-        "logits": constraints.real,
-        "gate": constraints.unit_interval,
-    }
-    support = constraints.nonnegative_integer
-
-    def __init__(self, total_count, probs=None, gate=None, validate_args=None):
-        base_dist = NegativeBinomial(total_count=total_count, probs=probs, logits=None, validate_args=False)
-        base_dist._validate_args = validate_args
-
-        super().__init__(base_dist, gate=gate, validate_args=validate_args)
-
-    @property
-    def total_count(self):
-        return self.base_dist.total_count
-
-    @property
-    def probs(self):
-        return self.base_dist.probs
-
-    @property
-    def logits(self):
-        return self.base_dist.logits
-
-
 class ZeroAdjustedGamma(ZeroInflatedDistribution):
     """
     A Zero-Adjusted Gamma distribution.
