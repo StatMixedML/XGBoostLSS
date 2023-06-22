@@ -495,7 +495,7 @@ class XGBoostLSS:
         feature: str
             Specifies which feature is to be plotted.
         parameter: str
-            Specifies which parameter is to be plotted. Valid parameters are "location", "scale", "df", "tau".
+            Specifies which distributional parameter is to be plotted.
         max_display: int
             Specifies the maximum number of features to be displayed.
         plot_type: str
