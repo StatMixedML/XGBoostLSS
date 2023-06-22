@@ -52,7 +52,7 @@ class ZIPoisson(DistributionClass):
         # Specify Distribution Class
         super().__init__(distribution=distribution,
                          univariate=True,
-                         discrete=False,
+                         discrete=True,
                          n_dist_param=len(param_dict),
                          stabilization=stabilization,
                          param_dict=param_dict,
