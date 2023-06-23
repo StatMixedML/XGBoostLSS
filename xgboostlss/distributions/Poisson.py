@@ -1,6 +1,6 @@
 from torch.distributions import Poisson as Poisson_Torch
-from xgboostlss.utils import *
 from .distribution_utils import DistributionClass
+from ..utils import *
 
 
 class Poisson(DistributionClass):
@@ -21,8 +21,8 @@ class Poisson(DistributionClass):
     stabilization: str
         Stabilization method for the Gradient and Hessian. Options are "None", "MAD", "L2".
     response_fn: str
-        When a custom objective and metric are provided, XGBoost doesn't know its response and link function. Hence,
-        the user is responsible for specifying the transformations. Options are "exp", "softplus" or "relu".
+        Response function for transforming the distributional parameters to the correct support. Options are
+        "exp" (exponential), "softplus" (softplus) or "relu" (rectified linear unit).
     loss_fn: str
         Loss function. Options are "nll" (negative log-likelihood) or "crps" (continuous ranked probability score).
         Note that if "crps" is used, the Hessian is set to 1, as the current CRPS version is not twice differentiable.
@@ -46,6 +46,7 @@ class Poisson(DistributionClass):
         # Set the parameters specific to the distribution
         distribution = Poisson_Torch
         param_dict = {"rate": response_fn}
+        torch.distributions.Distribution.set_default_validate_args(False)
 
         # Specify Distribution Class
         super().__init__(distribution=distribution,

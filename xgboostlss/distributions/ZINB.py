@@ -1,6 +1,6 @@
 from .zero_inflated import ZeroInflatedNegativeBinomial as ZeroInflatedNegativeBinomial_Torch
-from xgboostlss.utils import *
 from .distribution_utils import DistributionClass
+from ..utils import *
 
 
 class ZINB(DistributionClass):
@@ -10,7 +10,7 @@ class ZINB(DistributionClass):
     Distributional Parameters
     -------------------------
     total_count: torch.Tensor
-        Non-negative number of negative Bernoulli trials to stop, although the distribution is still valid for real valued count.
+        Non-negative number of negative Bernoulli trials to stop.
     probs: torch.Tensor
         Event probabilities of success in the half open interval [0, 1).
     gate: torch.Tensor
@@ -25,11 +25,11 @@ class ZINB(DistributionClass):
     stabilization: str
         Stabilization method for the Gradient and Hessian. Options are "None", "MAD", "L2".
     response_fn_total_count: str
-        When a custom objective and metric are provided, XGBoost doesn't know its response and link function. Hence,
-        the user is responsible for specifying the transformations. Options are "exp", "softplus" or "relu".
+        Response function for transforming the distributional parameters to the correct support. Options are
+        "exp" (exponential), "softplus" (softplus) or "relu" (rectified linear unit).
     response_fn_probs: str
-        When a custom objective and metric are provided, XGBoost doesn't know its response and link function. Hence,
-        the user is responsible for specifying the transformations. Options are "sigmoid".
+        Response function for transforming the distributional parameters to the correct support. Options are
+        "sigmoid" (sigmoid).
     loss_fn: str
         Loss function. Options are "nll" (negative log-likelihood) or "crps" (continuous ranked probability score).
         Note that if "crps" is used, the Hessian is set to 1, as the current CRPS version is not twice differentiable.
@@ -60,6 +60,7 @@ class ZINB(DistributionClass):
         # Set the parameters specific to the distribution
         distribution = ZeroInflatedNegativeBinomial_Torch
         param_dict = {"total_count": response_fn_total_count, "probs": response_fn_probs, "gate": sigmoid_fn}
+        torch.distributions.Distribution.set_default_validate_args(False)
 
         # Specify Distribution Class
         super().__init__(distribution=distribution,

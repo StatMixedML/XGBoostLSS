@@ -1,6 +1,6 @@
 from torch.distributions import MultivariateNormal as MultivariateNormal_Torch
-from xgboostlss.utils import *
 from .multivariate_distribution_utils import Multivariate_DistributionClass
+from ..utils import *
 
 from typing import Dict, Optional, List, Callable
 import numpy as np
@@ -34,8 +34,8 @@ class MVN(Multivariate_DistributionClass):
     stabilization: str
         Stabilization method for the Gradient and Hessian. Options are "None", "MAD", "L2".
     response_fn: str
-        When a custom objective and metric are provided, XGBoost doesn't know its response and link function. Hence,
-        the user is responsible for specifying the transformations. Options are "exp" or "softplus".
+        Response function for transforming the distributional parameters to the correct support. Options are
+        "exp" (exponential) or "softplus" (softplus).
     loss_fn: str
         Loss function. Options are "nll" (negative log-likelihood).
     """
@@ -57,6 +57,7 @@ class MVN(Multivariate_DistributionClass):
         distribution = MultivariateNormal_Torch
         param_dict = MVN.create_param_dict(n_targets=D, response_fn=response_fn)
         distribution_arg_names = ["loc", "scale_tril"]
+        torch.distributions.Distribution.set_default_validate_args(False)
 
         # Specify Distribution Class
         super().__init__(distribution=distribution,

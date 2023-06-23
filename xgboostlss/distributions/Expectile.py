@@ -1,7 +1,7 @@
 import torch
 from torch.distributions import Distribution
 from scipy.stats import norm
-from xgboostlss.utils import *
+from ..utils import *
 from .distribution_utils import DistributionClass
 import numpy as np
 
@@ -33,6 +33,7 @@ class Expectile(DistributionClass):
                  ):
         # Set the parameters specific to the distribution
         distribution = Expectile_Torch
+        torch.distributions.Distribution.set_default_validate_args(False)
         expectiles.sort()
         param_dict = {}
         for expectile in expectiles:
