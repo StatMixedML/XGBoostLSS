@@ -49,6 +49,70 @@ class XGBoostLSS:
     def __setstate__(self, state):
         self.__dict__.update(state)  # Restore the object's state
 
+    def set_params_adj(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Set parameters for distributional model.
+
+        Arguments
+        ---------
+        params : Dict[str, Any]
+            Parameters for model.
+
+        Returns
+        -------
+        params : Dict[str, Any]
+            Updated Parameters for model.
+        """
+        params_adj = {
+            "objective": None,
+            "base_score": 0,
+            "num_target": self.dist.n_dist_param,
+            "disable_default_eval_metric": True
+        }
+        params.update(params_adj)
+
+        return params
+
+    def adjust_labels(self, dmatrix: DMatrix) -> None:
+        """
+        Adjust labels for multivariate distributions.
+
+        Arguments
+        ---------
+        dmatrix : DMatrix
+            DMatrix object.
+
+        Returns
+        -------
+        None
+        """
+        if not (self.dist.univariate or self.multivariate_label_expand):
+            self.multivariate_label_expand = True
+            label = self.dist.target_append(
+                dmatrix.get_label(),
+                self.dist.n_targets,
+                self.dist.n_dist_param
+            )
+            dmatrix.set_label(label)
+
+    def set_base_margin(self, dmatrix: DMatrix) -> None:
+        """
+        Set base margin for distributions.
+
+        Arguments
+        ---------
+        dmatrix : DMatrix
+            DMatrix object.
+
+        Returns
+        -------
+        None
+        """
+        if self.start_values is None:
+            _, self.start_values = self.dist.calculate_start_values(dmatrix.get_label())
+        base_margin = np.ones(shape=(dmatrix.num_row(), 1)) * self.start_values
+        dmatrix.set_base_margin(base_margin.flatten())
+
     def train(
             self,
             params: Dict[str, Any],
@@ -127,23 +191,9 @@ class XGBoostLSS:
             Booster:
                 The trained booster model.
             """
-            params_adj = {"objective": None,
-                          "base_score": 0,
-                          "num_target": self.dist.n_dist_param,
-                          "disable_default_eval_metric": True}
-            params.update(params_adj)
-
-            # Adjust labels to number of distributional parameters
-            if not (self.dist.univariate or self.multivariate_label_expand):
-                self.multivariate_label_expand = True
-                label = self.dist.target_append(dtrain.get_label(), self.dist.n_targets, self.dist.n_dist_param)
-                dtrain.set_label(label)
-
-            # Set base_margin as starting point for each distributional parameter. Requires base_score=0 in parameters.
-            if self.start_values is None:
-                _, self.start_values = self.dist.calculate_start_values(dtrain.get_label())
-            base_margin_train = (np.ones(shape=(dtrain.num_row(), 1))) * self.start_values
-            dtrain.set_base_margin(base_margin_train.flatten())
+            self.set_params_adj(params)
+            self.adjust_labels(dtrain)
+            self.set_base_margin(dtrain)
 
             # Set base_margin for evals
             if evals is not None:
@@ -161,7 +211,6 @@ class XGBoostLSS:
                                      evals_result=evals_result,
                                      maximize=False,
                                      early_stopping_rounds=early_stopping_rounds)
-            # return self.booster
 
     def cv(
         self,
@@ -247,23 +296,9 @@ class XGBoostLSS:
         -------
         evaluation history : list(string)
         """
-        params_adj = {"objective": None,
-                      "base_score": 0,
-                      "num_target": self.dist.n_dist_param,
-                      "disable_default_eval_metric": True}
-        params.update(params_adj)
-
-        # Adjust labels to number of distributional parameters
-        if not (self.dist.univariate or self.multivariate_label_expand):
-            self.multivariate_label_expand = True
-            label = self.dist.target_append(dtrain.get_label(), self.dist.n_targets, self.dist.n_dist_param)
-            dtrain.set_label(label)
-
-        # Set base_margin as starting point for each distributional parameter. Requires base_score=0 in parameters.
-        if self.start_values is None:
-            _, self.start_values = self.dist.calculate_start_values(dtrain.get_label())
-        base_margin_cv = (np.ones(shape=(dtrain.num_row(), 1))) * self.start_values
-        dtrain.set_base_margin(base_margin_cv.flatten())
+        self.set_params_adj(params)
+        self.adjust_labels(dtrain)
+        self.set_base_margin(dtrain)
 
         self.cv_booster = xgb.cv(params,
                                  dtrain,
