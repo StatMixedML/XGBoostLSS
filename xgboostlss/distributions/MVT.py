@@ -210,7 +210,7 @@ class MVT(Multivariate_DistributionClass):
         df = torch.broadcast_to(dist_pred.df.reshape(-1, 1).unsqueeze(-1), dist_pred.covariance_matrix.shape)
         cov_mat = dist_pred.covariance_matrix * (df / (df - 2))
         rho_df = pd.DataFrame(
-            np.concatenate([MVT.calc_corr(cov_mat[i]).reshape(-1, n_rho) for i in range(n_obs)], axis=0)
+            np.concatenate([MVT.covariance_to_correlation(cov_mat[i]).reshape(-1, n_rho) for i in range(n_obs)], axis=0)
         )
         rho_idx = list(combinations(range(1, n_targets + 1), 2))
         rho_df.columns = [f"rho_{''.join(map(str, rho_idx[i]))}" for i in range(n_targets)]
@@ -221,7 +221,7 @@ class MVT(Multivariate_DistributionClass):
         return dist_params_df
 
     @staticmethod
-    def calc_corr(cov_mat: torch.Tensor) -> np.ndarray:
+    def covariance_to_correlation(cov_mat: torch.Tensor) -> np.ndarray:
         """ Function that calculates the correlation matrix from the covariance matrix.
 
         Arguments
