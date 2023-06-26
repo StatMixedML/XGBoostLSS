@@ -190,8 +190,8 @@ class MVN_LoRa(Multivariate_DistributionClass):
         location_df.columns = [f"location_{i + 1}" for i in range(n_targets)]
 
         # Sigma
-        sigma_df = pd.DataFrame(dist_pred.stddev.detach().numpy())
-        sigma_df.columns = [f"scale_{i + 1}" for i in range(n_targets)]
+        scale_df = pd.DataFrame(dist_pred.stddev.detach().numpy())
+        scale_df.columns = [f"scale_{i + 1}" for i in range(n_targets)]
 
         # Rho
         n_obs = location_df.shape[0]
@@ -204,7 +204,7 @@ class MVN_LoRa(Multivariate_DistributionClass):
         rho_df.columns = [f"rho_{''.join(map(str, rho_idx[i]))}" for i in range(n_targets)]
 
         # Concatenate
-        dist_params_df = pd.concat([location_df, sigma_df, rho_df], axis=1)
+        dist_params_df = pd.concat([location_df, scale_df, rho_df], axis=1)
 
         return dist_params_df
 
