@@ -160,6 +160,7 @@ def sigmoid_fn(predt: torch.tensor) -> torch.tensor:
 
     return predt
 
+
 def sigmoidinv_fn(predt: torch.tensor) -> torch.tensor:
     """
     Inverse of sigmoid_fn function.
@@ -179,6 +180,7 @@ def sigmoidinv_fn(predt: torch.tensor) -> torch.tensor:
 
     return predt
 
+
 def relu_fn(predt: torch.tensor) -> torch.tensor:
     """
     Function used to ensure predt are scaled to max(0, predt).
@@ -197,6 +199,7 @@ def relu_fn(predt: torch.tensor) -> torch.tensor:
     predt = torch.nan_to_num(predt, nan=float(torch.nanmean(predt))) + torch.tensor(1e-6, dtype=predt.dtype)
 
     return predt
+
 
 def reluinv_fn(predt: torch.tensor) -> torch.tensor:
     """
