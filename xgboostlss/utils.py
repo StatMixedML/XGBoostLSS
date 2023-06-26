@@ -38,6 +38,26 @@ def exp_fn(predt: torch.tensor) -> torch.tensor:
     return predt
 
 
+def exp_fn_df(predt: torch.tensor) -> torch.tensor:
+    """
+    Exponential function used for Student-T distribution.
+
+    Arguments
+    ---------
+    predt: torch.tensor
+        Predicted values.
+
+    Returns
+    -------
+    predt: torch.tensor
+        Predicted values.
+    """
+    predt = torch.exp(predt)
+    predt = torch.nan_to_num(predt, nan=float(torch.nanmean(predt))) + torch.tensor(1e-06, dtype=predt.dtype)
+
+    return predt + torch.tensor(2.0, dtype=predt.dtype)
+
+
 def log_fn(predt: torch.tensor) -> torch.tensor:
     """
     Inverse of exp_fn function.
@@ -77,6 +97,27 @@ def softplus_fn(predt: torch.tensor) -> torch.tensor:
     predt = torch.nan_to_num(predt, nan=float(torch.nanmean(predt))) + torch.tensor(1e-06, dtype=predt.dtype)
 
     return predt
+
+
+def softplus_fn_df(predt: torch.tensor) -> torch.tensor:
+    """
+    Softplus function used for Student-T distribution.
+
+    Arguments
+    ---------
+    predt: torch.tensor
+        Predicted values.
+
+    Returns
+    -------
+    predt: torch.tensor
+        Predicted values.
+    """
+    predt = torch.log1p(torch.exp(-torch.abs(predt))) + torch.maximum(predt, torch.tensor(0.))
+    predt[predt == 0] = torch.tensor(1e-06, dtype=predt.dtype)
+    predt = torch.nan_to_num(predt, nan=float(torch.nanmean(predt))) + torch.tensor(1e-06, dtype=predt.dtype)
+
+    return predt + torch.tensor(2.0, dtype=predt.dtype)
 
 
 def softplusinv_fn(predt: torch.tensor) -> torch.tensor:

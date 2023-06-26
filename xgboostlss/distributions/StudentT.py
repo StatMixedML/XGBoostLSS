@@ -40,14 +40,16 @@ class StudentT(DistributionClass):
         # Specify Response Functions
         if response_fn == "exp":
             response_fn = exp_fn
+            response_fn_df = exp_fn_df
         elif response_fn == "softplus":
             response_fn = softplus_fn
+            response_fn_df = softplus_fn_df
         else:
             raise ValueError("Invalid response function. Please choose from 'exp' or 'softplus'.")
 
         # Set the parameters specific to the distribution
         distribution = StudentT_Torch
-        param_dict = {"df": lambda x: response_fn(x) + torch.tensor(2.0), "loc": identity_fn, "scale": response_fn}
+        param_dict = {"df": response_fn_df, "loc": identity_fn, "scale": response_fn}
         torch.distributions.Distribution.set_default_validate_args(False)
 
         # Specify Distribution Class

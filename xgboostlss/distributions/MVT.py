@@ -50,14 +50,16 @@ class MVT(Multivariate_DistributionClass):
         # Specify Response Functions
         if response_fn == "exp":
             response_fn = exp_fn
+            response_fn_df = exp_fn_df
         elif response_fn == "softplus":
             response_fn = softplus_fn
+            response_fn_df = softplus_fn_df
         else:
             raise ValueError("Invalid response function. Please choose from 'exp' or 'softplus'.")
 
         # Set the parameters specific to the distribution
         distribution = MultivariateStudentT_Torch
-        param_dict = MVT.create_param_dict(n_targets=D, response_fn=response_fn)
+        param_dict = MVT.create_param_dict(n_targets=D, response_fn=response_fn, response_fn_df=response_fn_df)
         distribution_arg_names = ["df", "loc", "scale_tril"]
         torch.distributions.Distribution.set_default_validate_args(False)
 
@@ -77,7 +79,8 @@ class MVT(Multivariate_DistributionClass):
 
     @staticmethod
     def create_param_dict(n_targets: int,
-                          response_fn: Callable
+                          response_fn: Callable,
+                          response_fn_df: Callable
                           ) -> Dict:
         """ Function that transforms the distributional parameters to the desired scale.
 
@@ -87,6 +90,8 @@ class MVT(Multivariate_DistributionClass):
             Number of targets.
         response_fn: Callable
             Response function.
+        response_fn_df: Callable
+            Response function for the degrees of freedom.
 
         Returns
         -------
@@ -95,7 +100,7 @@ class MVT(Multivariate_DistributionClass):
         """
 
         # Df
-        param_dict = {"df": lambda x: response_fn(x) + torch.tensor(2.0)}
+        param_dict = {"df": response_fn_df}
 
         # Location
         loc_dict = {"location_" + str(i + 1): identity_fn for i in range(n_targets)}
@@ -194,14 +199,16 @@ class MVT(Multivariate_DistributionClass):
         location_df = pd.DataFrame(dist_pred.loc.numpy())
         location_df.columns = [f"location_{i + 1}" for i in range(n_targets)]
 
-        # Sigma
-        sigma_df = pd.DataFrame(dist_pred.stddev.detach().numpy())
-        sigma_df.columns = [f"scale_{i + 1}" for i in range(n_targets)]
+        # Scale
+        scale_df = pd.DataFrame(dist_pred.stddev.detach().numpy())
+        scale_df.columns = [f"scale_{i + 1}" for i in range(n_targets)]
 
         # Rho
         n_obs = location_df.shape[0]
         n_rho = int((n_targets * (n_targets - 1)) / 2)
-        cov_mat = dist_pred.covariance_matrix
+        # The covariance is df / (df - 2) * covariance_matrix
+        df = torch.broadcast_to(dist_pred.df.reshape(-1, 1).unsqueeze(-1), dist_pred.covariance_matrix.shape)
+        cov_mat = dist_pred.covariance_matrix * (df / (df - 2))
         rho_df = pd.DataFrame(
             np.concatenate([MVT.calc_corr(cov_mat[i]).reshape(-1, n_rho) for i in range(n_obs)], axis=0)
         )
@@ -209,7 +216,7 @@ class MVT(Multivariate_DistributionClass):
         rho_df.columns = [f"rho_{''.join(map(str, rho_idx[i]))}" for i in range(n_targets)]
 
         # Concatenate
-        dist_params_df = pd.concat([Df_df, location_df, sigma_df, rho_df], axis=1)
+        dist_params_df = pd.concat([Df_df, location_df, scale_df, rho_df], axis=1)
 
         return dist_params_df
 
