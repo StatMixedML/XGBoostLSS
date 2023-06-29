@@ -68,6 +68,6 @@ We value an inclusive and welcoming community. Therefore, we ask that you:
 - Refrain from any offensive, discriminatory, or harassing behavior.
 - Encourage and support fellow contributors.
 - Engage in constructive and meaningful discussions.
-- Follow the project's [code of conduct.](https://github.com/StatMixedML/XGBoostLSS/blob/master/CODE_OF_CONDUCT.md).
+- Follow the project's [code of conduct](https://github.com/StatMixedML/XGBoostLSS/blob/master/CODE_OF_CONDUCT.md).
 
 Thank you for contributing to the project!
