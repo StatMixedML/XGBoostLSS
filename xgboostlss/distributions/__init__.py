@@ -2,6 +2,7 @@
 
 from . import distribution_utils
 from . import multivariate_distribution_utils
+from . import flow_utils
 from . import zero_inflated
 from . import Gaussian
 from . import StudentT
@@ -23,3 +24,5 @@ from . import ZALN
 from . import MVN
 from . import MVN_LoRa
 from . import MVT
+from . import SplineFlow
+
