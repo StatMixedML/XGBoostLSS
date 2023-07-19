@@ -194,7 +194,7 @@ class DistributionClass:
             Starting values for each distributional parameter.
         """
         # Convert target to torch.tensor
-        target = torch.tensor(target, dtype=torch.float32)
+        target = torch.tensor(target).reshape(-1, 1)
 
         # Initialize parameters
         params = [torch.tensor(0.5, requires_grad=True) for _ in range(self.n_dist_param)]
