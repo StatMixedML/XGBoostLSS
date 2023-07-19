@@ -14,6 +14,7 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 :white_check_mark: XGBoostLSS is available in Python. <br/>
 
 ## News
+:boom: [2023-07-19] Release of v0.3.0 introduces Normalizing Flows. See the [release notes](https://github.com/StatMixedML/XGBoostLSS/releases) for an overview. <br/>
 :boom: [2023-06-22] Release of v0.2.2. See the [release notes](https://github.com/StatMixedML/XGBoostLSS/releases) for an overview. <br/>
 :boom: [2023-06-21] XGBoostLSS now supports multi-target regression. <br/>
 :boom: [2023-06-07] XGBoostLSS now supports Zero-Inflated and Zero-Adjusted Distributions. <br/>
