@@ -60,14 +60,20 @@ class SplineFlow(NormalizingFlowClass):
                  ):
 
         # Check if stabilization method is valid.
+        if not isinstance(stabilization, str):
+            raise ValueError("stabilization must be a string.")
         if stabilization not in ["None", "MAD", "L2"]:
             raise ValueError("Invalid stabilization method. Options are 'None', 'MAD' or 'L2'.")
 
         # Check if loss function is valid.
+        if not isinstance(loss_fn, str):
+            raise ValueError("loss_fn must be a string.")
         if loss_fn not in ["nll", "crps"]:
             raise ValueError("Invalid loss_fn. Options are 'nll' or 'crps'.")
 
         # Number of parameters
+        if not isinstance(order, str):
+            raise ValueError("order must be a string.")
         if order == "quadratic":
             n_params = 2*count_bins + (count_bins-1)
         elif order == "linear":
@@ -76,6 +82,8 @@ class SplineFlow(NormalizingFlowClass):
             raise ValueError("Invalid order specification. Options are 'linear' or 'quadratic'.")
 
         # Specify Target Transform
+        if not isinstance(target_support, str):
+            raise ValueError("target_support must be a string.")
         if target_support == "real":
             target_transform = identity_transform
             discrete = False
@@ -90,6 +98,16 @@ class SplineFlow(NormalizingFlowClass):
             discrete = False
         else:
             raise ValueError("Invalid target_support. Options are 'real', 'positive', 'positive_integer' or 'unit_interval'.")
+
+        # Check if count_bins is valid
+        if not isinstance(count_bins, int):
+            raise ValueError("count_bins must be an integer.")
+        if count_bins <= 0:
+            raise ValueError("count_bins must be a positive integer > 0.")
+
+        # Check if bound is float
+        if not isinstance(bound, float):
+            raise ValueError("bound must be a float.")
 
         # Specify parameter dictionary
         param_dict = {f"param_{i + 1}": identity_fn for i in range(n_params)}
