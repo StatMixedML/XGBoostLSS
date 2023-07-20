@@ -84,7 +84,7 @@ Since XGBoostLSS is based on a *one vs. all estimation strategy*, where a separa
 --->
 
 ## Feedback
-We encourage you to provide feedback on how to enhance XGBoostLSS or request the implementation of additional distributions by opening a new issue.
+We encourage you to provide feedback on how to enhance XGBoostLSS or request the implementation of additional distributions by opening a new discussion.
 
 ## Reference Paper
 
