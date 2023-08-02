@@ -353,7 +353,7 @@ class Multivariate_DistributionClass:
         pred_type : str
             Type of prediction:
             - "samples" draws n_samples from the predicted distribution.
-            - "quantile" calculates the quantiles from the predicted distribution.
+            - "quantiles" calculates the quantiles from the predicted distribution.
             - "parameters" returns the predicted distributional parameters.
             - "expectiles" returns the predicted expectiles.
         n_samples : int

@@ -40,7 +40,7 @@ class MVN(Multivariate_DistributionClass):
         Loss function. Options are "nll" (negative log-likelihood).
     """
     def __init__(self,
-                 D: int,
+                 D: int = 2,
                  stabilization: str = "None",
                  response_fn: str = "exp",
                  loss_fn: str = "nll"
@@ -198,7 +198,6 @@ class MVN(Multivariate_DistributionClass):
         dist_params_df = pd.concat([location_df, scale_df, rho_df], axis=1)
 
         return dist_params_df
-
 
     @staticmethod
     def covariance_to_correlation(cov_mat: torch.Tensor) -> np.ndarray:

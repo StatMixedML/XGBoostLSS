@@ -42,7 +42,7 @@ class MVT(Multivariate_DistributionClass):
         Loss function. Options are "nll" (negative log-likelihood).
     """
     def __init__(self,
-                 D: int,
+                 D: int = 2,
                  stabilization: str = "None",
                  response_fn: str = "exp",
                  loss_fn: str = "nll"
