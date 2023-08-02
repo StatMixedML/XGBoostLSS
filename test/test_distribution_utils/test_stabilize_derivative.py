@@ -1,5 +1,6 @@
 from ..utils import BaseTestClass
-from xgboostlss.model import *
+import torch
+
 
 
 class TestClass(BaseTestClass):
