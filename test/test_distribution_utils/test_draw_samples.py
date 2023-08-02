@@ -1,5 +1,5 @@
 from ..utils import BaseTestClass
-from xgboostlss.model import *
+import pandas as pd
 
 
 class TestClass(BaseTestClass):

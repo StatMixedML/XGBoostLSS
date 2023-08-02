@@ -1,6 +1,7 @@
 from ..utils import BaseTestClass
-from xgboostlss.model import *
 from typing import List
+import numpy as np
+import torch
 
 
 class TestClass(BaseTestClass):
@@ -39,7 +40,6 @@ class TestClass(BaseTestClass):
         assert hess.shape == params.flatten().shape
         assert not np.isnan(grad).any()
         assert not np.isnan(hess).any()
-
 
     def test_compute_gradients_and_hessians_crps(self, dist_class_crps, stabilization):
         # Create data for testing
@@ -81,7 +81,7 @@ class TestClass(BaseTestClass):
         # Create data for testing
         np.random.seed(123)
         params = np.random.rand(dist_class.dist.n_dist_param * 4).reshape(-1, dist_class.dist.n_dist_param)
-        params[0,0] = np.nan
+        params[0, 0] = np.nan
         target = torch.tensor([0.2, 0.4, 0.6, 0.8]).reshape(-1, 1)
         start_values = np.array([0.5 for _ in range(dist_class.dist.n_dist_param)])
         weights = np.ones_like(target)

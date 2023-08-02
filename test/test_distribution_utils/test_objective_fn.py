@@ -1,5 +1,7 @@
-from xgboostlss.model import *
+# from xgboostlss.model import *
 from ..utils import BaseTestClass
+import xgboost as xgb
+import numpy as np
 
 
 class TestClass(BaseTestClass):
