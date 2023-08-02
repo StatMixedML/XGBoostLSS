@@ -1,6 +1,16 @@
+# 
+<h4 align="center">
+  
+![Python package](https://github.com/StatMixedML/XGBoostLSS/workflows/CI%20of%20Package/badge.svg)
+[![Github License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+</h4>
+
+#
+
 <img align="right" width="156.5223" height="181.3" src="../master/figures/XGBoostLSS_inv.png">
 
-# XGBoostLSS - An extension of XGBoost to probabilistic forecasting
+# XGBoostLSS - An extension of XGBoost to probabilistic modelling
 We propose a new framework of XGBoost that predicts the entire conditional distribution of univariate and multivariate responses. In particular, **XGBoostLSS** models all moments of a parametric distribution, i.e., mean, location, scale and shape (LSS), instead of the conditional mean only. Choosing from a wide range of continuous, discrete, and mixed discrete-continuous distribution, modelling and predicting the entire conditional distribution greatly enhances the flexibility of XGBoost, as it allows to create probabilistic forecasts from which prediction intervals and quantiles of interest can be derived.
 
 ## Features
