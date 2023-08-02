@@ -2,7 +2,6 @@ from ..utils import BaseTestClass
 import torch
 
 
-
 class TestClass(BaseTestClass):
     def test_stabilize_derivative(self, dist_class, stabilization):
         # Create data for testing
