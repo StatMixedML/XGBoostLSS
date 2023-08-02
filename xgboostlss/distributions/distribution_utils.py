@@ -133,7 +133,6 @@ class DistributionClass:
 
         return self.loss_fn, loss
 
-
     def loss_fn_start_values(self,
                              params: torch.Tensor,
                              target: torch.Tensor) -> torch.Tensor:
@@ -235,7 +234,7 @@ class DistributionClass:
                         target: torch.Tensor,
                         start_values: List[float],
                         requires_grad: bool = False,
-                        ) -> Tuple[np.ndarray, np.ndarray]:
+                        ) -> Tuple[List[torch.Tensor], np.ndarray]:
         """
         Function that returns the predicted parameters and the loss.
 
@@ -252,7 +251,7 @@ class DistributionClass:
 
         Returns
         -------
-        predt: torch.Tensor
+        predt: List of torch.Tensors
             Predicted parameters.
         loss: torch.Tensor
             Loss value.
@@ -355,7 +354,7 @@ class DistributionClass:
         pred_type : str
             Type of prediction:
             - "samples" draws n_samples from the predicted distribution.
-            - "quantile" calculates the quantiles from the predicted distribution.
+            - "quantiles" calculates the quantiles from the predicted distribution.
             - "parameters" returns the predicted distributional parameters.
             - "expectiles" returns the predicted expectiles.
         n_samples : int
@@ -446,30 +445,6 @@ class DistributionClass:
             grad = autograd(loss, inputs=predt, create_graph=True)
             hess = [torch.ones_like(grad[i]) for i in range(len(grad))]
 
-            # # Approximation of Hessian
-            # step_size = 1e-6
-            # predt_upper = [
-            #     response_fn(predt[i] + step_size).reshape(-1, 1) for i, response_fn in
-            #     enumerate(self.param_dict.values())
-            # ]
-            # dist_kwargs_upper = dict(zip(self.distribution_arg_names, predt_upper))
-            # dist_fit_upper = self.distribution(**dist_kwargs_upper)
-            # dist_samples_upper = dist_fit_upper.rsample((30,)).squeeze(-1)
-            # loss_upper = torch.nansum(self.crps_score(self.target, dist_samples_upper))
-            #
-            # predt_lower = [
-            #     response_fn(predt[i] - step_size).reshape(-1, 1) for i, response_fn in
-            #     enumerate(self.param_dict.values())
-            # ]
-            # dist_kwargs_lower = dict(zip(self.distribution_arg_names, predt_lower))
-            # dist_fit_lower = self.distribution(**dist_kwargs_lower)
-            # dist_samples_lower = dist_fit_lower.rsample((30,)).squeeze(-1)
-            # loss_lower = torch.nansum(self.crps_score(self.target, dist_samples_lower))
-            #
-            # grad_upper = autograd(loss_upper, inputs=predt_upper)
-            # grad_lower = autograd(loss_lower, inputs=predt_lower)
-            # hess = [(grad_upper[i] - grad_lower[i]) / (2 * step_size) for i in range(len(grad))]
-
         # Stabilization of Derivatives
         if self.stabilization != "None":
             grad = [self.stabilize_derivative(grad[i], type=self.stabilization) for i in range(len(grad))]
@@ -488,7 +463,6 @@ class DistributionClass:
         hess = hess.flatten()
 
         return grad, hess
-
 
     def stabilize_derivative(self, input_der: torch.Tensor, type: str = "MAD") -> torch.Tensor:
         """
@@ -588,7 +562,6 @@ class DistributionClass:
 
         return crps
 
-
     def dist_select(self,
                     target: np.ndarray,
                     candidate_distributions: List,
@@ -642,7 +615,7 @@ class DistributionClass:
                         {self.loss_fn: np.nan,
                          "distribution": str(dist_name),
                          "params": [np.nan] * self.n_dist_param
-                        }
+                         }
                     )
                 dist_list.append(fit_df)
                 fit_df = pd.concat(dist_list).sort_values(by=self.loss_fn, ascending=True)
