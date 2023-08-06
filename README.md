@@ -2,6 +2,7 @@
 <h4 align="center">
   
 ![Python package](https://github.com/StatMixedML/XGBoostLSS/workflows/CI%20of%20Package/badge.svg)
+![Code Coverage](https://raw.githubusercontent.com/StatMixedML/XGBoostLSS/coverage-badge/Code%20Coverage.svg?raw=true)
 [![Github License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 </h4>
