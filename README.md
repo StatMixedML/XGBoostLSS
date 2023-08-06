@@ -1,17 +1,18 @@
 # 
 <h4 align="center">
 
-[![Python Version](https://img.shields.io/badge/python-3.9%20|%203.10-orange.svg)](https://www.python.org/downloads/)
-![Built Status](https://github.com/StatMixedML/XGBoostLSS/workflows/built%20status/badge.svg)
+[![Python Version](https://img.shields.io/badge/python-3.9%20|%203.10-lightblue.svg)](https://www.python.org/downloads/)
+![Build Status](https://github.com/StatMixedML/XGBoostLSS/workflows/build%20status/badge.svg)
 ![Code Coverage](https://raw.githubusercontent.com/StatMixedML/XGBoostLSS/coverage-badge/coverage.svg?raw=true)
-[![Github License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Github License](https://img.shields.io/badge/license-Apache%202.0-lightblue.svg)](https://opensource.org/licenses/Apache-2.0)
+<!---
 [![HitCount](https://img.shields.io/endpoint?url=https%3A%2F%2Fhits.dwyl.com%2FStatMixedML%2FXGBoostLSS.json%3Fcolor%3Dgreen)](http://hits.dwyl.com/StatMixedML/XGBoostLSS)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
+-->
 
 </h4>
 
 #
-
 <img align="right" width="156.5223" height="181.3" src="../master/figures/XGBoostLSS_inv.png">
 
 # XGBoostLSS - An extension of XGBoost to probabilistic modelling
@@ -91,12 +92,6 @@ For improved convergence, an alternative approach is to standardize the (continu
 ### Runtime
 Since XGBoostLSS is based on a *one vs. all estimation strategy*, where a separate tree is grown for each distributional parameter, it requires training ```[number of iterations] * [number of distributional parameters]``` trees. Hence, the runtime of XGBoostLSS is generally slightly higher for univariate distributions as compared to XGBoost, which requires training ```[number of iterations]``` trees only. Moreover, for a dataset with multivariate responses, estimation can become computationally expensive.
 
-<!---
-## Work in Progress
-:construction: Functions that facilitates the choice and evaluation of a candidate distribution (e.g., quantile residual plots, ...). <br/>
-:construction: Estimation of full predictive distribution without relying on a distributional assumption.  <br/>
---->
-
 ## Feedback
 We encourage you to provide feedback on how to enhance XGBoostLSS or request the implementation of additional distributions by opening a new discussion.
 
@@ -105,7 +100,6 @@ We encourage you to provide feedback on how to enhance XGBoostLSS or request the
 März, Alexander (2022): [*Multi-Target XGBoostLSS Regression*](https://arxiv.org/abs/2210.06831). <br/>
 März, A. and Kneib, T.: (2022) [*Distributional Gradient Boosting Machines*](https://arxiv.org/abs/2204.00778). <br/>
 März, Alexander (2019): [*XGBoostLSS - An extension of XGBoost to probabilistic forecasting*](https://arxiv.org/abs/1907.03178). 
-
 
 <!---
 [![Arxiv link](https://img.shields.io/badge/arXiv-Multi%20Target%20XGBoostLSS%20Regression-color=brightgreen)](https://arxiv.org/abs/2210.06831) <br/>
