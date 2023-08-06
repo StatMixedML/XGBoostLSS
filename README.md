@@ -1,10 +1,10 @@
 # 
 <h4 align="center">
-  
+
+[![Python Version](https://img.shields.io/badge/Python-3.9%20|%203.10-orange.svg)](https://www.python.org/downloads/)
 ![Python Package](https://github.com/StatMixedML/XGBoostLSS/workflows/CI%20of%20Package/badge.svg)
 ![Code Coverage](https://raw.githubusercontent.com/StatMixedML/XGBoostLSS/coverage-badge/Code%20Coverage.svg?raw=true)
 [![Github License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Python Version](https://img.shields.io/badge/Python-3.9%20|%203.10-orange.svg)](https://www.python.org/downloads/)
 
 </h4>
 
