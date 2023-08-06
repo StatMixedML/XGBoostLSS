@@ -47,7 +47,7 @@ jobs:
       uses: tj-actions/coverage-badge-py@v1.8
       with:
         output: coverage/coverage.svg
-        text: 'test coverage' 
+        text: 'code coverage' 
     - name: Publish coverage report to coverage-badge branch
       uses: JamesIves/github-pages-deploy-action@v4
       with:
