@@ -5,9 +5,9 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/StatMixedML/XGBoostLSS?label=repo%20size&color=lightblue)
 ![GitHub all releases](https://img.shields.io/github/downloads/StatMixedML/XGBoostLSS/total?color=lightblue)
 ![GitHub Release (with filter)](https://img.shields.io/github/v/release/StatMixedML/XGBoostLSS?color=lightblue&label=release)
+[![Github License](https://img.shields.io/badge/license-Apache%202.0-lightblue.svg)](https://opensource.org/licenses/Apache-2.0)
 ![Build Status](https://github.com/StatMixedML/XGBoostLSS/workflows/build%20status/badge.svg)
 ![Code Coverage](https://raw.githubusercontent.com/StatMixedML/XGBoostLSS/coverage-badge/coverage.svg?raw=true)
-[![Github License](https://img.shields.io/badge/license-Apache%202.0-lightblue.svg)](https://opensource.org/licenses/Apache-2.0)
 <!---
 [![HitCount](https://img.shields.io/endpoint?url=https%3A%2F%2Fhits.dwyl.com%2FStatMixedML%2FXGBoostLSS.json%3Fcolor%3Dgreen)](http://hits.dwyl.com/StatMixedML/XGBoostLSS)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
