@@ -31,7 +31,6 @@ jobs:
         python -m pip install pytest-coverage
         python -m pip install .
         python -m pip install git+https://github.com/dsgibbons/shap.git
-        python -m pip install pytest-coverage
     # - name: Lint with flake8
     #   run: |
     #     # stop the build if there are Python syntax errors or undefined names
@@ -43,7 +42,7 @@ jobs:
         pytest --cov
     - name: Creating coverage folder
       run: |
-          mkdir -p coverage
+          mkdir -p Code Coverage
     - name: Coverage Bagdge
       uses: tj-actions/coverage-badge-py@v1.8
       with:
@@ -52,5 +51,5 @@ jobs:
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         branch: coverage-badge
-        folder: coverage
+        folder: Code Coverage
         
