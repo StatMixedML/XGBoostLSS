@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: CI of Package
+name: built status
 
 on:
   push:
@@ -46,7 +46,7 @@ jobs:
     - name: Coverage Bagdge
       uses: tj-actions/coverage-badge-py@v1.8
       with:
-        output: coverage/Code%20Coverage.svg
+        output: coverage/coverage.svg
     - name: Publish coverage report to coverage-badge branch
       uses: JamesIves/github-pages-deploy-action@v4
       with:
