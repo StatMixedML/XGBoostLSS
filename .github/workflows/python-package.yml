@@ -42,14 +42,14 @@ jobs:
         pytest --cov
     - name: Creating coverage folder
       run: |
-          mkdir -p "Code Coverage"
+          mkdir -p coverage
     - name: Coverage Bagdge
       uses: tj-actions/coverage-badge-py@v1.8
       with:
-        output: "Code Coverage/coverage.svg"
+        output: coverage/coverage.svg
     - name: Publish coverage report to coverage-badge branch
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         branch: coverage-badge
-        folder: "Code Coverage"
+        folder: coverage
         
