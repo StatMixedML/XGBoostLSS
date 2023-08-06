@@ -94,7 +94,7 @@ Since XGBoostLSS updates the parameter estimates by optimizing Gradients and Hes
 For improved convergence, an alternative approach is to standardize the (continuous) response variable, such as dividing it by 100 (e.g., y/100). This approach proves especially valuable when the response range significantly differs from that of Gradients and Hessians. Nevertheless, it is essential to carefully evaluate and apply both the built-in stabilization and response standardization techniques in consideration of the specific dataset at hand.
 
 ### Runtime
-Since XGBoostLSS is based on a *one vs. all estimation strategy*, where a separate tree is grown for each distributional parameter, it requires training ```[number of iterations] * [number of distributional parameters]``` trees. Hence, the runtime of XGBoostLSS is generally slightly higher for univariate distributions as compared to XGBoost, which requires training ```[number of iterations]``` trees only. Moreover, for a dataset with multivariate responses, estimation can become computationally expensive.
+Since XGBoostLSS is based on a *one vs. all estimation strategy*, where a separate tree is grown for each distributional parameter, it requires training ```[number of iterations] * [number of distributional parameters]``` trees. Hence, the runtime of XGBoostLSS is generally slightly higher for univariate distributions as compared to XGBoost, which requires training ```[number of iterations]``` trees only. Moreover, for a dataset with multivariate targets, estimation can become computationally expensive.
 
 ## Feedback
 We encourage you to provide feedback on how to enhance XGBoostLSS or request the implementation of additional distributions by opening a new discussion.
