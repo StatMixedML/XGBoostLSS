@@ -1,4 +1,4 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# This workflow will install Python dependencies and run tests with a variety of Python versions
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
 name: unit-tests
@@ -27,16 +27,10 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install flake8 pytest
+        python -m pip install pytest
         python -m pip install pytest-coverage
         python -m pip install .
         python -m pip install git+https://github.com/dsgibbons/shap.git
-    # - name: Lint with flake8
-    #   run: |
-    #     # stop the build if there are Python syntax errors or undefined names
-    #     flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-    #     # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-    #     flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest 
       run: |
         pytest --cov
@@ -44,16 +38,3 @@ jobs:
       uses: codecov/codecov-action@v3
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-    # - name: Creating coverage folder
-    #   run: |
-    #       mkdir -p coverage
-    # - name: Coverage Bagdge
-    #   uses: tj-actions/coverage-badge-py@v1.8
-    #   with:
-    #     output: coverage/coverage.svg
-    # - name: Publish coverage report to coverage-badge branch
-    #   uses: JamesIves/github-pages-deploy-action@v4
-    #   with:
-    #     branch: coverage-badge
-    #     folder: coverage
-        
