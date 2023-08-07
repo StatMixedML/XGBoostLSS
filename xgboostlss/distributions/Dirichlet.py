@@ -36,20 +36,28 @@ class Dirichlet(Multivariate_DistributionClass):
         Loss function. Options are "nll" (negative log-likelihood).
     """
     def __init__(self,
-                 D: int,
+                 D: int = 2,
                  stabilization: str = "None",
                  response_fn: str = "exp",
                  loss_fn: str = "nll"
                  ):
+        # Input Checks
+        if not isinstance(D, int):
+            raise ValueError("Invalid dimensionality type. Please choose an integer for D.")
+        if D < 2:
+            raise ValueError("Invalid dimensionality. Please choose D >= 2.")
+        if stabilization not in ["None", "MAD", "L2"]:
+            raise ValueError("Invalid stabilization method. Please choose from 'None', 'MAD' or 'L2'.")
+        if loss_fn not in ["nll"]:
+            raise ValueError("Invalid loss function. Please select from 'nll'.")
+
         # Specify Response Functions
-        if response_fn == "exp":
-            response_fn = exp_fn
-        elif response_fn == "softplus":
-            response_fn = softplus_fn
-        elif response_fn == "relu":
-            response_fn = relu_fn
+        response_functions = {"exp": exp_fn, "softplus": softplus_fn, "relu": relu_fn}
+        if response_fn in response_functions:
+            response_fn = response_functions[response_fn]
         else:
-            raise ValueError("Invalid response function. Please choose from 'exp', 'relu' or 'softplus'.")
+            raise ValueError(
+                "Invalid response function. Please choose from 'exp' or 'softplus' or 'relu.")
 
         # Set the parameters specific to the distribution
         distribution = Dirichlet_Torch

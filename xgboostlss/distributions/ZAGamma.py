@@ -30,22 +30,27 @@ class ZAGamma(DistributionClass):
         Response function for transforming the distributional parameters to the correct support. Options are
         "exp" (exponential) or "softplus" (softplus).
     loss_fn: str
-        Loss function. Options are "nll" (negative log-likelihood) or "crps" (continuous ranked probability score).
-        Note that if "crps" is used, the Hessian is set to 1, as the current CRPS version is not twice differentiable.
-        Hence, using the CRPS disregards any variation in the curvature of the loss function.
+        Loss function. Options are "nll" (negative log-likelihood).
     """
     def __init__(self,
                  stabilization: str = "None",
                  response_fn: str = "exp",
                  loss_fn: str = "nll"
                  ):
+
+        # Input Checks
+        if stabilization not in ["None", "MAD", "L2"]:
+            raise ValueError("Invalid stabilization method. Please choose from 'None', 'MAD' or 'L2'.")
+        if loss_fn not in ["nll"]:
+            raise ValueError("Invalid loss function. Please select 'nll'.")
+
         # Specify Response Functions
-        if response_fn == "exp":
-            response_fn = exp_fn
-        elif response_fn == "softplus":
-            response_fn = softplus_fn
+        response_functions = {"exp": exp_fn, "softplus": softplus_fn}
+        if response_fn in response_functions:
+            response_fn = response_functions[response_fn]
         else:
-            raise ValueError("Invalid response function. Please choose from 'exp' or 'softplus'.")
+            raise ValueError(
+                "Invalid response function. Please choose from 'exp' or 'softplus'.")
 
         # Set the parameters specific to the distribution
         distribution = ZeroAdjustedGamma_Torch

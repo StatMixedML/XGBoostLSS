@@ -35,13 +35,20 @@ class Gaussian(DistributionClass):
                  response_fn: str = "exp",
                  loss_fn: str = "nll"
                  ):
+
+        # Input Checks
+        if stabilization not in ["None", "MAD", "L2"]:
+            raise ValueError("Invalid stabilization method. Please choose from 'None', 'MAD' or 'L2'.")
+        if loss_fn not in ["nll", "crps"]:
+            raise ValueError("Invalid loss function. Please choose from 'nll' or 'crps'.")
+
         # Specify Response Functions
-        if response_fn == "exp":
-            response_fn = exp_fn
-        elif response_fn == "softplus":
-            response_fn = softplus_fn
+        response_functions = {"exp": exp_fn, "softplus": softplus_fn}
+        if response_fn in response_functions:
+            response_fn = response_functions[response_fn]
         else:
-            raise ValueError("Invalid response function. Please choose from 'exp' or 'softplus'.")
+            raise ValueError(
+                "Invalid response function. Please choose from 'exp' or 'softplus'.")
 
         # Set the parameters specific to the distribution
         distribution = Gaussian_Torch

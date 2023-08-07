@@ -24,5 +24,6 @@ from . import ZALN
 from . import MVN
 from . import MVN_LoRa
 from . import MVT
+from . import Dirichlet
 from . import SplineFlow
 

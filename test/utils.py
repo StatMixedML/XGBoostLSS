@@ -6,14 +6,28 @@ from typing import List
 import torch
 
 
-def get_distribution_classes(has_rsample: bool = False) -> List:
+def get_distribution_classes(univariate: bool = True,
+                             continuous: bool = False,
+                             discrete: bool = False,
+                             rsample: bool = False,
+                             flow: bool = False,
+                             expectile: bool = False,
+                             ) -> List:
     """
-    Function that returns a list of all distribution classes in the distributions folder.
+    Function that returns a list of specified distribution classes.
 
     Arguments:
     ---------
-    has_rsample (bool):
+    univariate (bool):
+        If True, only return distribution classes that are univariate.
+    continuous (bool):
+        If True, only return distribution classes that are continuous.
+    discrete (bool):
+        If True, only return distribution classes that are discrete.
+    rsample (bool):
         If True, only return distribution classes that have a rsample method.
+    flow (bool):
+        If True, only return distribution classes that are Flows.
 
     Returns:
     --------
@@ -26,59 +40,141 @@ def get_distribution_classes(has_rsample: bool = False) -> List:
     # Remove SplineFlow from distns
     distns.remove("SplineFlow")
 
-    # Loop through each distribution name and import the corresponding class
-    distribution_classes = []
+    # Remove Expectile from distns
+    distns.remove("Expectile")
 
-    # Extract all univariate distributions
-    if not has_rsample:
-        for distribution_name in distns:
-            # Import the module dynamically
-            module = importlib.import_module(f"xgboostlss.distributions.{distribution_name}")
 
-            # Get the class dynamically from the module
-            distribution_class = getattr(module, distribution_name)
+    # Extract all continous univariate distributions
+    univar_cont_distns = []
+    for distribution_name in distns:
+        # Import the module dynamically
+        module = importlib.import_module(f"xgboostlss.distributions.{distribution_name}")
 
-            # Add the class object to the list if it is a univariate distribution
-            if distribution_class().univariate:
-                distribution_classes.append(distribution_class)
+        # Get the class dynamically from the module
+        distribution_class = getattr(module, distribution_name)
+
+        if distribution_class().univariate and not distribution_class().discrete:
+            univar_cont_distns.append(distribution_class)
+
+    # Exctract discrete univariate distributions only
+    univar_discrete_distns = []
+    for distribution_name in distns:
+        # Import the module dynamically
+        module = importlib.import_module(f"xgboostlss.distributions.{distribution_name}")
+
+        # Get the class dynamically from the module
+        distribution_class = getattr(module, distribution_name)
+
+        if distribution_class().univariate and distribution_class().discrete:
+            univar_discrete_distns.append(distribution_class)
+
+    # Extract all multivariate distributions
+    multivar_distns = []
+    for distribution_name in distns:
+        # Import the module dynamically
+        module = importlib.import_module(f"xgboostlss.distributions.{distribution_name}")
+
+        # Get the class dynamically from the module
+        distribution_class = getattr(module, distribution_name)
+
+        if not distribution_class().univariate:
+            multivar_distns.append(distribution_class)
 
     # Extract distributions only that have a rsample method
-    else:
-        for distribution_name in distns:
-            # Import the module dynamically
+    rsample_distns = []
+    for distribution_name in distns:
+        # Import the module dynamically
+        module = importlib.import_module(f"xgboostlss.distributions.{distribution_name}")
+
+        # Get the class dynamically from the module
+        distribution_class = getattr(module, distribution_name)
+
+        # Create an instance of the distribution class
+        dist_class = XGBoostLSS(distribution_class())
+        params = torch.tensor([0.5 for _ in range(dist_class.dist.n_dist_param)])
+
+        # Check if the distribution is univariate and has a rsample method
+        if distribution_class().univariate and dist_class.dist.tau is None:
+            dist_kwargs = dict(zip(dist_class.dist.distribution_arg_names, params))
+            dist_fit = dist_class.dist.distribution(**dist_kwargs)
+
+        elif distribution_class().univariate and dist_class.dist.tau is not None:
+            dist_fit = dist_class.dist.distribution(params)
+
+        try:
+            dist_fit.rsample()
+            if distribution_class().univariate:
+                rsample_distns.append(distribution_class)
+        except NotImplementedError:
+            pass
+
+    if univariate and not flow and not expectile:
+        if discrete:
+            return univar_discrete_distns
+        elif rsample:
+            return rsample_distns
+        elif continuous:
+            return univar_cont_distns
+        else:
+            distribution_name = "Expectile"
             module = importlib.import_module(f"xgboostlss.distributions.{distribution_name}")
+            expectile_dist = [getattr(module, distribution_name)]
+            return univar_cont_distns + univar_discrete_distns + expectile_dist
 
-            # Get the class dynamically from the module
-            distribution_class = getattr(module, distribution_name)
+    elif not univariate and not flow and not expectile:
+        return multivar_distns
 
-            # Create an instance of the distribution class
-            dist_class = XGBoostLSS(distribution_class())
-            params = torch.tensor([0.5 for _ in range(dist_class.dist.n_dist_param)])
+    elif flow:
+        distribution_name = "SplineFlow"
+        module = importlib.import_module(f"xgboostlss.distributions.{distribution_name}")
+        # Get the class dynamically from the module
+        distribution_class = [getattr(module, distribution_name)]
 
-            # Check if the distribution is univariate and has a rsample method
-            if distribution_class().univariate and dist_class.dist.tau is None:
-                dist_kwargs = dict(zip(dist_class.dist.distribution_arg_names, params))
-                dist_fit = dist_class.dist.distribution(**dist_kwargs)
+        return distribution_class
 
-            elif distribution_class().univariate and dist_class.dist.tau is not None:
-                dist_fit = dist_class.dist.distribution(params)
+    elif expectile:
+        distribution_name = "Expectile"
+        module = importlib.import_module(f"xgboostlss.distributions.{distribution_name}")
+        # Get the class dynamically from the module
+        distribution_class = [getattr(module, distribution_name)]
 
-            try:
-                dist_fit.rsample()
-                if distribution_class().univariate:
-                    distribution_classes.append(distribution_class)
-            except NotImplementedError:
-                pass
-
-    return distribution_classes
+        return distribution_class
 
 
 class BaseTestClass:
+    @pytest.fixture(params=get_distribution_classes(continuous=True))
+    def univariate_cont_dist(self, request):
+        return request.param
+
+    @pytest.fixture(params=get_distribution_classes(discrete=True))
+    def univariate_discrete_dist(self, request):
+        return request.param
+
+    @pytest.fixture(params=get_distribution_classes(univariate=False))
+    def multivariate_dist(self, request):
+        return request.param
+
+    @pytest.fixture(params=get_distribution_classes(flow=True))
+    def flow_dist(self, request):
+        return request.param
+
+    @pytest.fixture(params=get_distribution_classes(expectile=True))
+    def expectile_dist(self, request):
+        return request.param
+
     @pytest.fixture(params=get_distribution_classes())
     def dist_class(self, request):
         return XGBoostLSS(request.param())
 
-    @pytest.fixture(params=get_distribution_classes(has_rsample=True))
+    @pytest.fixture(params=get_distribution_classes(flow=True))
+    def flow_class(self, request):
+        return XGBoostLSS(request.param())
+
+    @pytest.fixture(params=get_distribution_classes(univariate=False))
+    def multivariate_class(self, request):
+        return XGBoostLSS(request.param())
+
+    @pytest.fixture(params=get_distribution_classes(rsample=True))
     def dist_class_crps(self, request):
         return XGBoostLSS(request.param())
 

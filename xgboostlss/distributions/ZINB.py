@@ -31,9 +31,7 @@ class ZINB(DistributionClass):
         Response function for transforming the distributional parameters to the correct support. Options are
         "sigmoid" (sigmoid).
     loss_fn: str
-        Loss function. Options are "nll" (negative log-likelihood) or "crps" (continuous ranked probability score).
-        Note that if "crps" is used, the Hessian is set to 1, as the current CRPS version is not twice differentiable.
-        Hence, using the CRPS disregards any variation in the curvature of the loss function.
+        Loss function. Options are "nll" (negative log-likelihood).
     """
     def __init__(self,
                  stabilization: str = "None",
@@ -41,21 +39,28 @@ class ZINB(DistributionClass):
                  response_fn_probs: str = "sigmoid",
                  loss_fn: str = "nll"
                  ):
-        # Specify Response Functions for total_count
-        if response_fn_total_count == "exp":
-            response_fn_total_count = exp_fn
-        elif response_fn_total_count == "softplus":
-            response_fn_total_count = softplus_fn
-        elif response_fn_total_count == "relu":
-            response_fn_total_count = relu_fn
-        else:
-            raise ValueError("Invalid response function for total_count. Please choose from 'exp', 'softplus' or relu.")
 
-        # Specify Response Functions for probs
-        if response_fn_probs == "sigmoid":
-            response_fn_probs = sigmoid_fn
+        # Input Checks
+        if stabilization not in ["None", "MAD", "L2"]:
+            raise ValueError("Invalid stabilization method. Please choose from 'None', 'MAD' or 'L2'.")
+        if loss_fn not in ["nll"]:
+            raise ValueError("Invalid loss function. Please select 'nll'.")
+
+        #  Specify Response Functions for total_count
+        response_functions_total_count = {"exp": exp_fn, "softplus": softplus_fn, "relu": relu_fn}
+        if response_fn_total_count in response_functions_total_count:
+            response_fn_total_count = response_functions_total_count[response_fn_total_count]
         else:
-            raise ValueError("Invalid response function for probs. Please select 'sigmoid'.")
+            raise ValueError(
+                "Invalid response function for total_count. Please choose from 'exp', 'softplus' or 'relu'.")
+
+        #  Specify Response Functions for probs
+        response_functions_probs = {"sigmoid": sigmoid_fn}
+        if response_fn_probs in response_functions_probs:
+            response_fn_probs = response_functions_probs[response_fn_probs]
+        else:
+            raise ValueError(
+                "Invalid response function for probs. Please select 'sigmoid'.")
 
         # Set the parameters specific to the distribution
         distribution = ZeroInflatedNegativeBinomial_Torch

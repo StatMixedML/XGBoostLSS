@@ -31,6 +31,17 @@ class Expectile(DistributionClass):
                  expectiles: List = [0.1, 0.5, 0.9],
                  penalize_crossing: bool = False,
                  ):
+
+        # Input Checks
+        if stabilization not in ["None", "MAD", "L2"]:
+            raise ValueError("Invalid stabilization method. Please choose from 'None', 'MAD' or 'L2'.")
+        if not isinstance(expectiles, list):
+            raise ValueError("Expectiles must be a list.")
+        if not all([0 < expectile < 1 for expectile in expectiles]):
+            raise ValueError("Expectiles must be between 0 and 1.")
+        if not isinstance(penalize_crossing, bool):
+            raise ValueError("penalize_crossing must be a boolean. Please choose from True or False.")
+
         # Set the parameters specific to the distribution
         distribution = Expectile_Torch
         torch.distributions.Distribution.set_default_validate_args(False)

@@ -47,15 +47,23 @@ class MVT(Multivariate_DistributionClass):
                  response_fn: str = "exp",
                  loss_fn: str = "nll"
                  ):
+        # Input Checks
+        if not isinstance(D, int):
+            raise ValueError("Invalid dimensionality type. Please choose an integer for D.")
+        if D < 2:
+            raise ValueError("Invalid dimensionality. Please choose D >= 2.")
+        if stabilization not in ["None", "MAD", "L2"]:
+            raise ValueError("Invalid stabilization method. Please choose from 'None', 'MAD' or 'L2'.")
+        if loss_fn not in ["nll"]:
+            raise ValueError("Invalid loss function. Please select from 'nll'.")
+
         # Specify Response Functions
-        if response_fn == "exp":
-            response_fn = exp_fn
-            response_fn_df = exp_fn_df
-        elif response_fn == "softplus":
-            response_fn = softplus_fn
-            response_fn_df = softplus_fn_df
+        response_functions = {"exp": exp_fn, "softplus": softplus_fn, "relu": relu_fn}
+        if response_fn in response_functions:
+            response_fn = response_fn_df = response_functions[response_fn]
         else:
-            raise ValueError("Invalid response function. Please choose from 'exp' or 'softplus'.")
+            raise ValueError(
+                "Invalid response function. Please choose from 'exp' or 'softplus' or 'relu.")
 
         # Set the parameters specific to the distribution
         distribution = MultivariateStudentT_Torch
@@ -213,7 +221,7 @@ class MVT(Multivariate_DistributionClass):
             np.concatenate([MVT.covariance_to_correlation(cov_mat[i]).reshape(-1, n_rho) for i in range(n_obs)], axis=0)
         )
         rho_idx = list(combinations(range(1, n_targets + 1), 2))
-        rho_df.columns = [f"rho_{''.join(map(str, rho_idx[i]))}" for i in range(n_targets)]
+        rho_df.columns = [f"rho_{''.join(map(str, rho_idx[i]))}" for i in range(rho_df.shape[1])]
 
         # Concatenate
         dist_params_df = pd.concat([Df_df, location_df, scale_df, rho_df], axis=1)
