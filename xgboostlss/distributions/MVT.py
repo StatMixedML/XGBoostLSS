@@ -58,9 +58,12 @@ class MVT(Multivariate_DistributionClass):
             raise ValueError("Invalid loss function. Please select from 'nll'.")
 
         # Specify Response Functions
-        response_functions = {"exp": exp_fn, "softplus": softplus_fn, "relu": relu_fn}
+        response_functions = {
+            "exp": (exp_fn, exp_fn_df),
+            "softplus": (softplus_fn, softplus_fn_df)
+        }
         if response_fn in response_functions:
-            response_fn = response_fn_df = response_functions[response_fn]
+            response_fn, response_fn_df = response_functions[response_fn]
         else:
             raise ValueError(
                 "Invalid response function. Please choose from 'exp' or 'softplus' or 'relu.")

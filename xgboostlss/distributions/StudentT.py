@@ -45,9 +45,12 @@ class StudentT(DistributionClass):
             raise ValueError("Invalid loss function. Please choose from 'nll' or 'crps'.")
 
         # Specify Response Functions
-        response_functions = {"exp": exp_fn, "softplus": softplus_fn}
+        response_functions = {
+            "exp": (exp_fn, exp_fn_df),
+            "softplus": (softplus_fn, softplus_fn_df)
+        }
         if response_fn in response_functions:
-            response_fn = response_fn_df = response_functions[response_fn]
+            response_fn, response_fn_df = response_functions[response_fn]
         else:
             raise ValueError(
                 "Invalid response function. Please choose from 'exp' or 'softplus'.")
