@@ -4,6 +4,67 @@ import pytest
 import importlib
 from typing import List
 import torch
+import numpy as np
+import xgboost as xgb
+
+
+def gen_test_data(dist_class, weights: bool = False):
+    """
+    Function that generates test data for a given distribution class.
+
+    Arguments:
+    ----------
+    dist_class (class):
+        Distribution class.
+    weights (bool):
+        Whether to generate weights.
+
+    Returns:
+    --------
+    predt (np.ndarray):
+        Predictions.
+    labels (np.ndarray):
+        Labels.
+    weights (np.ndarray):
+        Weights.
+    dmatrix (xgb.DMatrix):
+        DMatrix.
+    """
+    if dist_class.dist.univariate:
+        np.random.seed(123)
+        predt = np.random.rand(dist_class.dist.n_dist_param * 4).reshape(-1, dist_class.dist.n_dist_param)
+        labels = np.array([0.2, 0.4, 0.6, 0.8]).reshape(-1, 1)
+        if weights:
+            weights = np.ones_like(labels)
+            dmatrix = xgb.DMatrix(predt, label=labels, weight=weights)
+            dist_class.set_base_margin(dmatrix)
+
+            return predt, labels, weights, dmatrix
+        else:
+            dmatrix = xgb.DMatrix(predt, label=labels)
+            dist_class.set_base_margin(dmatrix)
+
+            return predt, labels, dmatrix
+    else:
+        np.random.seed(123)
+        predt = np.random.rand(dist_class.dist.n_dist_param * 4).reshape(-1, dist_class.dist.n_dist_param)
+        labels = np.arange(0.1, 0.9, 0.1)
+        labels = dist_class.dist.target_append(
+            labels,
+            dist_class.dist.n_targets,
+            dist_class.dist.n_dist_param
+        )
+        if weights:
+            weights = np.ones_like(labels[:, 0], dtype=labels.dtype).reshape(-1, 1)
+            dmatrix = xgb.DMatrix(predt, label=labels, weight=weights)
+            dist_class.set_base_margin(dmatrix)
+
+            return predt, labels, weights, dmatrix
+        else:
+            dmatrix = xgb.DMatrix(predt, label=labels)
+            dist_class.set_base_margin(dmatrix)
+
+            return predt, labels, dmatrix
 
 
 def get_distribution_classes(univariate: bool = True,
@@ -42,7 +103,6 @@ def get_distribution_classes(univariate: bool = True,
 
     # Remove Expectile from distns
     distns.remove("Expectile")
-
 
     # Extract all continous univariate distributions
     univar_cont_distns = []
@@ -116,10 +176,7 @@ def get_distribution_classes(univariate: bool = True,
         elif continuous:
             return univar_cont_distns
         else:
-            distribution_name = "Expectile"
-            module = importlib.import_module(f"xgboostlss.distributions.{distribution_name}")
-            expectile_dist = [getattr(module, distribution_name)]
-            return univar_cont_distns + univar_discrete_distns + expectile_dist
+            return univar_cont_distns
 
     elif not univariate and not flow and not expectile:
         return multivar_distns
@@ -162,7 +219,13 @@ class BaseTestClass:
     def expectile_dist(self, request):
         return request.param
 
-    @pytest.fixture(params=get_distribution_classes())
+    @pytest.fixture(params=
+                    get_distribution_classes() +
+                    get_distribution_classes(discrete=True) +
+                    get_distribution_classes(expectile=True) +
+                    get_distribution_classes(flow=True) +
+                    get_distribution_classes(univariate=False)
+                    )
     def dist_class(self, request):
         return XGBoostLSS(request.param())
 

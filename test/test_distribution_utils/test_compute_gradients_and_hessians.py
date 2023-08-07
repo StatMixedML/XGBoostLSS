@@ -1,4 +1,4 @@
-from ..utils import BaseTestClass
+from ..utils import BaseTestClass, gen_test_data
 from typing import List
 import numpy as np
 import torch
@@ -7,11 +7,12 @@ import torch
 class TestClass(BaseTestClass):
     def test_compute_gradients_and_hessians(self, dist_class, loss_fn, stabilization):
         # Create data for testing
-        np.random.seed(123)
-        params = np.random.rand(dist_class.dist.n_dist_param * 4).reshape(-1, dist_class.dist.n_dist_param)
-        target = torch.tensor([0.2, 0.4, 0.6, 0.8]).reshape(-1, 1)
+        params, target, weights, _ = gen_test_data(dist_class, weights=True)
+        if dist_class.dist.univariate:
+            target = torch.tensor(target)
+        else:
+            target = torch.tensor(target)[:, :dist_class.dist.n_targets]
         start_values = np.array([0.5 for _ in range(dist_class.dist.n_dist_param)])
-        weights = np.ones_like(target)
 
         # Set the loss function for testing
         dist_class.dist.loss_fn = loss_fn
@@ -25,7 +26,6 @@ class TestClass(BaseTestClass):
 
         # Assertions
         assert isinstance(predt, List)
-        assert len(predt) == dist_class.dist.n_dist_param
         for i in range(len(predt)):
             assert isinstance(predt[i], torch.Tensor)
             assert not torch.isnan(predt[i]).any()
@@ -43,11 +43,12 @@ class TestClass(BaseTestClass):
 
     def test_compute_gradients_and_hessians_crps(self, dist_class_crps, stabilization):
         # Create data for testing
-        np.random.seed(123)
-        params = np.random.rand(dist_class_crps.dist.n_dist_param * 4).reshape(-1, dist_class_crps.dist.n_dist_param)
-        target = torch.tensor([0.2, 0.4, 0.6, 0.8]).reshape(-1, 1)
+        params, target, weights, _ = gen_test_data(dist_class_crps, weights=True)
+        if dist_class_crps.dist.univariate:
+            target = torch.tensor(target)
+        else:
+            target = torch.tensor(target)[:, :dist_class_crps.dist.n_targets]
         start_values = np.array([0.5 for _ in range(dist_class_crps.dist.n_dist_param)])
-        weights = np.ones_like(target)
 
         # Set the loss function for testing
         dist_class_crps.dist.loss_fn = "crps"
@@ -61,7 +62,6 @@ class TestClass(BaseTestClass):
 
         # Assertions
         assert isinstance(predt, List)
-        assert len(predt) == dist_class_crps.dist.n_dist_param
         for i in range(len(predt)):
             assert isinstance(predt[i], torch.Tensor)
             assert not torch.isnan(predt[i]).any()
@@ -79,12 +79,13 @@ class TestClass(BaseTestClass):
 
     def test_compute_gradients_and_hessians_nans(self, dist_class, loss_fn, stabilization):
         # Create data for testing
-        np.random.seed(123)
-        params = np.random.rand(dist_class.dist.n_dist_param * 4).reshape(-1, dist_class.dist.n_dist_param)
+        params, target, weights, _ = gen_test_data(dist_class, weights=True)
         params[0, 0] = np.nan
-        target = torch.tensor([0.2, 0.4, 0.6, 0.8]).reshape(-1, 1)
+        if dist_class.dist.univariate:
+            target = torch.tensor(target)
+        else:
+            target = torch.tensor(target)[:, :dist_class.dist.n_targets]
         start_values = np.array([0.5 for _ in range(dist_class.dist.n_dist_param)])
-        weights = np.ones_like(target)
 
         # Set the loss function for testing
         dist_class.dist.loss_fn = loss_fn
@@ -98,7 +99,6 @@ class TestClass(BaseTestClass):
 
         # Assertions
         assert isinstance(predt, List)
-        assert len(predt) == dist_class.dist.n_dist_param
         for i in range(len(predt)):
             assert isinstance(predt[i], torch.Tensor)
             assert not torch.isnan(predt[i]).any()

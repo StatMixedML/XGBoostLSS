@@ -1,11 +1,11 @@
-from ..utils import BaseTestClass
+from ..utils import BaseTestClass, gen_test_data
 import numpy as np
 
 
 class TestClass(BaseTestClass):
     def test_calculate_start_values(self, dist_class, loss_fn):
         # Create data for testing
-        target = np.array([0.2, 0.4, 0.6, 0.8]).reshape(-1, 1)
+        _, target, _ = gen_test_data(dist_class)
 
         # Set the loss function for testing
         dist_class.dist.loss_fn = loss_fn
