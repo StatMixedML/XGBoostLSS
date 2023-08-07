@@ -1,6 +1,4 @@
 from ..utils import BaseTestClass
-import numpy as np
-import pandas as pd
 
 from xgboostlss.distributions import Beta, Gaussian, StudentT, Gamma, Cauchy, LogNormal, Weibull, Gumbel, Laplace
 from xgboostlss.distributions.SplineFlow import *
