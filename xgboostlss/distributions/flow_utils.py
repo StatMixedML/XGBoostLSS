@@ -113,7 +113,7 @@ class NormalizingFlowClass:
         start_values = data.get_base_margin().reshape(-1, self.n_dist_param)[0, :].tolist()
 
         # Calculate gradients and hessians
-        predt, loss = self.get_params_loss(predt, target.view(-1), start_values)
+        predt, loss = self.get_params_loss(predt, target, start_values)
         grad, hess = self.compute_gradients_and_hessians(loss, predt, weights)
 
         return grad, hess
@@ -143,7 +143,7 @@ class NormalizingFlowClass:
         start_values = data.get_base_margin().reshape(-1, self.n_dist_param)[0, :].tolist()
 
         # Calculate loss
-        _, loss = self.get_params_loss(predt, target.view(-1), start_values)
+        _, loss = self.get_params_loss(predt, target, start_values)
 
         return self.loss_fn, loss
 
@@ -230,6 +230,7 @@ class NormalizingFlowClass:
                         predt: np.ndarray,
                         target: torch.Tensor,
                         start_values: List[float],
+                        requires_grad: bool = False,
                         ) -> Tuple[List[torch.Tensor], np.ndarray]:
         """
         Function that returns the predicted parameters and the loss.
@@ -250,6 +251,9 @@ class NormalizingFlowClass:
         loss: torch.Tensor
             Loss value.
         """
+        # Reshape Target
+        target = target.view(-1)
+
         # Predicted Parameters
         predt = predt.reshape(-1, self.n_dist_param)
 

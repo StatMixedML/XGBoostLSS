@@ -241,7 +241,7 @@ class Multivariate_DistributionClass:
                         target: torch.Tensor,
                         start_values: List[float],
                         requires_grad: bool = False,
-                        ) -> Tuple[np.ndarray, np.ndarray]:
+                        ) -> Tuple[List[torch.Tensor], np.ndarray]:
         """
         Function that returns the predicted parameters and the loss.
 
@@ -323,7 +323,7 @@ class Multivariate_DistributionClass:
         for i in range(self.n_targets):
             target_df = pd.DataFrame.from_dict({"target": [f"y{i + 1}" for _ in range(dist_samples.shape[1])]})
             df_samples = pd.DataFrame(dist_samples[i, :])
-            df_samples.columns = [str("y_sample") + str(i) for i in range(n_samples)]
+            df_samples.columns = [str("y_sample") + str(i+1) for i in range(n_samples)]
             samples_list.append(pd.concat([target_df, df_samples], axis=1))
 
         samples_df = pd.concat(samples_list, axis=0).reset_index(drop=True)
