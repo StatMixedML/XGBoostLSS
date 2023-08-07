@@ -3,9 +3,6 @@ import numpy as np
 
 
 class TestClass(BaseTestClass):
-    ####################################################################################################################
-    # Univariate Distributions
-    ####################################################################################################################
     def test_objective_fn_weights(self, dist_class, loss_fn, stabilization):
         # Create data for testing
         predt, labels, weights, dmatrix = gen_test_data(dist_class, weights=True)
