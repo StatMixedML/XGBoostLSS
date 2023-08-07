@@ -1,7 +1,7 @@
 import pandas as pd
 
 from ..utils import BaseTestClass
-from xgboostlss.utils import softplus_fn
+from xgboostlss.utils import softplus_fn, softplus_fn_df
 import pytest
 import torch
 import numpy as np
@@ -57,7 +57,7 @@ class TestClass(BaseTestClass):
         if multivariate_dist.__name__ == "MVN_LoRa":
             param_dict = multivariate_dist.create_param_dict(n_targets=2, rank=1, response_fn=softplus_fn)
         if multivariate_dist.__name__ == "MVT":
-            param_dict = multivariate_dist.create_param_dict(n_targets=2, response_fn=softplus_fn, response_fn_df=softplus_fn)
+            param_dict = multivariate_dist.create_param_dict(n_targets=2, response_fn=softplus_fn, response_fn_df=softplus_fn_df)
         assert isinstance(param_dict, dict)
         assert all(callable(func) for func in param_dict.values())
 

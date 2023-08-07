@@ -6,7 +6,6 @@ import torch
 
 class TestClass(BaseTestClass):
     def test_draw_samples(self, dist_class, loss_fn):
-
         if dist_class.dist.univariate:
             # Create data for testing
             predt_params = pd.DataFrame(np.array([0.5 for _ in range(dist_class.dist.n_dist_param)], dtype="float32")).T

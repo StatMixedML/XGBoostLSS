@@ -98,6 +98,4 @@ def test_expectile_norm():
     # Assertions
     assert isinstance(out, np.ndarray)
     assert not np.isnan(out).any()
-    assert not np.isinf(out).any(
-
-    )
+    assert not np.isinf(out).any()
