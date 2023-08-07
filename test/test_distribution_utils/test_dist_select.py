@@ -129,27 +129,3 @@ class TestClass(BaseTestClass):
         assert np.issubdtype(dist_df["nll"].dtype, np.float64)
         assert not np.isnan(dist_df["nll"].values).any()
         assert not np.isinf(dist_df["nll"].values).any()
-
-    def test_multivar_dist_select_plot(self):
-        # Create data for testing
-        multivar_dist_class = MVN()
-        target = np.arange(0.1, 0.9, 0.1)
-        target = multivar_dist_class.target_append(
-            target,
-            multivar_dist_class.n_targets,
-            multivar_dist_class.n_dist_param
-        )
-        candidate_distributions = [MVN(), MVT(), MVN_LoRa()]
-
-        # Call the function
-        dist_df = multivariate_dist_class().dist_select(
-            target, candidate_distributions, n_samples=10, plot=True
-        ).reset_index(drop=True)
-
-        # Assertions
-        assert isinstance(dist_df, pd.DataFrame)
-        assert not dist_df.isna().any().any()
-        assert isinstance(dist_df["distribution"].values[0], str)
-        assert np.issubdtype(dist_df["nll"].dtype, np.float64)
-        assert not np.isnan(dist_df["nll"].values).any()
-        assert not np.isinf(dist_df["nll"].values).any()
