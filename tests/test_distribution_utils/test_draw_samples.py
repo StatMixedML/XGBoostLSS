@@ -5,13 +5,19 @@ import torch
 
 
 class TestClass(BaseTestClass):
-    def test_draw_samples(self, dist_class, loss_fn):
+    def test_draw_samples(self, dist_class):
         if dist_class.dist.univariate:
             # Create data for testing
             predt_params = pd.DataFrame(np.array([0.5 for _ in range(dist_class.dist.n_dist_param)], dtype="float32")).T
 
             # Call the function
             dist_samples = dist_class.dist.draw_samples(predt_params)
+
+            # Assertions
+            if str(dist_class.dist).split(".")[2] != "Expectile":
+                assert isinstance(dist_samples, (pd.DataFrame, type(None)))
+                assert not dist_samples.isna().any().any()
+                assert not np.isinf(dist_samples).any().any()
 
         else:
             # Create data for testing
@@ -38,4 +44,3 @@ class TestClass(BaseTestClass):
             assert isinstance(dist_samples, (pd.DataFrame, type(None)))
             assert not dist_samples.isna().any().any()
             assert not np.isinf(dist_samples.iloc[:, 1:]).any().any()
-
