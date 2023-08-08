@@ -28,6 +28,7 @@ setup(
         "scipy~=1.11.1",
         "tqdm~=4.65.0",
         "matplotlib~=3.7.2",
+        "ipython~=8.14.0",
     ],
     test_suite="tests",
     tests_require=["flake8", "pytest"],
