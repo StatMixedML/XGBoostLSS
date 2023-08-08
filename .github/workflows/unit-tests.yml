@@ -31,7 +31,6 @@ jobs:
         python -m pip install pytest-coverage
         python -m pip install .
         python -m pip install git+https://github.com/dsgibbons/shap.git
-        python -m pip install ipython
     - name: Test with pytest 
       run: |
         pytest --cov
