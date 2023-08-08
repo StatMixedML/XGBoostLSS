@@ -42,13 +42,6 @@ class XGBoostLSS:
         self.multivariate_label_expand = False
         self.multivariate_eval_label_expand = False
 
-    def __getstate__(self):
-        state = self.__dict__.copy()  # Copy the object's state
-        return state
-
-    def __setstate__(self, state):
-        self.__dict__.update(state)  # Restore the object's state
-
     def set_params_adj(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """
         Set parameters for distributional model.
