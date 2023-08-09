@@ -16,7 +16,7 @@ nav:
   - About: index.md
   - API: references.md
   - Examples:
-    - Dirichlet: examples/Dirichlet.ipynb
+    - Dirichlet Regression: examples/Dirichlet.ipynb
     - Select a univariate Distribution: examples/How To Choose A Distribution.ipynb
     - Select a multivariate Distribution: examples/How To Choose A Multivariate Distribution.ipynb
     - Multivariate Gaussian Regression (Cholesky Decomposition): examples/MVN (Cholesky).ipynb
