@@ -24,7 +24,7 @@
 # XGBoostLSS - An extension of XGBoost to probabilistic modelling and prediction
 We propose a new framework of XGBoost that predicts the entire conditional distribution of univariate and multivariate responses. In particular, **XGBoostLSS** models all moments of a parametric distribution, i.e., mean, location, scale and shape (LSS), instead of the conditional mean only. Choosing from a wide range of continuous, discrete, and mixed discrete-continuous distributions, modelling and predicting the entire conditional distribution greatly enhances the flexibility of XGBoost, as it allows to create probabilistic forecasts from which prediction intervals and quantiles of interest can be derived.
 
-## Features
+## `Features`
 :white_check_mark: Estimation of all distributional parameters. <br/>
 :white_check_mark: Multi-target regression allows modelling of multivariate responses and their dependencies. <br/>
 :white_check_mark: Normalizing Flows allow modelling of complex and multi-modal distributions. <br/>
@@ -35,7 +35,7 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 :white_check_mark: XGBoostLSS provides full compatibility with all the features and functionality of XGBoost. <br/>
 :white_check_mark: XGBoostLSS is available in Python. <br/>
 
-## News
+## `News`
 :boom: [2023-07-19] Release of v0.3.0 introduces Normalizing Flows. See the [release notes](https://github.com/StatMixedML/XGBoostLSS/releases) for an overview. <br/>
 :boom: [2023-06-22] Release of v0.2.2. See the [release notes](https://github.com/StatMixedML/XGBoostLSS/releases) for an overview. <br/>
 :boom: [2023-06-21] XGBoostLSS now supports multi-target regression. <br/>
@@ -48,7 +48,7 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 :boom: [2021-12-02] XGBoostLSS now supports pruning during hyperparameter optimization. <br/>
 :boom: [2021-11-14] XGBoostLSS v0.1.0 is released!
 
-## Installation
+## `Installation`
 To install XGBoostLSS, please first run
 ```python
 pip install git+https://github.com/StatMixedML/XGBoostLSS.git
@@ -58,10 +58,10 @@ Then, to install the shap-dependency, run
 pip install git+https://github.com/dsgibbons/shap.git
 ```
 
-## How to use
+## `How to use`
 We refer to the [example section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for example notebooks.
 
-## Available Distributions
+## `Available Distributions`
 XGBoostLSS currently supports the following distributions.
 
 | Distribution                                                                                                                         |   Usage                   |Type                                        | Support                         | Number of Parameters            |
@@ -90,7 +90,7 @@ XGBoostLSS currently supports the following distributions.
 | [Zero-Inflated Poisson](https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py#L121)                          | `ZIPoisson()`             | Discrete-Count <br /> (Univariate)         | $y \in [0, 1, 2, 3, \ldots)$    | 2                               |
 
 
-## Some Notes
+## `Some Notes`
 > ### Stabilization
 Since XGBoostLSS updates the parameter estimates by optimizing Gradients and Hessians, it is important that these are comparable in magnitude for all distributional parameters. Due to variability regarding the ranges, the estimation of Gradients and Hessians might become unstable so that XGBoostLSS might not converge or might converge very slowly. To mitigate these effects, we have implemented a stabilization of Gradients and Hessians. 
 
@@ -99,10 +99,10 @@ For improved convergence, an alternative approach is to standardize the (continu
 > ### Runtime
 Since XGBoostLSS is based on a *one vs. all estimation strategy*, where a separate tree is grown for each distributional parameter, it requires training ```[number of iterations] * [number of distributional parameters]``` trees. Hence, the runtime of XGBoostLSS is generally slightly higher for univariate distributions as compared to XGBoost, which requires training ```[number of iterations]``` trees only. Moreover, for a dataset with multivariate targets, estimation can become computationally expensive.
 
-## Feedback
+## `Feedback`
 We encourage you to provide feedback on how to enhance XGBoostLSS or request the implementation of additional distributions by opening a new discussion.
 
-## Reference Paper
+## `Reference Paper`
 
 März, Alexander (2022): [*Multi-Target XGBoostLSS Regression*](https://arxiv.org/abs/2210.06831). <br/>
 März, A. and Kneib, T.: (2022) [*Distributional Gradient Boosting Machines*](https://arxiv.org/abs/2204.00778). <br/>
