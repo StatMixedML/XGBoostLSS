@@ -10,7 +10,7 @@ setup(
     author_email="alex.maerz@gmx.net",
     url="https://github.com/StatMixedML/XGBoostLSS",
     license="Apache License 2.0",
-    packages=find_packages(exclude=["tests"]),
+    packages=find_packages(exclude=["docs", "tests*"]),
     include_package_data=True,
     package_data={'': ['datasets/*.csv']},
     zip_safe=True,
@@ -30,6 +30,9 @@ setup(
         "matplotlib~=3.7.2",
         "ipython~=8.14.0",
     ],
+    extras_require={
+        "docs": ["mkdocs", "mkdocstrings[python]", "mkdocs-jupyter"]
+    },
     test_suite="tests",
     tests_require=["flake8", "pytest"],
 )
