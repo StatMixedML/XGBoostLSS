@@ -659,7 +659,7 @@ class NormalizingFlowClass:
                 flow_name = str(flow.__class__).split(".")[-1].split("'>")[0]
                 flow_spec = f"(count_bins: {flow.count_bins}, order: {flow.order})"
                 flow_name = flow_name + flow_spec
-                pbar.set_description(f"Fitting {flow_name} Normalizing Flow")
+                pbar.set_description(f"Fitting {flow_name}")
                 flow_sel = flow
                 try:
                     loss, params = flow_sel.calculate_start_values(target=target, max_iter=max_iter)
