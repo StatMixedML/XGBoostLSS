@@ -28,7 +28,6 @@ nav:
     - Gamma Regression (Boston Housing Data): examples/boston_housing_example_Gamma.ipynb
     - Expectile Regression: examples/simulation_example_Expectile.ipynb
     - Gaussian Regression: examples/simulation_example_Gaussian.ipynb
-    - Gaussian Regression: examples/simulation_example_Gaussian.ipynb
     - Negative Binomial Regression: examples/simulation_example_NegativeBinomial.ipynb
     - Poisson Regression: examples/simulation_example_Poisson.ipynb
     - Spline Flow Regression: examples/simulation_example_SplineFlow.ipynb
