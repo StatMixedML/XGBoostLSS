@@ -1,0 +1,35 @@
+site_name: XGBoostLSS - An extension of XGBoost to probabilistic modelling and prediction
+site_url: https://github.com/StatMixedML/XGBoostLSS
+
+
+plugins:
+  - search
+  - autorefs
+  - mkdocs-jupyter
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_submodules: true
+
+nav:
+  - About: index.md
+  - API: references.md
+  - Examples:
+    - Dirichlet: examples/Dirichlet.ipynb
+    - Select a univariate Distribution: examples/How To Choose A Distribution.ipynb
+    - Select a multivariate Distribution: examples/How To Choose A Multivariate Distribution.ipynb
+    - Multivariate Gaussian Regression (Cholesky Decomposition): examples/MVN (Cholesky).ipynb
+    - Multivariate Gaussian Regression (Low-Rank Approximation): examples/MVN (Low-Rank).ipynb
+    - Multivariate Student-T Regression (Cholesky Decomposition): examples/MVT (Cholesky).ipynb
+    - Zero-Adjusted Gamma Regression: examples/ZAGamma_simulation_example.ipynb
+    - Zero-Inflated Negative Binomial Regression: examples/ZINB_example.ipynb
+    - Zero-Inflated Poisson Regression: examples/ZIPoisson_example.ipynb
+    - Gamma Regression (Boston Housing Data): examples/boston_housing_example_Gamma.ipynb
+    - Expectile Regression: examples/simulation_example_Expectile.ipynb
+    - Gaussian Regression: examples/simulation_example_Gaussian.ipynb
+    - Gaussian Regression: examples/simulation_example_Gaussian.ipynb
+    - Negative Binomial Regression: examples/simulation_example_NegativeBinomial.ipynb
+    - Poisson Regression: examples/simulation_example_Poisson.ipynb
+    - Spline Flow Regression: examples/simulation_example_SplineFlow.ipynb
+    - Student-T Regression: examples/simulation_example_StudentT.ipynb
