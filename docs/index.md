@@ -1,26 +1,3 @@
-<h4 align="center">
-
-![Python Version](https://img.shields.io/badge/python-3.9%20|%203.10-lightblue.svg)
-![GitHub Release (with filter)](https://img.shields.io/github/v/release/StatMixedML/XGBoostLSS?color=lightblue&label=release)
-[![Github License](https://img.shields.io/badge/license-Apache%202.0-lightblue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Documentation](https://github.com/StatMixedML/XGBoostLSS/actions/workflows/mkdocs.yaml/badge.svg)](https://StatMixedML.github.io/XGBoostLSS/)
-<img src="https://github.com/StatMixedML/XGBoostLSS/workflows/unit-tests/badge.svg" alt="Unit test status badge">
-<img src="https://codecov.io/gh/StatMixedML/XGBoostLSS/branch/master/graph/badge.svg" alt="Code coverage status badge">
-
-<!---
-![Build Status](https://github.com/StatMixedML/XGBoostLSS/workflows/build%20status/badge.svg)
-![GitHub repo size](https://img.shields.io/github/repo-size/StatMixedML/XGBoostLSS?label=repo%20size&color=lightblue)
-![Code Coverage](https://raw.githubusercontent.com/StatMixedML/XGBoostLSS/coverage-badge/coverage.svg?raw=true)
-![GitHub all releases](https://img.shields.io/github/downloads/StatMixedML/XGBoostLSS/total?color=lightblue)
-[![HitCount](https://img.shields.io/endpoint?url=https%3A%2F%2Fhits.dwyl.com%2FStatMixedML%2FXGBoostLSS.json%3Fcolor%3Dgreen)](http://hits.dwyl.com/StatMixedML/XGBoostLSS)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
--->
-
-</h4>
-
-#
-<img align="right" width="156.5223" height="181.3" src="../master/figures/XGBoostLSS_inv.png">
-
 # XGBoostLSS - An extension of XGBoost to probabilistic modelling and prediction
 We propose a new framework of XGBoost that predicts the entire conditional distribution of univariate and multivariate responses. In particular, **XGBoostLSS** models all moments of a parametric distribution, i.e., mean, location, scale and shape (LSS), instead of the conditional mean only. Choosing from a wide range of continuous, discrete, and mixed discrete-continuous distributions, modelling and predicting the entire conditional distribution greatly enhances the flexibility of XGBoost, as it allows to create probabilistic forecasts from which prediction intervals and quantiles of interest can be derived.
 
