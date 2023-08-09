@@ -4,7 +4,7 @@
 We propose a new framework of XGBoost that predicts the entire conditional distribution of univariate and multivariate responses. In particular, **XGBoostLSS** models all moments of a parametric distribution, i.e., mean, location, scale and shape (LSS), instead of the conditional mean only. Choosing from a wide range of continuous, discrete, and mixed discrete-continuous distributions, modelling and predicting the entire conditional distribution greatly enhances the flexibility of XGBoost, as it allows to create probabilistic forecasts from which prediction intervals and quantiles of interest can be derived.
 
 ## `Features`
-<span class="custom-icon">:white_check_mark:</span> Estimation of all distributional parameters. <br/>
+<span style="font-size: 16px;">:white_check_mark:</span> Estimation of all distributional parameters. <br/>
 :white_check_mark: Multi-target regression allows modelling of multivariate responses and their dependencies. <br/>
 :white_check_mark: Normalizing Flows allow modelling of complex and multi-modal distributions. <br/>
 :white_check_mark: Zero-Adjusted and Zero-Inflated Distributions for modelling excess of zeros in the data. <br/>
