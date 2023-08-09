@@ -27,7 +27,7 @@ plugins:
             show_submodules: true
 
 nav:
-  - About: index.md
+  - About: ../README.md
   - API: references.md
   - Examples:
     - Dirichlet Regression: examples/Dirichlet.ipynb
