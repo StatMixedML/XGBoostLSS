@@ -5,12 +5,10 @@ markdown_extensions:
   - pymdownx.arithmatex:
       generic: true
   - attr_list
+  - md_in_html
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
-      aliases:
-        - ":white_check_mark:"
-
 
 extra_javascript:
   - javascripts/mathjax.js
