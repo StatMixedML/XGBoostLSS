@@ -59,7 +59,7 @@ pip install git+https://github.com/dsgibbons/shap.git
 ```
 
 ## `How to use`
-We refer to the [example section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for example notebooks.
+We refer to the [example section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for example notebooks. A more detailed [documentation](https://statmixedml.github.io/XGBoostLSS/) is available as well.
 
 ## `Available Distributions`
 XGBoostLSS currently supports the following distributions.
