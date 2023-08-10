@@ -35,7 +35,7 @@ nav:
     - Dirichlet Regression: examples/Dirichlet.ipynb
     - Select a Univariate Distribution: examples/How To Choose A Distribution.ipynb
     - Select a Multivariate Distribution: examples/How To Choose A Multivariate Distribution.ipynb
-    - Multivariate Gaussian Regression (Cholesky Decomposition): examples/MVN(Cholesky).ipynb
+    - Multivariate Gaussian Regression (Cholesky Decomposition): examples/MVN_Cholesky.ipynb
     - Multivariate Gaussian Regression (Low-Rank Approximation): examples/MVN (Low-Rank).ipynb
     - Multivariate Student-T Regression (Cholesky Decomposition): examples/MVT (Cholesky).ipynb
     - Zero-Adjusted Gamma Regression: examples/ZAGamma_simulation_example.ipynb
