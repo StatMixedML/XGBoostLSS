@@ -59,6 +59,14 @@ with the variances on the diagonal and the covariances on the off-diagonal, for 
 
 ## Normalizing Flows
 
+<center>
+<img src="https://tikz.net/janosh/normalizing-flow.png" width=300 height=80/>
+</center>
+
+<span style="text-align: right;">
+<h6 style="font-size: 6px;">Image source: https://tikz.net/janosh/normalizing-flow.png</h6>
+</span>
+
 Although the GAMLSS framework offers considerable flexibility, parametric distributions may prove not flexible enough to provide a reasonable approximation for certain dataset, e.g., for multi-modal distributions. For such cases, it is preferable to relax the assumption of a parametric distribution and approximate the data non-parametrically. While there are several alternatives for learning conditional distributions, we propose to use Normalizing Flows for their ability to fit complex distributions with only a few parameters. 
 
 The principle that underlies Normalizing Flows is to turn a simple base distribution, e.g., $F_{Z}(\mathbf{z}) = N(0,1)$, into a more complex and realistic distribution of the target variable $F_{Y}(\mathbf{y})$ by applying several bijective transformations $h_{j}$, $j = 1, \ldots, J$ to the variable of the base distribution 
