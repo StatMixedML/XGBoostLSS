@@ -16,7 +16,7 @@ In its original formulation, GAMLSS assume a univariate response to follow a dis
 
 From a frequentist point of view, distributional modelling can be formulated as follows
 
-$
+\begin{equation}
 y_{i} \stackrel{ind}{\sim} \mathcal{D}
   \begin{pmatrix}
     h_{1}(\theta_{i1}) = \eta_{i1} \\
@@ -24,7 +24,7 @@ y_{i} \stackrel{ind}{\sim} \mathcal{D}
 	\vdots \\                        
 	h_{K}(\theta_{iK}) = \eta_{iK} 
 \end{pmatrix}
-$
+\end{equation}
 
 for $i = 1, \ldots, n$, where $\mathcal{D}$ denotes a parametric distribution for the response $\textbf{y} = (y_{1}, \ldots, y_{n})^{\prime}$ that depends on $K$ distributional parameters $\theta_{k}$, $k = 1, \ldots, K$, and with $h_{k}(\cdot)$ denoting a known function relating distributional parameters to predictors $\eta_{k}$. In its most generic form, the predictor $\eta_{k}$ is given by
 
