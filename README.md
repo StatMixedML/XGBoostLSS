@@ -3,11 +3,12 @@
 ![Python Version](https://img.shields.io/badge/python-3.9%20|%203.10-lightblue.svg)
 ![GitHub Release (with filter)](https://img.shields.io/github/v/release/StatMixedML/XGBoostLSS?color=lightblue&label=release)
 [![Github License](https://img.shields.io/badge/license-Apache%202.0-lightblue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Documentation](https://github.com/StatMixedML/XGBoostLSS/actions/workflows/mkdocs.yaml/badge.svg)](https://StatMixedML.github.io/XGBoostLSS/)
+<img src="https://github.com/StatMixedML/XGBoostLSS/actions/workflows/mkdocs.yaml/badge.svg" alt="Documentation status badge">
 <img src="https://github.com/StatMixedML/XGBoostLSS/workflows/unit-tests/badge.svg" alt="Unit test status badge">
 <img src="https://codecov.io/gh/StatMixedML/XGBoostLSS/branch/master/graph/badge.svg" alt="Code coverage status badge">
 
 <!---
+[![Documentation](https://github.com/StatMixedML/XGBoostLSS/actions/workflows/mkdocs.yaml/badge.svg)](https://StatMixedML.github.io/XGBoostLSS/)
 ![Build Status](https://github.com/StatMixedML/XGBoostLSS/workflows/build%20status/badge.svg)
 ![GitHub repo size](https://img.shields.io/github/repo-size/StatMixedML/XGBoostLSS?label=repo%20size&color=lightblue)
 ![Code Coverage](https://raw.githubusercontent.com/StatMixedML/XGBoostLSS/coverage-badge/coverage.svg?raw=true)
