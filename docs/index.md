@@ -1,7 +1,7 @@
 <img align="right" width="156.5223" height="181.3" src="XGBoostLSS_inv.png">
 
 # XGBoostLSS - An extension of XGBoost to probabilistic modelling and prediction
-We propose a new framework of XGBoost that predicts the entire conditional distribution of univariate and multivariate responses. In particular, **XGBoostLSS** models all moments of a parametric distribution, i.e., mean, location, scale and shape (LSS), instead of the conditional mean only. Choosing from a wide range of continuous, discrete, and mixed discrete-continuous distributions, modelling and predicting the entire conditional distribution greatly enhances the flexibility of XGBoost, as it allows to create probabilistic forecasts from which prediction intervals and quantiles of interest can be derived.
+We propose a new framework of XGBoost that predicts the entire conditional distribution of univariate and multivariate responses. In particular, XGBoostLSS models all moments of a parametric distribution, i.e., mean, location, scale and shape (LSS), instead of the conditional mean only. Choosing from a wide range of continuous, discrete, and mixed discrete-continuous distributions, modelling and predicting the entire conditional distribution greatly enhances the flexibility of XGBoost, as it allows to create probabilistic forecasts from which prediction intervals and quantiles of interest can be derived.
 
 ## Features
 - Estimation of all distributional parameters. <br/>
