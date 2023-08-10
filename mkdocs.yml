@@ -19,7 +19,8 @@ extra_javascript:
 plugins:
   - search
   - autorefs
-  - mkdocs-jupyter
+  - mkdocs-jupyter:
+      include_source: True
   - mkdocstrings:
       handlers:
         python:
@@ -27,7 +28,7 @@ plugins:
             show_submodules: true
 
 nav:
-  - Overview: index.md
+  - Home: index.md
   - Distributional Modelling: dgbm.md
   - Available Distributions: distributions.md
   - Examples:
