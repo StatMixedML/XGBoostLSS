@@ -63,7 +63,7 @@ pip install git+https://github.com/dsgibbons/shap.git
 ```
 
 ## `How to use`
-Please visit the [example section](https://statmixedml.github.io/XGBoostLSS/examples/MVN%20%28Cholesky%29/) for guidance on how to use the framework.
+Please visit the [example section](https://statmixedml.github.io/XGBoostLSS/examples/Gaussian_Regression/) for guidance on how to use the framework.
 
 ## `Documentation`
 For more comprehensive information and context, please visit the [documentation](https://statmixedml.github.io/XGBoostLSS/).
