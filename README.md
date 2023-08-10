@@ -50,7 +50,7 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 :boom: [2021-11-14] XGBoostLSS v0.1.0 is released!
 
 ## `Available Distributions`
-Our framework is built upon PyTorch and Pyro, enabling users to harness a diverse set of distributional families. XGBoostLSS currently suppoerts the [following distributions](https://statmixedml.github.io/XGBoostLSS/distributions/). 
+Our framework is built upon PyTorch and Pyro, enabling users to harness a diverse set of distributional families. XGBoostLSS currently supports the [following distributions](https://statmixedml.github.io/XGBoostLSS/distributions/). 
 
 ## `Installation`
 To install XGBoostLSS, please first run
