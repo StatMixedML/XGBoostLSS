@@ -49,9 +49,6 @@ We introduce a comprehensive framework that models and predicts the full conditi
 :boom: [2021-12-02] XGBoostLSS now supports pruning during hyperparameter optimization. <br/>
 :boom: [2021-11-14] XGBoostLSS v0.1.0 is released!
 
-## `Available Distributions`
-Our framework is built upon PyTorch and Pyro, enabling users to harness a diverse set of distributional families. XGBoostLSS currently supports the [following distributions](https://statmixedml.github.io/XGBoostLSS/distributions/). 
-
 ## `Installation`
 To install XGBoostLSS, please first run
 ```python
@@ -61,6 +58,9 @@ Then, to install the shap-dependency, run
 ```python
 pip install git+https://github.com/dsgibbons/shap.git
 ```
+
+## `Available Distributions`
+Our framework is built upon PyTorch and Pyro, enabling users to harness a diverse set of distributional families. XGBoostLSS currently supports the [following distributions](https://statmixedml.github.io/XGBoostLSS/distributions/). 
 
 ## `How to use`
 Please visit the [example section](https://statmixedml.github.io/XGBoostLSS/examples/Gaussian_Regression/) for guidance on how to use the framework.
