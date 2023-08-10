@@ -28,8 +28,8 @@ plugins:
 
 nav:
   - About: index.md
-  - Distributional Modelling - A primer: dgbm.md
-  - Distributions: distributions.md
+  - Distributional Modelling: dgbm.md
+  - Available Distributions: distributions.md
   - Examples:
     - Dirichlet Regression: examples/Dirichlet.ipynb
     - Select a Univariate Distribution: examples/How To Choose A Distribution.ipynb

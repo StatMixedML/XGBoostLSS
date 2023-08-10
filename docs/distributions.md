@@ -1,3 +1,4 @@
+# Available Distributions
 XGBoostLSS is built upon PyTorch and Pyro, enabling users to harness a diverse set of distributional families and to leverage automatic differentiation capabilities. This greatly expands the options for probabilistic modeling and uncertainty estimation and allows users to tackle complex regression tasks.  XGBoostLSS currently supports the following distributions.
 
 | Distribution                                                                                                                         |   Usage                   |Type                                        | Support                         | Number of Parameters            |
