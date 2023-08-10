@@ -59,14 +59,14 @@ Then, to install the shap-dependency, run
 pip install git+https://github.com/dsgibbons/shap.git
 ```
 
+## `Available Distributions`
+Our framework is built upon PyTorch and Pyro, enabling users to harness a diverse set of distributional families. XGBoostLSS currently suppoerts the [following distributions](https://statmixedml.github.io/XGBoostLSS/distributions/). 
+
 ## `How to use`
 We refer to the [example section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for example notebooks. 
 
 ## `Documentation`
 Please visit the [documentation](https://statmixedml.github.io/XGBoostLSS/) for additional information.
-
-## `Available Distributions`
-Our framework is built upon PyTorch and Pyro, enabling users to harness a diverse set of distributional families. XGBoostLSS currently suppoerts the [following distributions](https://statmixedml.github.io/XGBoostLSS/distributions/). 
 
 ## `Some Notes`
 > ### Stabilization
