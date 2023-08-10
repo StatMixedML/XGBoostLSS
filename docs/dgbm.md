@@ -1,3 +1,7 @@
+> *''Practitioners expect forecasting to reduce future uncertainty by providing accurate predictions like those in hard sciences. However, this is a great misconception. A major purpose of forecasting is not to reduce uncertainty but reveal its full extent and implications by estimating it as precisely as possible. [$\ldots$] The challenge for the forecasting field is how to persuade practitioners of the reality that all forecasts are uncertain and that this uncertainty cannot be ignored, as doing so could lead to catastrophic consequences.''*
+
+Makridakis (2022b)
+
 # Introduction
 
 The development of modelling approaches that approximate and describe the data generating processes underlying the observed data in as much detail as possible is a guiding principle in both statistics and machine learning. We therefore strongly agree with the statement of Hothorn et al. (2014) that *''the ultimate goal of any regression analysis is to obtain information about the entire conditional distribution $F_{Y}(y|\mathbf{x})$ of a response given a set of explanatory variables''*. 
