@@ -49,6 +49,9 @@ We propose a new framework of XGBoost that predicts the entire conditional distr
 :boom: [2021-12-02] XGBoostLSS now supports pruning during hyperparameter optimization. <br/>
 :boom: [2021-11-14] XGBoostLSS v0.1.0 is released!
 
+## `Available Distributions`
+Our framework is built upon PyTorch and Pyro, enabling users to harness a diverse set of distributional families. XGBoostLSS currently suppoerts the [following distributions](https://statmixedml.github.io/XGBoostLSS/distributions/). 
+
 ## `Installation`
 To install XGBoostLSS, please first run
 ```python
@@ -59,35 +62,22 @@ Then, to install the shap-dependency, run
 pip install git+https://github.com/dsgibbons/shap.git
 ```
 
-## `Available Distributions`
-Our framework is built upon PyTorch and Pyro, enabling users to harness a diverse set of distributional families. XGBoostLSS currently suppoerts the [following distributions](https://statmixedml.github.io/XGBoostLSS/distributions/). 
-
 ## `How to use`
 We refer to the [example section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for example notebooks. 
 
 ## `Documentation`
 Please visit the [documentation](https://statmixedml.github.io/XGBoostLSS/) for additional information.
 
-## `Some Notes`
-> ### Stabilization
-Since XGBoostLSS updates the parameter estimates by optimizing Gradients and Hessians, it is important that these are comparable in magnitude for all distributional parameters. Due to variability regarding the ranges, the estimation of Gradients and Hessians might become unstable so that XGBoostLSS might not converge or might converge very slowly. To mitigate these effects, we have implemented a stabilization of Gradients and Hessians. 
-
-For improved convergence, an alternative approach is to standardize the (continuous) response variable, such as dividing it by 100 (e.g., y/100). This approach proves especially valuable when the response range significantly differs from that of Gradients and Hessians. Nevertheless, it is essential to carefully evaluate and apply both the built-in stabilization and response standardization techniques in consideration of the specific dataset at hand.
-
-> ### Runtime
-Since XGBoostLSS is based on a *one vs. all estimation strategy*, where a separate tree is grown for each distributional parameter, it requires training ```[number of iterations] * [number of distributional parameters]``` trees. Hence, the runtime of XGBoostLSS is generally slightly higher for univariate distributions as compared to XGBoost, which requires training ```[number of iterations]``` trees only. Moreover, for a dataset with multivariate targets, estimation can become computationally expensive.
-
 ## `Feedback`
 We encourage you to provide feedback on how to enhance XGBoostLSS or request the implementation of additional distributions by opening a new discussion.
 
 ## `Reference Paper`
-
-März, Alexander (2022): [*Multi-Target XGBoostLSS Regression*](https://arxiv.org/abs/2210.06831). <br/>
-März, A. and Kneib, T.: (2022) [*Distributional Gradient Boosting Machines*](https://arxiv.org/abs/2204.00778). <br/>
-März, Alexander (2019): [*XGBoostLSS - An extension of XGBoost to probabilistic forecasting*](https://arxiv.org/abs/1907.03178). 
-
-<!---
 [![Arxiv link](https://img.shields.io/badge/arXiv-Multi%20Target%20XGBoostLSS%20Regression-color=brightgreen)](https://arxiv.org/abs/2210.06831) <br/>
 [![Arxiv link](https://img.shields.io/badge/arXiv-Distributional%20Gradient%20Boosting%20Machines-color=brightgreen)](https://arxiv.org/abs/2204.00778) <br/>
 [![Arxiv link](https://img.shields.io/badge/arXiv-XGBoostLSS%3A%20An%20extension%20of%20XGBoost%20to%20probabilistic%20forecasting-color=brightgreen)](https://arxiv.org/abs/1907.03178) <br/>
+
+<!---
+März, Alexander (2022): [*Multi-Target XGBoostLSS Regression*](https://arxiv.org/abs/2210.06831). <br/>
+März, A. and Kneib, T.: (2022) [*Distributional Gradient Boosting Machines*](https://arxiv.org/abs/2204.00778). <br/>
+März, Alexander (2019): [*XGBoostLSS - An extension of XGBoost to probabilistic forecasting*](https://arxiv.org/abs/1907.03178). 
 --->
