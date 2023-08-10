@@ -59,14 +59,6 @@ with the variances on the diagonal and the covariances on the off-diagonal, for 
 
 ## Normalizing Flows
 
-<center>
-<img src="https://tikz.net/janosh/normalizing-flow.png" width=400 height=120/>
-</center>
-
-<span style="text-align: right;">
-<h6 style="font-size: 6px;">Image source: https://tikz.net/janosh/normalizing-flow.png</h6>
-</span>
-
 Although the GAMLSS framework offers considerable flexibility, parametric distributions may prove not flexible enough to provide a reasonable approximation for certain dataset, e.g., for multi-modal distributions. For such cases, it is preferable to relax the assumption of a parametric distribution and approximate the data non-parametrically. While there are several alternatives for learning conditional distributions, we propose to use Normalizing Flows for their ability to fit complex distributions with only a few parameters. 
 
 The principle that underlies Normalizing Flows is to turn a simple base distribution, e.g., $F_{Z}(\mathbf{z}) = N(0,1)$, into a more complex and realistic distribution of the target variable $F_{Y}(\mathbf{y})$ by applying several bijective transformations $h_{j}$, $j = 1, \ldots, J$ to the variable of the base distribution 
@@ -80,7 +72,17 @@ Based on the complete transformation function $h=h_{J}\circ\ldots\circ h_{1}$, t
 \begin{equation}
 	f_{Y}(\mathbf{y}) = f_{Z}\big(h(\mathbf{y})\big) \cdot \Bigg|\frac{\partial h(\mathbf{y})}{\partial \mathbf{y}}\Bigg| \end{equation}
 
-where scaling with the Jacobian determinant $|h^{\prime}(\mathbf{y})| = |\partial h(\mathbf{y}) / \partial \mathbf{y}|$ ensures $f_{Y}(\mathbf{y})$ to be a proper density integrating to one. The composition of these transformations is invertible, allowing one to sample from the complex distribution by transforming samples from the base distribution. Our Normalizing Flow approach is based on element-wise rational splines of linear or quadratic order as introduced by Durkan (2019) and Dolatabadi (2020) and implemented in Pyro, since they offer a combination of functional flexibility and numerical stability. Despite this specific choice, our framework is generic enough to accommodate the use of other parametrizable Normalizing Flows.
+where scaling with the Jacobian determinant $|h^{\prime}(\mathbf{y})| = |\partial h(\mathbf{y}) / \partial \mathbf{y}|$ ensures $f_{Y}(\mathbf{y})$ to be a proper density integrating to one. The composition of these transformations is invertible, allowing one to sample from the complex distribution by transforming samples from the base distribution. 
+
+<center>
+<img src="https://tikz.net/janosh/normalizing-flow.png" width=400 height=120/>
+</center>
+
+<span style="text-align: right;">
+<h6 style="font-size: 6px;">Image source: https://tikz.net/janosh/normalizing-flow.png</h6>
+</span>
+
+Our Normalizing Flow approach is based on element-wise rational splines of linear or quadratic order as introduced by Durkan (2019) and Dolatabadi (2020) and implemented in Pyro, since they offer a combination of functional flexibility and numerical stability. Despite this specific choice, our framework is generic enough to accommodate the use of other parametrizable Normalizing Flows.
 
 ## Gradient Boosting Machines for Location, Scale and Shape
 
