@@ -63,13 +63,13 @@ pip install git+https://github.com/dsgibbons/shap.git
 ```
 
 ## `How to use`
-We refer to the [example section](https://github.com/StatMixedML/XGBoostLSS/tree/master/examples) for example notebooks. 
+Please visit the [example section](https://statmixedml.github.io/XGBoostLSS/examples) for guidance on how to use the framework.
 
 ## `Documentation`
-Please visit the [documentation](https://statmixedml.github.io/XGBoostLSS/) for additional information.
+For more comprehensive information and context, please visit the [documentation](https://statmixedml.github.io/XGBoostLSS/).
 
 ## `Feedback`
-We encourage you to provide feedback on how to enhance XGBoostLSS or request the implementation of additional distributions by opening a new discussion.
+We encourage you to provide feedback on how to enhance XGBoostLSS or request the implementation of additional distributions by opening a [new discussion](https://github.com/StatMixedML/XGBoostLSS/discussions).
 
 ## `Reference Paper`
 [![Arxiv link](https://img.shields.io/badge/arXiv-Multi%20Target%20XGBoostLSS%20Regression-color=brightgreen)](https://arxiv.org/abs/2210.06831) <br/>
