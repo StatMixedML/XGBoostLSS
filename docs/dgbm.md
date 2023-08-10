@@ -57,7 +57,7 @@ where $\mu_{\mathbf{x}} \in \mathbb{R}^{D}$ represents a vector of conditional m
 
 with the variances on the diagonal and the covariances on the off-diagonal, for $ i=1, \ldots, N $. Other examples include the Cholesky Decomposition or a Low-Rank Covariance approximation of the covariance matrix. For additional details and available distributions, see März (2022a).
 
-### Normalizing Flows
+## Normalizing Flows
 
 Although the GAMLSS framework offers considerable flexibility, parametric distributions may prove not flexible enough to provide a reasonable approximation for certain dataset, e.g., for multi-modal distributions. For such cases, it is preferable to relax the assumption of a parametric distribution and approximate the data non-parametrically. While there are several alternatives for learning conditional distributions, we propose to use Normalizing Flows for their ability to fit complex distributions with only a few parameters. 
 
