@@ -80,7 +80,7 @@ We draw inspiration from GAMLSS and label our model as XGBoost for Location, Sca
 
 # References
 
-- Hadi Mohaghegh Dolatabadi, Sarah Erfani, and Christopher Leckie. Invertible Generative Modeling using Linear Rational Splines. In The 23rd International Conference on Artiﬁcial Intelligence and Statistics (AISTATS), 4236–4246, 2020.
+- Hadi Mohaghegh Dolatabadi, Sarah Erfani, and Christopher Leckie. Invertible Generative Modeling using Linear Rational Splines. In The 23rd International Conference on Artificial Intelligence and Statistics (AISTATS), 4236–4246, 2020.
 - Conor Durkan, Artur Bekasov, Iain Murray, and George Papamakarios. Neural Spline Flows. In Proceedings of the 33rd International Conference on Neural Information Processing Systems. 2019.
 - Nadja Klein, Thomas Kneib, Stephan Klasen, and Stefan Lang. Bayesian structured additive distributional regression for multivariate responses. Journal of the Royal Statistical Society: Series C (Applied Statistics), 64(4):569–591, 2015a. 
 - Nadja Klein, Thomas Kneib, and Stefan Lang. Bayesian Generalized Additive Models for Location, Scale, and Shape for Zero-Inflated and Overdispersed Count Data. Journal of the American Statistical Association, 110(509):405–419, 2015b.
