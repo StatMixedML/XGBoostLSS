@@ -32,8 +32,8 @@ nav:
   - Distributional Modelling: dgbm.md
   - Available Distributions: distributions.md
   - Examples:
+    - Basic Walkthrough - Gaussian Regression: examples/Gaussian_Regression.ipynb
     - Gamma Regression (Boston Housing Data): examples/Gamma_Regression_BostonHousing.ipynb
-    - Gaussian Regression: examples/Gaussian_Regression.ipynb
     - Dirichlet Regression: examples/Dirichlet_Regression.ipynb
     - Expectile Regression: examples/Expectile_Regression.ipynb
     - How to Select a Univariate Distribution: examples/How_To_Select_A_Univariate_Distribution.ipynb
