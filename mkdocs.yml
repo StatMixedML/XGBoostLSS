@@ -27,7 +27,7 @@ plugins:
             show_submodules: true
 
 nav:
-  - About: index.md
+  - Overview: index.md
   - Distributional Modelling: dgbm.md
   - Available Distributions: distributions.md
   - Examples:
