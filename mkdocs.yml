@@ -32,15 +32,15 @@ nav:
   - Distributional Modelling: dgbm.md
   - Available Distributions: distributions.md
   - Examples:
+    - Gamma Regression (Boston Housing Data): examples/Gamma_Regression_BostonHousing.ipynb
+    - Gaussian Regression: examples/Gaussian_Regression.ipynb
     - Dirichlet Regression: examples/Dirichlet_Regression.ipynb
+    - Expectile Regression: examples/Expectile_Regression.ipynb
     - How to Select a Univariate Distribution: examples/How_To_Select_A_Univariate_Distribution.ipynb
     - How to Select a Multivariate Distribution: examples/How_To_Select_A_Multivariate_Distribution.ipynb
     - Multivariate Gaussian Regression (Cholesky Decomposition): examples/MVN_Cholesky.ipynb
     - Multivariate Gaussian Regression (Low-Rank Approximation): examples/MVN_LowRank.ipynb
     - Multivariate Student-T Regression (Cholesky Decomposition): examples/MVT_Cholesky.ipynb
-    - Zero-Adjusted Gamma Regression: examples/ZAGamma_Regression.ipynb
-    - Gamma Regression (Boston Housing Data): examples/Gamma_Regression_BostonHousing.ipynb
-    - Expectile Regression: examples/Expectile_Regression.ipynb
-    - Gaussian Regression: examples/Gaussian_Regression.ipynb
     - Spline Flow Regression: examples/SplineFlow_Regression.ipynb
+    - Zero-Adjusted Gamma Regression: examples/ZAGamma_Regression.ipynb
   - API Docs: api.md

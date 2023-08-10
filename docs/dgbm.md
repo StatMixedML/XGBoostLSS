@@ -60,7 +60,7 @@ with the variances on the diagonal and the covariances on the off-diagonal, for 
 ## Normalizing Flows
 
 <center>
-<img src="https://tikz.net/janosh/normalizing-flow.png" width=300 height=80/>
+<img src="https://tikz.net/janosh/normalizing-flow.png"/>
 </center>
 
 <span style="text-align: right;">
