@@ -57,6 +57,8 @@ with the variances on the diagonal and the covariances on the off-diagonal, for 
 
 ### Normalizing Flows
 
+Although the GAMLSS framework offers considerable flexibility, parametric distributions may prove not flexible enough to provide a reasonable approximation for certain dataset, e.g., for multi-modal distributions. For such cases, it is preferable to relax the assumption of a parametric distribution and approximate the data non-parametrically. While there are several alternatives for learning conditional distributions, we propose to use Normalizing Flows for their ability to fit complex distributions with only a few parameters. 
+
 The principle that underlies Normalizing Flows is to turn a simple base distribution, e.g., $F_{Z}(\mathbf{z}) = N(0,1)$, into a more complex and realistic distribution of the target variable $F_{Y}(\mathbf{y})$ by applying several bijective transformations $h_{j}$, $j = 1, \ldots, J$ to the variable of the base distribution 
 
 \begin{equation}
@@ -68,7 +70,7 @@ Based on the complete transformation function $h=h_{J}\circ\ldots\circ h_{1}$, t
 \begin{equation}
 	f_{Y}(\mathbf{y}) = f_{Z}\big(h(\mathbf{y})\big) \cdot \Bigg|\frac{\partial h(\mathbf{y})}{\partial \mathbf{y}}\Bigg| \end{equation}
 
-where scaling with the Jacobian determinant $|h^{\prime}(\mathbf{y})| = |\partial h(\mathbf{y}) / \partial \mathbf{y}|$ ensures $f_{Y}(\mathbf{y})$ to be a proper density integrating to one.
+where scaling with the Jacobian determinant $|h^{\prime}(\mathbf{y})| = |\partial h(\mathbf{y}) / \partial \mathbf{y}|$ ensures $f_{Y}(\mathbf{y})$ to be a proper density integrating to one. The composition of these transformations is invertible, allowing one to sample from the complex distribution by transforming samples from the base distribution. Our Normalizing Flow approach is based on element-wise rational splines of linear or quadratic order as introduced by Durkan (2019) and Dolatabadi (2020) and implemented in Pyro, since they offer a combination of functional flexibility and numerical stability. Despite this specific choice, our framework is generic enough to accommodate the use of other parametrizable Normalizing Flows.
 
 ## Gradient Boosting Machines for Location, Scale and Shape
 
@@ -76,6 +78,8 @@ We draw inspiration from GAMLSS and label our model as XGBoost for Location, Sca
 
 # References
 
+- Hadi Mohaghegh Dolatabadi, Sarah Erfani, and Christopher Leckie. Invertible Generative Modeling using Linear Rational Splines. In The 23rd International Conference on Artiﬁcial Intelligence and Statistics (AISTATS), 4236–4246, 2020.
+- Conor Durkan, Artur Bekasov, Iain Murray, and George Papamakarios. Neural Spline Flows. In Proceedings of the 33rd International Conference on Neural Information Processing Systems. 2019.
 - Nadja Klein, Thomas Kneib, Stephan Klasen, and Stefan Lang. Bayesian structured additive distributional regression for multivariate responses. Journal of the Royal Statistical Society: Series C (Applied Statistics), 64(4):569–591, 2015a. 
 - Nadja Klein, Thomas Kneib, and Stefan Lang. Bayesian Generalized Additive Models for Location, Scale, and Shape for Zero-Inflated and Overdispersed Count Data. Journal of the American Statistical Association, 110(509):405–419, 2015b.
 - Alexander März. Multi-Target XGBoostLSS Regression. arXiv pre-print, 2022a.
