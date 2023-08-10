@@ -66,7 +66,7 @@ Our framework is built upon PyTorch and Pyro, enabling users to harness a divers
 Please visit the [example section](https://statmixedml.github.io/XGBoostLSS/examples/Gaussian_Regression/) for guidance on how to use the framework.
 
 ## `Documentation`
-For more comprehensive information and context, please visit the [documentation](https://statmixedml.github.io/XGBoostLSS/).
+For more information and context, please visit the [documentation](https://statmixedml.github.io/XGBoostLSS/).
 
 ## `Feedback`
 We encourage you to provide feedback on how to enhance XGBoostLSS or request the implementation of additional distributions by opening a [new discussion](https://github.com/StatMixedML/XGBoostLSS/discussions).
