@@ -28,7 +28,8 @@ plugins:
 
 nav:
   - About: index.md
-  - API: references.md
+  - Distributional Modelling - A primer: dgbm.md
+  - Distributions: distributions.md
   - Examples:
     - Dirichlet Regression: examples/Dirichlet.ipynb
     - Select a Univariate Distribution: examples/How To Choose A Distribution.ipynb
@@ -37,12 +38,13 @@ nav:
     - Multivariate Gaussian Regression (Low-Rank Approximation): examples/MVN (Low-Rank).ipynb
     - Multivariate Student-T Regression (Cholesky Decomposition): examples/MVT (Cholesky).ipynb
     - Zero-Adjusted Gamma Regression: examples/ZAGamma_simulation_example.ipynb
-    - Zero-Inflated Negative Binomial Regression: examples/ZINB_example.ipynb
-    - Zero-Inflated Poisson Regression: examples/ZIPoisson_example.ipynb
+#    - Zero-Inflated Negative Binomial Regression: examples/ZINB_example.ipynb
+#    - Zero-Inflated Poisson Regression: examples/ZIPoisson_example.ipynb
     - Gamma Regression (Boston Housing Data): examples/boston_housing_example_Gamma.ipynb
     - Expectile Regression: examples/simulation_example_Expectile.ipynb
     - Gaussian Regression: examples/simulation_example_Gaussian.ipynb
-    - Negative Binomial Regression: examples/simulation_example_NegativeBinomial.ipynb
-    - Poisson Regression: examples/simulation_example_Poisson.ipynb
+#    - Negative Binomial Regression: examples/simulation_example_NegativeBinomial.ipynb
+#    - Poisson Regression: examples/simulation_example_Poisson.ipynb
     - Spline Flow Regression: examples/simulation_example_SplineFlow.ipynb
-    - Student-T Regression: examples/simulation_example_StudentT.ipynb
+#    - Student-T Regression: examples/simulation_example_StudentT.ipynb
+  - API Docs: api.md
