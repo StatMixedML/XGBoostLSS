@@ -2,7 +2,7 @@
 
 The development of modelling approaches that approximate and describe the data generating processes underlying the observed data in as much detail as possible is a guiding principle in both statistics and machine learning. We therefore strongly agree with the statement of Hothorn et al. (2014) that **''the ultimate goal of any regression analysis is to obtain information about the entire conditional distribution $F_{Y}(y|\mathbf{x})$ of a response given a set of explanatory variables''**. 
 
-<blockquote style="font-size: 10px">
+<blockquote style="font-size: 12px">
 <em>''Practitioners expect forecasting to reduce future uncertainty by providing accurate predictions like those in hard sciences. However, this is a great misconception. A major purpose of forecasting is not to reduce uncertainty but reveal its full extent and implications by estimating it as precisely as possible. [...] The challenge for the forecasting field is how to persuade practitioners of the reality that all forecasts are uncertain and that this uncertainty cannot be ignored, as doing so could lead to catastrophic consequences.''</em> Makridakis (2022b)
 </blockquote>
 
@@ -25,14 +25,14 @@ From a frequentist point of view, distributional modelling can be formulated as 
 \begin{equation}
 y_{i} \stackrel{ind}{\sim} \mathcal{D}
   \begin{pmatrix}
-    h_{1}(\theta_{i1}) = \eta_{i1} \\
-    h_{2}(\theta_{i2}) = \eta_{i2}  \\ 
+    h_{1}\bigl(\theta_{i1}(x_{i})\bigr) = \eta_{i1} \\
+    h_{2}\bigl(\theta_{i2}(x_{i})\bigr) = \eta_{i2}  \\ 
 	\vdots \\                        
-	h_{K}(\theta_{iK}) = \eta_{iK} 
+	h_{K}\bigl(\theta_{iK}(x_{i})\bigr) = \eta_{iK} 
 \end{pmatrix}
 \end{equation}
 
-for $i = 1, \ldots, n$, where $\mathcal{D}$ denotes a parametric distribution for the response $\textbf{y} = (y_{1}, \ldots, y_{n})^{\prime}$ that depends on $K$ distributional parameters $\theta_{k}$, $k = 1, \ldots, K$, and with $h_{k}(\cdot)$ denoting a known function relating distributional parameters to predictors $\eta_{k}$. In its most generic form, the predictor $\eta_{k}$ is given by
+for $i = 1, \ldots, N$, where $\mathcal{D}$ denotes a parametric distribution for the response $\textbf{y} = (y_{1}, \ldots, y_{N})^{\prime}$ that depends on $K$ distributional parameters $\theta_{k}$, $k = 1, \ldots, K$, and with $h_{k}(\cdot)$ denoting a known function relating distributional parameters to predictors $\eta_{k}$. In its most generic form, the predictor $\eta_{k}$ is given by
 
 \begin{equation}
 \eta_{k} = f_{k}(\mathbf{x}), \qquad k = 1, \ldots, K 
