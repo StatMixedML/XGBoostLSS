@@ -534,7 +534,7 @@ class XGBoostLSS:
         explainer = shap.TreeExplainer(self.booster)
         shap_values = explainer(X)
 
-        param_pos = list(self.dist.param_dict.keys()).index(parameter)
+        param_pos = self.dist.distribution_arg_names.index(parameter)
 
         if plot_type == "Partial_Dependence":
             if self.dist.n_dist_param == 1:
