@@ -26,6 +26,7 @@ setup(
         "pandas~=2.0.3",
         "plotnine~=0.12.1",
         "scipy~=1.11.1",
+        "seaborn~=0.12.2",
         "tqdm~=4.65.0",
         "matplotlib~=3.7.2",
         "ipython~=8.14.0",
