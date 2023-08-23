@@ -20,7 +20,7 @@ class TestClass:
 
     def test_response_fn(self, response_fn):
         # Create Data for testing
-        predt = torch.tensor([1.0, 2.0, 3.0, 4.0])
+        predt = torch.tensor([1.0, 2.0, 3.0, 4.0]).reshape(-1,1)
 
         # Call the function
         predt_transformed = response_fn(predt)
