@@ -185,20 +185,20 @@ def gumbel_softmax_fn(predt: torch.tensor,
     Gumbel-softmax function used to ensure predt is adding to one.
 
     The Gumbel-softmax distribution is a continuous distribution over the simplex, which can be thought of as a "soft"
-        version of a categorical distribution. It’s a way to draw samples from a categorical distribution in a
-        differentiable way. The motivation behind using the Gumbel-Softmax is to make the discrete sampling process of
-        categorical variables differentiable, which is useful in gradient-based optimization problems. To sample from a
-        Gumbel-Softmax distribution, one would use the Gumbel-max trick: add a Gumbel noise to logits and apply the softmax.
-        Formally, given a vector z, the Gumbel-softmax function s(z,tau)_i for a component i at temperature tau is
-        defined as:
+    version of a categorical distribution. It’s a way to draw samples from a categorical distribution in a
+    differentiable way. The motivation behind using the Gumbel-Softmax is to make the discrete sampling process of
+    categorical variables differentiable, which is useful in gradient-based optimization problems. To sample from a
+    Gumbel-Softmax distribution, one would use the Gumbel-max trick: add a Gumbel noise to logits and apply the softmax.
+    Formally, given a vector z, the Gumbel-softmax function s(z,tau)_i for a component i at temperature tau is
+    defined as:
 
-            s(z,tau)_i = frac{e^{(z_i + g_i) / tau}}{sum_{j=1}^M e^{(z_j + g_j) / tau}}
+        s(z,tau)_i = frac{e^{(z_i + g_i) / tau}}{sum_{j=1}^M e^{(z_j + g_j) / tau}}
 
-        where g_i is a sample from the Gumbel(0, 1) distribution. The parameter tau (temperature) controls the sharpness
-        of the output distribution. As tau approaches 0, the mixing probabilities become more discrete, and as tau
-        approaches infty, the mixing probabilities become more uniform. For more information we refer to
+    where g_i is a sample from the Gumbel(0, 1) distribution. The parameter tau (temperature) controls the sharpness
+    of the output distribution. As tau approaches 0, the mixing probabilities become more discrete, and as tau
+    approaches infty, the mixing probabilities become more uniform. For more information we refer to
 
-            Jang, E., Gu, Shixiang and Poole, B. "Categorical Reparameterization with Gumbel-Softmax", ICLR, 2017.
+        Jang, E., Gu, Shixiang and Poole, B. "Categorical Reparameterization with Gumbel-Softmax", ICLR, 2017.
 
     Arguments
     ---------
