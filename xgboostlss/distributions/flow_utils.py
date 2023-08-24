@@ -11,7 +11,8 @@ import pandas as pd
 from tqdm import tqdm
 
 from typing import Any, Dict, Optional, List, Tuple
-from plotnine import * 
+import matplotlib.pyplot as plt
+import seaborn as sns
 import warnings
 
 
@@ -623,7 +624,6 @@ class NormalizingFlowClass:
                     target: np.ndarray,
                     candidate_flows: List,
                     max_iter: int = 100,
-                    n_samples: int = 1000,
                     plot: bool = False,
                     figure_size: tuple = (10, 5),
                     ) -> pd.DataFrame:
@@ -639,8 +639,6 @@ class NormalizingFlowClass:
             List of candidate normalizing flow specifications.
         max_iter: int
             Maximum number of iterations for the optimization.
-        n_samples: int
-            Number of samples drawn from the fitted distribution.
         plot: bool
             If True, a density plot of the actual and fitted distribution is created.
         figure_size: tuple
@@ -699,29 +697,17 @@ class NormalizingFlowClass:
             flow_params = torch.tensor(best_flow["params"][0]).reshape(1, -1)
             flow_dist_sel = best_flow_sel.create_spline_flow(input_dim=1)
             _, flow_dist_sel = best_flow_sel.replace_parameters(flow_params, flow_dist_sel)
-            flow_samples = pd.DataFrame(flow_dist_sel.sample((n_samples,)).squeeze().detach().numpy().T)
+            n_samples = np.max([10000, target.shape[0]])
+            n_samples = np.where(n_samples > 500000, 100000, n_samples)
+            flow_samples = pd.DataFrame(flow_dist_sel.sample((n_samples,)).squeeze().detach().numpy().T).values
 
             # Plot actual and fitted distribution
-            flow_samples["type"] = f"Best-Fit: {best_flow['NormFlow'].values[0]}"
-
-            df_actual = pd.DataFrame(target)
-            df_actual["type"] = "Data"
-
-            plot_df = pd.concat([df_actual, flow_samples]).rename(columns={0: "variable"})
-
-            print(
-                ggplot(plot_df,
-                       aes(x="variable",
-                           color="type")) +
-                geom_density(size=1.1) +
-                theme_bw(base_size=15) +
-                theme(figure_size=figure_size,
-                      legend_position="right",
-                      legend_title=element_blank(),
-                      plot_title=element_text(hjust=0.5)) +
-                labs(title=f"Actual vs. Fitted Density",
-                     x="")
-            )
+            plt.figure(figsize=figure_size)
+            sns.kdeplot(target.reshape(-1, ), label="Actual")
+            sns.kdeplot(flow_samples.reshape(-1, ), label=f"Best-Fit: {best_flow['NormFlow'].values[0]}")
+            plt.legend()
+            plt.title("Actual vs. Best-Fit Density")
+            plt.show()
 
         fit_df.drop(columns=["rank", "params"], inplace=True)
 
