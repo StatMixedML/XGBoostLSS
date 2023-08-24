@@ -9,7 +9,7 @@ import pandas as pd
 from tqdm import tqdm
 
 from typing import Any, Dict, Optional, List, Tuple, Callable
-from plotnine import *
+import seaborn as sns
 import warnings
 
 
@@ -506,10 +506,11 @@ class Multivariate_DistributionClass:
                     target: np.ndarray,
                     candidate_distributions: List,
                     max_iter: int = 100,
-                    n_samples: int = 1000,
                     plot: bool = False,
                     ncol: int = 3,
-                    figure_size: tuple = (10, 5),
+                    height: float = 4,
+                    sharex: bool = True,
+                    sharey: bool = True,
                     ) -> pd.DataFrame:
         """
         Function that selects the most suitable distribution among the candidate_distributions for the target variable,
@@ -523,14 +524,16 @@ class Multivariate_DistributionClass:
             List of candidate distributions.
         max_iter: int
             Maximum number of iterations for the optimization.
-        n_samples: int
-            Number of samples drawn from the fitted distribution.
         plot: bool
             If True, a density plot of the actual and fitted distribution is created.
         ncol: int
             Number of columns for the facetting of the density plots.
-        figure_size: tuple
-            Figure size of the density plot.
+        height: Float
+            Height (in inches) of each facet.
+        sharex: bool
+            Whether to share the x-axis across the facets.
+        sharey: bool
+            Whether to share the y-axis across the facets.
 
         Returns
         -------
@@ -572,6 +575,7 @@ class Multivariate_DistributionClass:
             pbar.set_description(f"Fitting of candidate distributions completed")
 
         if plot:
+            warnings.simplefilter(action='ignore', category=UserWarning)
             # Select distribution
             best_dist = fit_df[fit_df["rank"] == 1].reset_index(drop=True)
             for dist in candidate_distributions:
@@ -597,6 +601,8 @@ class Multivariate_DistributionClass:
             else:
                 dist_kwargs = dict(zip(best_dist_sel.distribution_arg_names, dist_params))
             dist_fit = best_dist_sel.distribution(**dist_kwargs)
+            n_samples = np.max([1000, target.shape[0]])
+            n_samples = np.where(n_samples > 10000, 1000, n_samples)
             df_samples = best_dist_sel.draw_samples(dist_fit, n_samples=n_samples, seed=123)
 
             # Plot actual and fitted distribution
@@ -610,21 +616,35 @@ class Multivariate_DistributionClass:
 
             plot_df = pd.concat([df_actual, df_samples])
 
-            print(
-                ggplot(plot_df,
-                       aes(x="value",
-                           color="type")) +
-                geom_density(alpha=0.5) +
-                facet_wrap("target",
-                           scales="free",
-                           ncol=ncol) +
-                theme_bw(base_size=15) +
-                theme(figure_size=figure_size,
-                      legend_position="right",
-                      legend_title=element_blank(),
-                      plot_title=element_text(hjust=0.5)) +
-                labs(title=f"Actual vs. Fitted Density")
-            )
+            g = sns.FacetGrid(plot_df,
+                              col="target",
+                              hue="type",
+                              col_wrap=ncol,
+                              height=height,
+                              sharex=sharex,
+                              sharey=sharey,
+                              )
+            g.map(sns.kdeplot, "value", lw=2.5)
+            handles, labels = g.axes[0].get_legend_handles_labels()
+            g.fig.legend(handles, labels, loc='upper center', ncol=len(labels), title="", bbox_to_anchor=(0.5, 0.92))
+            g.fig.suptitle("Actual vs. Best-Fit Density", weight="bold", fontsize=16)
+            g.fig.tight_layout(rect=[0, 0, 1, 0.9])
+
+            # print(
+            #     ggplot(plot_df,
+            #            aes(x="value",
+            #                color="type")) +
+            #     geom_density(alpha=0.5) +
+            #     facet_wrap("target",
+            #                scales="free",
+            #                ncol=ncol) +
+            #     theme_bw(base_size=15) +
+            #     theme(figure_size=figure_size,
+            #           legend_position="right",
+            #           legend_title=element_blank(),
+            #           plot_title=element_text(hjust=0.5)) +
+            #     labs(title=f"Actual vs. Fitted Density")
+            # )
 
         fit_df.drop(columns=["rank", "params"], inplace=True)
 
