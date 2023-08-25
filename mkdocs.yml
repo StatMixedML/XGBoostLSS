@@ -10,7 +10,13 @@ markdown_extensions:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
 
-theme: 'windmill'
+theme:
+  name: null
+  custom_dir: mkdocs_windmill
+  # Copy settings from mkdocs_theme.yml, which is ignored by custom_dir themes.
+  static_templates: [404.html]
+  search_index_only: true
+  include_search_page: true
 
 extra_javascript:
   - javascripts/mathjax.js
