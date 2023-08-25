@@ -32,7 +32,7 @@ setup(
         "ipython~=8.14.0",
     ],
     extras_require={
-        "docs": ["mkdocs", "mkdocstrings[python]", "mkdocs-jupyter"]
+        "docs": ["mkdocs-windmill", "mkdocstrings[python]", "mkdocs-jupyter"]
     },
     test_suite="tests",
     tests_require=["flake8", "pytest"],
