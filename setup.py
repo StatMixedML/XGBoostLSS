@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="xgboostlss",
-    version="0.3.0",
+    version="0.4.0",
     description="XGBoostLSS - An extension of XGBoost to probabilistic forecasting",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
