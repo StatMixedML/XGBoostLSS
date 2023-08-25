@@ -594,7 +594,7 @@ class Multivariate_DistributionClass:
                                                         best_dist_sel.param_dict,
                                                         n_targets=best_dist_sel.n_targets,
                                                         rank=best_dist_sel.rank,
-                                                        n_obs=target_expand.shape[0])
+                                                        n_obs=1)
 
             if best_dist["distribution"][0] == "Dirichlet":
                 dist_kwargs = dict(zip(best_dist_sel.distribution_arg_names, [dist_params]))
