@@ -35,8 +35,8 @@ nav:
     - Basic Walkthrough - Gaussian Regression: examples/Gaussian_Regression.ipynb
     - Dirichlet Regression: examples/Dirichlet_Regression.ipynb
     - Expectile Regression: examples/Expectile_Regression.ipynb
-    - Gaussian-Mixture Regression: examples/GaussianMixture_Regression_CaliforniaHousing.ipynb
     - Gamma Regression (California Housing Data): examples/Gamma_Regression_CaliforniaHousing.ipynb
+    - Gaussian-Mixture Regression: examples/GaussianMixture_Regression_CaliforniaHousing.ipynb
     - How to Select a Univariate Distribution: examples/How_To_Select_A_Univariate_Distribution.ipynb
     - How to Select a Multivariate Distribution: examples/How_To_Select_A_Multivariate_Distribution.ipynb
     - Multivariate Gaussian Regression (Cholesky Decomposition): examples/MVN_Cholesky.ipynb
