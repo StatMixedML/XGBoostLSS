@@ -1,5 +1,6 @@
 site_name: XGBoostLSS
 site_url: https://github.com/StatMixedML/XGBoostLSS
+repo_url: https://github.com/StatMixedML/XGBoostLSS
 
 markdown_extensions:
   - pymdownx.arithmatex:
@@ -13,18 +14,13 @@ markdown_extensions:
 theme:
   name: readthedocs
   highlightjs: true
-
-extra:
-  github:
-    repo: 'StatMixedML/XGBoostLSS'
-    icon: 'github'
-    link_text: 'View on GitHub'
+  icon:
+    repo: fontawesome/brands/github
 
 extra_javascript:
   - javascripts/mathjax.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
-
 
 plugins:
   - search
@@ -54,4 +50,5 @@ nav:
     - Multivariate Student-T Regression (Cholesky Decomposition): examples/MVT_Cholesky.ipynb
     - Spline Flow Regression: examples/SplineFlow_Regression.ipynb
     - Zero-Adjusted Gamma Regression: examples/ZAGamma_Regression.ipynb
-  - API Docs: api.md
+  - API Docs: 
+    - api.md
