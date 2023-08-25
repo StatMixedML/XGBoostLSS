@@ -11,7 +11,14 @@ markdown_extensions:
       emoji_generator: !!python/name:materialx.emoji.to_svg
 
 theme:
-  name: 'readthedocs'
+  name: readthedocs
+  highlightjs: true
+
+extra:
+  github:
+    repo: 'StatMixedML/XGBoostLSS'
+    icon: 'github'
+    link_text: 'View on GitHub'
 
 extra_javascript:
   - javascripts/mathjax.js
