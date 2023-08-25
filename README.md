@@ -1,7 +1,7 @@
 <h4 align="center">
 
 ![Python Version](https://img.shields.io/badge/python-3.9%20|%203.10-lightblue.svg)
-![GitHub Release (with filter)](https://img.shields.io/github/v/release/StatMixedML/XGBoostLSS?color=lightblue&label=release)
+![GitHub tag (with filter)](https://img.shields.io/github/v/tag/StatMixedML/XGBoostLSS?label=release&color=lightblue)
 [![Github License](https://img.shields.io/badge/license-Apache%202.0-lightblue.svg)](https://opensource.org/licenses/Apache-2.0)
 <img src="https://github.com/StatMixedML/XGBoostLSS/actions/workflows/mkdocs.yaml/badge.svg" alt="Documentation status badge">
 <img src="https://github.com/StatMixedML/XGBoostLSS/workflows/unit-tests/badge.svg" alt="Unit test status badge">
