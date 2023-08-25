@@ -5,8 +5,9 @@ We introduce a comprehensive framework that models and predicts the full conditi
 
 ## Features
 - Estimation of all distributional parameters. <br/>
-- Multi-target regression allows modelling of multivariate responses and their dependencies. <br/>
 - Normalizing Flows allow modelling of complex and multi-modal distributions. <br/>
+- Mixture-Densities can model a diverse range of data characteristics. <br/>
+- Multi-target regression allows modelling of multivariate responses and their dependencies. <br/>
 - Zero-Adjusted and Zero-Inflated Distributions for modelling excess of zeros in the data. <br/>
 - Automatic derivation of Gradients and Hessian of all distributional parameters using [PyTorch](https://pytorch.org/docs/stable/autograd.html). <br/>
 - Automated hyper-parameter search, including pruning, is done via [Optuna](https://optuna.org/). <br/>
