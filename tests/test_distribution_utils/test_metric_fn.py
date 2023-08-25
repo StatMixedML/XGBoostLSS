@@ -68,3 +68,52 @@ class TestClass(BaseTestClass):
         assert isinstance(loss, torch.Tensor)
         assert not torch.isnan(loss).any()
         assert not torch.isinf(loss).any()
+
+    def test_metric_fn_mixture_weight(self, mixture_class, loss_fn):
+        # Create data for testing
+        predt, labels, weights, dmatrix = gen_test_data(mixture_class, weights=True)
+
+        # Set the loss function for testing
+        mixture_class.dist.loss_fn = loss_fn
+
+        # Call the function
+        loss_fn, loss = mixture_class.dist.metric_fn(predt, dmatrix)
+
+        # Assertions
+        assert isinstance(loss_fn, str)
+        assert isinstance(loss, torch.Tensor)
+        assert not torch.isnan(loss).any()
+        assert not torch.isinf(loss).any()
+
+    def test_metric_fn_mixture_no_weight(self, mixture_class, loss_fn):
+        # Create data for testing
+        predt, labels, dmatrix = gen_test_data(mixture_class, weights=False)
+
+        # Set the loss function for testing
+        mixture_class.dist.loss_fn = loss_fn
+
+        # Call the function
+        loss_fn, loss = mixture_class.dist.metric_fn(predt, dmatrix)
+
+        # Assertions
+        assert isinstance(loss_fn, str)
+        assert isinstance(loss, torch.Tensor)
+        assert not torch.isnan(loss).any()
+        assert not torch.isinf(loss).any()
+
+    def test_metric_fn_mixture_nans(self, mixture_class, loss_fn):
+        # Create data for testing
+        predt, labels, weights, dmatrix = gen_test_data(mixture_class, weights=True)
+        predt[0, 0] = np.nan
+
+        # Set the loss function for testing
+        mixture_class.dist.loss_fn = loss_fn
+
+        # Call the function
+        loss_fn, loss = mixture_class.dist.metric_fn(predt, dmatrix)
+
+        # Assertions
+        assert isinstance(loss_fn, str)
+        assert isinstance(loss, torch.Tensor)
+        assert not torch.isnan(loss).any()
+        assert not torch.isinf(loss).any()

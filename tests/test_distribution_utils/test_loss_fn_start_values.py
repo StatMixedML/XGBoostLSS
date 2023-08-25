@@ -27,3 +27,26 @@ class TestClass(BaseTestClass):
             assert isinstance(loss, torch.Tensor)
             assert not torch.isnan(loss).any()
             assert not torch.isinf(loss).any()
+
+    def test_loss_fn_start_values_mixture(self, mixture_class, loss_fn):
+        # Create data for testing
+        _, target, _ = gen_test_data(mixture_class)
+        predt = [
+            torch.tensor(0.5, dtype=torch.float64).reshape(-1, 1).requires_grad_(True) for _ in
+            range(mixture_class.dist.n_dist_param)
+        ]
+        if mixture_class.dist.univariate:
+            target = torch.tensor(target)
+        else:
+            target = torch.tensor(target)[:, :mixture_class.dist.n_targets]
+
+        # Set the loss function for testing
+        mixture_class.dist.loss_fn = loss_fn
+
+        # Call the function
+        loss = mixture_class.dist.loss_fn_start_values(predt, target)
+
+        # Assertions
+        assert isinstance(loss, torch.Tensor)
+        assert not torch.isnan(loss).any()
+        assert not torch.isinf(loss).any()

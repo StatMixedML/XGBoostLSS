@@ -1,7 +1,9 @@
 from xgboostlss.model import *
 from xgboostlss.distributions.Gaussian import *
+from xgboostlss.distributions.Mixture import *
 from xgboostlss.distributions.Expectile import *
 from xgboostlss.distributions.MVN import *
+from xgboostlss.distributions.SplineFlow import *
 from xgboostlss.datasets.data_loader import load_simulated_gaussian_data, load_simulated_multivariate_gaussian_data
 import pytest
 from pytest import approx
@@ -22,6 +24,20 @@ def univariate_data():
 @pytest.fixture
 def univariate_xgblss():
     return XGBoostLSS(Gaussian())
+
+
+@pytest.fixture
+def mixture_xgblss():
+    return XGBoostLSS(Mixture(Gaussian()))
+
+
+@pytest.fixture
+def flow_xgblss():
+    return XGBoostLSS(
+        SplineFlow(target_support="real",
+                   count_bins=2
+                   )
+    )
 
 
 @pytest.fixture
@@ -249,3 +265,27 @@ class TestClass:
                                         expectile="expectile_0.9",
                                         feature="x_true",
                                         plot_type="Feature_Importance")
+
+    def test_model_mixture_train(self, univariate_data, mixture_xgblss):
+        # Unpack
+        dtrain, _, _, _ = univariate_data
+        params, n_rounds = {"eta": 0.1}, 10
+        xgblss = mixture_xgblss
+
+        # Train the model
+        xgblss.train(params, dtrain, n_rounds)
+
+        # Assertions
+        assert isinstance(xgblss.booster, xgb.Booster)
+
+    def test_model_flow_train(self, univariate_data, flow_xgblss):
+        # Unpack
+        dtrain, _, _, _ = univariate_data
+        params, n_rounds = {"eta": 0.1}, 10
+        xgblss = flow_xgblss
+
+        # Train the model
+        xgblss.train(params, dtrain, n_rounds)
+
+        # Assertions
+        assert isinstance(xgblss.booster, xgb.Booster)

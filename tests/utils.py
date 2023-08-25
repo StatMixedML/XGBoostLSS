@@ -1,5 +1,7 @@
 from xgboostlss.model import XGBoostLSS
 from xgboostlss import distributions
+from xgboostlss.distributions.mixture_distribution_utils import get_component_distributions
+
 import pytest
 import importlib
 from typing import List
@@ -73,6 +75,7 @@ def get_distribution_classes(univariate: bool = True,
                              rsample: bool = False,
                              flow: bool = False,
                              expectile: bool = False,
+                             mixture: bool = False,
                              ) -> List:
     """
     Function that returns a list of specified distribution classes.
@@ -89,6 +92,10 @@ def get_distribution_classes(univariate: bool = True,
         If True, only return distribution classes that have a rsample method.
     flow (bool):
         If True, only return distribution classes that are Flows.
+    expectile (bool):
+        If True, only return distribution classes that are Expectiles.
+    mixture (bool):
+        If True, only return distribution classes that are Mixtures.
 
     Returns:
     --------
@@ -98,11 +105,13 @@ def get_distribution_classes(univariate: bool = True,
     # Get all distribution names
     distns = [dist for dist in dir(distributions) if dist[0].isupper()]
 
-    # Remove SplineFlow from distns
-    distns.remove("SplineFlow")
-
-    # Remove Expectile from distns
-    distns.remove("Expectile")
+    # Remove specific distributions
+    distns_remove = [
+        "SplineFlow",
+        "Expectile",
+        "Mixture"
+    ]
+    distns = [item for item in distns if item not in distns_remove]
 
     # Extract all continous univariate distributions
     univar_cont_distns = []
@@ -168,7 +177,7 @@ def get_distribution_classes(univariate: bool = True,
         except NotImplementedError:
             pass
 
-    if univariate and not flow and not expectile:
+    if univariate and not flow and not expectile and not mixture:
         if discrete:
             return univar_discrete_distns
         elif rsample:
@@ -197,6 +206,38 @@ def get_distribution_classes(univariate: bool = True,
 
         return distribution_class
 
+    elif mixture:
+        distribution_name = "Mixture"
+        module = importlib.import_module(f"xgboostlss.distributions.{distribution_name}")
+        # Get the class dynamically from the module
+        distribution_class = [getattr(module, distribution_name)]
+
+        return distribution_class
+
+
+def get_mixture_distribution_classes():
+    """
+    Function that returns a list of mixture distribution classes, each with a different component distribution.
+
+    Arguments:
+    ---------
+    None
+
+    Returns:
+    --------
+    mixt_dist (List):
+        List of all mixture distribution classes.
+    """
+    mix_class = get_distribution_classes(mixture=True)[0]
+    comp_dists = get_component_distributions()
+    mixt_dist = []
+    for dist in comp_dists:
+        module = importlib.import_module(f"xgboostlss.distributions.{dist}")
+        comp_dist = getattr(module, dist)
+        mixt_dist.append(XGBoostLSS(mix_class(comp_dist())))
+
+    return mixt_dist
+
 
 class BaseTestClass:
     @pytest.fixture(params=get_distribution_classes(continuous=True))
@@ -217,6 +258,10 @@ class BaseTestClass:
 
     @pytest.fixture(params=get_distribution_classes(expectile=True))
     def expectile_dist(self, request):
+        return request.param
+
+    @pytest.fixture(params=get_distribution_classes(mixture=True))
+    def mixture_dist(self, request):
         return request.param
 
     @pytest.fixture(params=
@@ -241,6 +286,10 @@ class BaseTestClass:
     def dist_class_crps(self, request):
         return XGBoostLSS(request.param())
 
+    @pytest.fixture(params=get_mixture_distribution_classes())
+    def mixture_class(self, request):
+        return request.param
+
     @pytest.fixture(params=["nll"])
     def loss_fn(self, request):
         return request.param
@@ -255,4 +304,8 @@ class BaseTestClass:
 
     @pytest.fixture(params=["samples", "quantiles", "parameters", "expectiles"])
     def pred_type(self, request):
+        return request.param
+
+    @pytest.fixture(params=["individual", "grouped"])
+    def hessian_mode(self, request):
         return request.param
