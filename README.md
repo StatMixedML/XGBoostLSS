@@ -5,7 +5,7 @@
 [![Github License](https://img.shields.io/badge/license-Apache%202.0-lightblue.svg)](https://opensource.org/licenses/Apache-2.0)
 <img src="https://github.com/StatMixedML/XGBoostLSS/actions/workflows/mkdocs.yaml/badge.svg" alt="Documentation status badge">
 <img src="https://github.com/StatMixedML/XGBoostLSS/workflows/unit-tests/badge.svg" alt="Unit test status badge">
-<img src="https://codecov.io/gh/StatMixedML/XGBoostLSS/branch/master/graph/badge.svg" alt="Code coverage status badge">
+<img src="https://codecov.io/gh/StatMixedML/XGBoostLSS/branch/master/graph/badge.svg" alt="Code coverage status badge"> 
 
 <!---
 [![Documentation](https://github.com/StatMixedML/XGBoostLSS/actions/workflows/mkdocs.yaml/badge.svg)](https://StatMixedML.github.io/XGBoostLSS/)
