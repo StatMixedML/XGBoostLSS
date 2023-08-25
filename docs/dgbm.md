@@ -44,7 +44,9 @@ Within the original distributional regression framework, the functions $f_{k}(\c
 
 Mixture densities or mixture distributions offer an extension to the notion of traditional univariate distributions by allowing the observed data to be thought of as arising from multiple underlying processes. In its essence, a mixture distribution is a weighted combination of several component distributions, where each component contributes to the overall mixture distribution, with the weights indicating the importance of each component. For instance, if you imagine the observed data distribution having multiple modes, a mixture of Gaussians could be employed to capture each mode with a separate Gaussian distribution. 
 
-<img align="middle" width="400" src="https://github.com/StatMixedML/XGBoostLSS/blob/master/docs/mixture.png">
+<center>
+<img src="mixture.png" width=400/>
+</center>
 
 For each component of the mixture, there would be a set of parameters that depend on covariates, and additional mixing coefficients which are also modeled as a function of covariates. This is particularly useful when a single parametric distribution cannot adequately capture the underlying data generating process. A mixture distribution can be represented as follows:
 
