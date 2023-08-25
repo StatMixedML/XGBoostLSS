@@ -1,7 +1,6 @@
 site_name: XGBoostLSS
 site_url: https://github.com/StatMixedML/XGBoostLSS
 repo_url: https://github.com/StatMixedML/XGBoostLSS
-repo_name: 'View on GitHub'
 
 markdown_extensions:
   - pymdownx.arithmatex:
