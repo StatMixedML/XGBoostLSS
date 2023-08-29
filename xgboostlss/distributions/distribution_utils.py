@@ -616,12 +616,11 @@ class DistributionClass:
                          }
                     )
                 dist_list.append(fit_df)
-                fit_df = pd.concat(dist_list).sort_values(by=self.loss_fn, ascending=True)
-                fit_df["rank"] = fit_df[self.loss_fn].rank().astype(int)
-                fit_df.set_index(fit_df["rank"], inplace=True)
                 pbar.update(1)
             pbar.set_description(f"Fitting of candidate distributions completed")
-
+            fit_df = pd.concat(dist_list).sort_values(by=self.loss_fn, ascending=True)
+            fit_df["rank"] = fit_df[self.loss_fn].rank().astype(int)
+            fit_df.set_index(fit_df["rank"], inplace=True)
         if plot:
             # Select best distribution
             best_dist = fit_df[fit_df["rank"] == 1].reset_index(drop=True)
@@ -652,7 +651,7 @@ class DistributionClass:
             sns.kdeplot(target.reshape(-1, ), label="Actual")
             sns.kdeplot(dist_samples.reshape(-1, ), label=f"Best-Fit: {best_dist['distribution'].values[0]}")
             plt.legend()
-            plt.title("Actual vs. Best-Fit Density")
+            plt.title("Actual vs. Best-Fit Density", fontweight="bold", fontsize=16)
             plt.show()
 
         fit_df.drop(columns=["rank", "params"], inplace=True)

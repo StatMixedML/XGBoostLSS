@@ -568,12 +568,11 @@ class Multivariate_DistributionClass:
                         }
                     )
                 dist_list.append(fit_df)
-                fit_df = pd.concat(dist_list).sort_values(by=dist_sel.loss_fn, ascending=True)
-                fit_df["rank"] = fit_df[dist_sel.loss_fn].rank().astype(int)
-                fit_df.set_index(fit_df["rank"], inplace=True)
                 pbar.update(1)
             pbar.set_description(f"Fitting of candidate distributions completed")
-
+            fit_df = pd.concat(dist_list).sort_values(by=dist_sel.loss_fn, ascending=True)
+            fit_df["rank"] = fit_df[dist_sel.loss_fn].rank().astype(int)
+            fit_df.set_index(fit_df["rank"], inplace=True)
         if plot:
             warnings.simplefilter(action='ignore', category=UserWarning)
             # Select distribution
@@ -629,22 +628,6 @@ class Multivariate_DistributionClass:
             g.fig.legend(handles, labels, loc='upper center', ncol=len(labels), title="", bbox_to_anchor=(0.5, 0.92))
             g.fig.suptitle("Actual vs. Best-Fit Density", weight="bold", fontsize=16)
             g.fig.tight_layout(rect=[0, 0, 1, 0.9])
-
-            # print(
-            #     ggplot(plot_df,
-            #            aes(x="value",
-            #                color="type")) +
-            #     geom_density(alpha=0.5) +
-            #     facet_wrap("target",
-            #                scales="free",
-            #                ncol=ncol) +
-            #     theme_bw(base_size=15) +
-            #     theme(figure_size=figure_size,
-            #           legend_position="right",
-            #           legend_title=element_blank(),
-            #           plot_title=element_text(hjust=0.5)) +
-            #     labs(title=f"Actual vs. Fitted Density")
-            # )
 
         fit_df.drop(columns=["rank", "params"], inplace=True)
 

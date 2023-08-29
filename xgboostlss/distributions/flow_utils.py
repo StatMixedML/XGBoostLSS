@@ -676,12 +676,11 @@ class NormalizingFlowClass:
                          }
                     )
                 flow_list.append(fit_df)
-                fit_df = pd.concat(flow_list).sort_values(by=flow_sel.loss_fn, ascending=True)
-                fit_df["rank"] = fit_df[flow_sel.loss_fn].rank().astype(int)
-                fit_df.set_index(fit_df["rank"], inplace=True)
                 pbar.update(1)
             pbar.set_description(f"Fitting of candidate normalizing flows completed")
-
+            fit_df = pd.concat(flow_list).sort_values(by=flow_sel.loss_fn, ascending=True)
+            fit_df["rank"] = fit_df[flow_sel.loss_fn].rank().astype(int)
+            fit_df.set_index(fit_df["rank"], inplace=True)
         if plot:
             # Select normalizing flow with the lowest loss
             best_flow = fit_df[fit_df["rank"] == 1].reset_index(drop=True)
@@ -706,7 +705,7 @@ class NormalizingFlowClass:
             sns.kdeplot(target.reshape(-1, ), label="Actual")
             sns.kdeplot(flow_samples.reshape(-1, ), label=f"Best-Fit: {best_flow['NormFlow'].values[0]}")
             plt.legend()
-            plt.title("Actual vs. Best-Fit Density")
+            plt.title("Actual vs. Best-Fit Density", fontweight="bold", fontsize=16)
             plt.show()
 
         fit_df.drop(columns=["rank", "params"], inplace=True)

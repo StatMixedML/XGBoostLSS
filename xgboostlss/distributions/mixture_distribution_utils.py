@@ -672,7 +672,7 @@ class MixtureDistributionClass:
             sns.kdeplot(target.reshape(-1,), label="Actual")
             sns.kdeplot(dist_samples.reshape(-1,), label=f"Best-Fit: {best_dist['distribution'].values[0]}")
             plt.legend()
-            plt.title("Actual vs. Best-Fit Density")
+            plt.title("Actual vs. Best-Fit Density", fontweight="bold", fontsize=16)
             plt.show()
 
         fit_df.drop(columns=["rank", "params", "dist_pos", "M"], inplace=True)
