@@ -83,3 +83,8 @@ März, Alexander (2022): [*Multi-Target XGBoostLSS Regression*](https://arxiv.or
 März, A. and Kneib, T.: (2022) [*Distributional Gradient Boosting Machines*](https://arxiv.org/abs/2204.00778). <br/>
 März, Alexander (2019): [*XGBoostLSS - An extension of XGBoost to probabilistic forecasting*](https://arxiv.org/abs/1907.03178). 
 --->
+
+## `Star History`
+<a href="https://star-history.com/#StatMixedML/XGBoostLSS&Date">
+    <img src="https://api.star-history.com/svg?repos=StatMixedML/XGBoostLSS&type=Date" width="450">
+</a>
