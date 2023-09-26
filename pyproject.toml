@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "xgboostlss"
+version = "0.4.0"
+description = "XGBoostLSS - An extension of XGBoost to probabilistic forecasting"
+authors = ["Alexander März", "Yunfeng Zhang"]
+license = "Apache License 2.0"
+readme = "README.md"
+packages = [{include = "xgboostlss"}]
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+xgboost = ">=1.6.0,<1.7.0"
+torch = ">=1.13,<2.0"
+pandas = "~1.5.3"
+tqdm = "^4.0"
+seaborn = "~0.12"
+pyro-ppl = "^1.8.6"
+shap = "~0.42.1"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "~7.2.2"
+
+[[tool.poetry.source]]
+name = "eiq"
+url = "https://us-python.pkg.dev/eiq-artifactory/eiq/simple/"
+
+[build-system]
+requires = ["poetry-core", "poetry@1.4.2"]
+build-backend = "poetry.core.masonry.api"

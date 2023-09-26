@@ -7,20 +7,11 @@ from xgboost.core import (
 )
 
 from xgboost.callback import (
-    CallbackContainer,
-    EarlyStopping,
-    EvaluationMonitor,
     TrainingCallback,
 )
 
-from xgboost._typing import FPreProcCallable
-from xgboost.compat import DataFrame, XGBStratifiedKFold
-
 import os
-import pickle
 from xgboostlss.utils import *
-import optuna
-from optuna.samplers import TPESampler
 import shap
 from typing import Any, Dict, Optional, Sequence, Tuple, Union
 
@@ -205,264 +196,6 @@ class XGBoostLSS:
                                      maximize=False,
                                      early_stopping_rounds=early_stopping_rounds)
 
-    def cv(
-        self,
-        params: Dict[str, Any],
-        dtrain: DMatrix,
-        num_boost_round: int = 10,
-        nfold: int = 3,
-        stratified: bool = False,
-        folds: XGBStratifiedKFold = None,
-        early_stopping_rounds: Optional[int] = None,
-        fpreproc: Optional[FPreProcCallable] = None,
-        as_pandas: bool = True,
-        verbose_eval: Optional[Union[int, bool]] = None,
-        show_stdv: bool = True,
-        seed: int = 0,
-        callbacks: Optional[Sequence[TrainingCallback]] = None,
-        shuffle: bool = True,
-    ) -> Union[Dict[str, float], DataFrame]:
-        # pylint: disable = invalid-name
-
-        """
-        Cross-validation with given parameters.
-
-        Arguments
-        ----------
-        params : dict
-            Booster params.
-        dtrain : DMatrix
-            Data to be trained.
-        num_boost_round : int
-            Number of boosting iterations.
-        nfold : int
-            Number of folds in CV.
-        stratified : bool
-            Perform stratified sampling.
-        folds : a KFold or StratifiedKFold instance or list of fold indices
-            Sklearn KFolds or StratifiedKFolds object.
-            Alternatively may explicitly pass sample indices for each fold.
-            For ``n`` folds, **folds** should be a length ``n`` list of tuples.
-            Each tuple is ``(in,out)`` where ``in`` is a list of indices to be used
-            as the training samples for the ``n`` th fold and ``out`` is a list of
-            indices to be used as the testing samples for the ``n`` th fold.
-        early_stopping_rounds: int
-            Activates early stopping. Cross-Validation metric (average of validation
-            metric computed over CV folds) needs to improve at least once in
-            every **early_stopping_rounds** round(s) to continue training.
-            The last entry in the evaluation history will represent the best iteration.
-            If there's more than one metric in the **eval_metric** parameter given in
-            **params**, the last metric will be used for early stopping.
-        fpreproc : function
-            Preprocessing function that takes (dtrain, dtest, param) and returns
-            transformed versions of those.
-        as_pandas : bool, default True
-            Return pd.DataFrame when pandas is installed.
-            If False or pandas is not installed, return np.ndarray
-        verbose_eval : bool, int, or None, default None
-            Whether to display the progress. If None, progress will be displayed
-            when np.ndarray is returned. If True, progress will be displayed at
-            boosting stage. If an integer is given, progress will be displayed
-            at every given `verbose_eval` boosting stage.
-        show_stdv : bool, default True
-            Whether to display the standard deviation in progress.
-            Results are not affected, and always contains std.
-        seed : int
-            Seed used to generate the folds (passed to numpy.random.seed).
-        callbacks :
-            List of callback functions that are applied at end of each iteration.
-            It is possible to use predefined callbacks by using
-            :ref:`Callback API <callback_api>`.
-            .. note::
-               States in callback are not preserved during training, which means callback
-               objects can not be reused for multiple training sessions without
-               reinitialization or deepcopy.
-            .. code-block:: python
-                for params in parameters_grid:
-                    # be sure to (re)initialize the callbacks before each run
-                    callbacks = [xgb.callback.LearningRateScheduler(custom_rates)]
-                    xgboost.train(params, Xy, callbacks=callbacks)
-        shuffle : bool
-            Shuffle data before creating folds.
-
-        Returns
-        -------
-        evaluation history : list(string)
-        """
-        self.set_params_adj(params)
-        self.adjust_labels(dtrain)
-        self.set_base_margin(dtrain)
-
-        self.cv_booster = xgb.cv(params,
-                                 dtrain,
-                                 num_boost_round=num_boost_round,
-                                 nfold=nfold,
-                                 stratified=stratified,
-                                 folds=folds,
-                                 obj=self.dist.objective_fn,
-                                 custom_metric=self.dist.metric_fn,
-                                 maximize=False,
-                                 early_stopping_rounds=early_stopping_rounds,
-                                 fpreproc=fpreproc,
-                                 as_pandas=as_pandas,
-                                 verbose_eval=verbose_eval,
-                                 show_stdv=show_stdv,
-                                 seed=seed,
-                                 callbacks=callbacks,
-                                 shuffle=shuffle)
-
-        return self.cv_booster
-
-    def hyper_opt(
-        self,
-        hp_dict: Dict,
-        dtrain: DMatrix,
-        num_boost_round=500,
-        nfold=10,
-        early_stopping_rounds=20,
-        max_minutes=10,
-        n_trials=None,
-        study_name=None,
-        silence=False,
-        seed=None,
-        hp_seed=None
-    ):
-        """
-        Function to tune hyperparameters using optuna.
-
-        Arguments
-        ----------
-        hp_dict: dict
-            Dictionary of hyperparameters to tune.
-        dtrain: xgb.DMatrix
-            Training data.
-        num_boost_round: int
-            Number of boosting iterations.
-        nfold: int
-            Number of folds in CV.
-        early_stopping_rounds: int
-            Activates early stopping. Cross-Validation metric (average of validation
-            metric computed over CV folds) needs to improve at least once in
-            every **early_stopping_rounds** round(s) to continue training.
-            The last entry in the evaluation history will represent the best iteration.
-            If there's more than one metric in the **eval_metric** parameter given in
-            **params**, the last metric will be used for early stopping.
-        max_minutes: int
-            Time budget in minutes, i.e., stop study after the given number of minutes.
-        n_trials: int
-            The number of trials. If this argument is set to None, there is no limitation on the number of trials.
-        study_name: str
-            Name of the hyperparameter study.
-        silence: bool
-            Controls the verbosity of the trail, i.e., user can silence the outputs of the trail.
-        seed: int
-            Seed used to generate the folds (passed to numpy.random.seed).
-        hp_seed: int
-            Seed for random number generator used in the Bayesian hyper-parameter search.
-
-        Returns
-        -------
-        opt_params : dict
-            Optimal hyper-parameters.
-        """
-
-        def objective(trial):
-
-            hyper_params = {}
-
-            for param_name, param_value in hp_dict.items():
-
-                param_type = param_value[0]
-
-                if param_type == "categorical" or param_type == "none":
-                    hyper_params.update({param_name: trial.suggest_categorical(param_name, param_value[1])})
-
-                elif param_type == "float":
-                    param_constraints = param_value[1]
-                    param_low = param_constraints["low"]
-                    param_high = param_constraints["high"]
-                    param_log = param_constraints["log"]
-                    hyper_params.update(
-                        {param_name: trial.suggest_float(param_name,
-                                                         low=param_low,
-                                                         high=param_high,
-                                                         log=param_log
-                                                         )
-                         })
-
-                elif param_type == "int":
-                    param_constraints = param_value[1]
-                    param_low = param_constraints["low"]
-                    param_high = param_constraints["high"]
-                    param_log = param_constraints["log"]
-                    hyper_params.update(
-                        {param_name: trial.suggest_int(param_name,
-                                                       low=param_low,
-                                                       high=param_high,
-                                                       log=param_log
-                                                       )
-                         })
-
-            # Add booster if not included in dictionary
-            if "booster" not in hyper_params.keys():
-                hyper_params.update({"booster": trial.suggest_categorical("booster", ["gbtree"])})
-
-            # Add pruning
-            pruning_callback = optuna.integration.XGBoostPruningCallback(trial, f"test-{self.dist.loss_fn}")
-
-            xgblss_param_tuning = self.cv(params=hyper_params,
-                                          dtrain=dtrain,
-                                          num_boost_round=num_boost_round,
-                                          nfold=nfold,
-                                          early_stopping_rounds=early_stopping_rounds,
-                                          callbacks=[pruning_callback],
-                                          seed=seed,
-                                          verbose_eval=False
-                                          )
-
-            # Add the optimal number of rounds
-            opt_rounds = xgblss_param_tuning[f"test-{self.dist.loss_fn}-mean"].idxmin() + 1
-            trial.set_user_attr("opt_round", int(opt_rounds))
-
-            # Extract the best score
-            best_score = np.min(xgblss_param_tuning[f"test-{self.dist.loss_fn}-mean"])
-            # Replace -inf with 1e8 (to avoid -inf in the log)
-            best_score = np.where(best_score == float('-inf'), float(1e8), best_score)
-
-            return best_score
-
-        if study_name is None:
-            study_name = "XGBoostLSS Hyper-Parameter Optimization"
-
-        if silence:
-            optuna.logging.set_verbosity(optuna.logging.WARNING)
-
-        if hp_seed is not None:
-            sampler = TPESampler(seed=hp_seed)
-        else:
-            sampler = TPESampler()
-
-        pruner = optuna.pruners.MedianPruner(n_startup_trials=10, n_warmup_steps=20)
-        study = optuna.create_study(sampler=sampler, pruner=pruner, direction="minimize", study_name=study_name)
-        study.optimize(objective, n_trials=n_trials, timeout=60 * max_minutes, show_progress_bar=True)
-
-        print("\nHyper-Parameter Optimization successfully finished.")
-        print("  Number of finished trials: ", len(study.trials))
-        print("  Best trial:")
-        opt_param = study.best_trial
-
-        # Add optimal stopping round
-        opt_param.params["opt_rounds"] = study.trials_dataframe()["user_attrs_opt_round"][
-            study.trials_dataframe()["value"].idxmin()]
-        opt_param.params["opt_rounds"] = int(opt_param.params["opt_rounds"])
-
-        print("    Value: {}".format(opt_param.value))
-        print("    Params: ")
-        for key, value in opt_param.params.items():
-            print("    {}: {}".format(key, value))
-
-        return opt_param.params
-
     def predict(self,
                 data: xgb.DMatrix,
                 pred_type: str = "parameters",
@@ -530,7 +263,6 @@ class XGBoostLSS:
                 "Partial_Dependence" plots the partial dependence of the parameter on the feature.
                 "Feature_Importance" plots the feature importance of the parameter.
         """
-        shap.initjs()
         explainer = shap.TreeExplainer(self.booster)
         shap_values = explainer(X)
 
@@ -567,8 +299,6 @@ class XGBoostLSS:
             Specifies which SHapley-plot to visualize. Currently, "Partial_Dependence" and "Feature_Importance"
             are supported.
         """
-
-        shap.initjs()
         explainer = shap.TreeExplainer(self.booster)
         shap_values = explainer(X)
 
@@ -619,38 +349,3 @@ class XGBoostLSS:
         eval_set = [(eval_set1, label1), (eval_set2, label2)]
 
         return eval_set
-
-    def save_model(self,
-                   model_path: str
-                   ) -> None:
-        """
-        Save the model to a file.
-
-        Parameters
-        ----------
-        model_path : str
-            The path to save the model.
-
-        Returns
-        -------
-        None
-        """
-        with open(model_path, "wb") as f:
-            pickle.dump(self, f)
-
-    @staticmethod
-    def load_model(model_path):
-        """
-        Load the model from a file.
-
-        Parameters
-        ----------
-        model_path : str
-            The path to the saved model.
-
-        Returns
-        -------
-        The loaded model.
-        """
-        with open(model_path, "rb") as f:
-            return pickle.load(f)

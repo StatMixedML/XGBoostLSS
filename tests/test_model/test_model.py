@@ -169,36 +169,6 @@ class TestClass:
         # Assertions
         assert isinstance(xgblss_mvn.booster, xgb.Booster)
 
-    def test_model_hpo(self, univariate_data, univariate_xgblss,):
-        # Unpack
-        dtrain, _, _, _ = univariate_data
-        xgblss = univariate_xgblss
-
-        # Create hyperparameter dictionary
-        param_dict = {
-            "eta": ["float", {"low": 1e-5, "high": 1, "log": True}],
-            "max_depth": ["int", {"low": 1, "high": 2, "log": False}],
-            "tree_method": ["categorical", ["auto"]],
-        }
-
-        # Train the model
-        np.random.seed(123)
-        opt_param = xgblss.hyper_opt(
-            param_dict,
-            dtrain,
-            num_boost_round=10,
-            nfold=5,
-            early_stopping_rounds=20,
-            max_minutes=10,
-            n_trials=5,
-            silence=True,
-            seed=123,
-            hp_seed=123
-        )
-
-        # Assertions
-        assert isinstance(opt_param, dict)
-
     def test_model_predict(self, univariate_data, univariate_xgblss, univariate_params):
         # Unpack
         dtrain, dtest, _, _ = univariate_data
