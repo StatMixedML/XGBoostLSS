@@ -180,8 +180,8 @@ class XGBoostLSS:
             self.set_base_margin(dtrain)
 
             # Set base_margin for evals
-            if evals is not None:
-                evals = self.set_eval_margin(evals, self.start_values)
+            if evals:
+                self.set_eval_margin(evals, self.start_values)
 
             self.booster = xgb.train(params,
                                      dtrain,
@@ -195,6 +195,7 @@ class XGBoostLSS:
                                      evals_result=evals_result,
                                      maximize=False,
                                      early_stopping_rounds=early_stopping_rounds)
+            return self.booster.copy()
 
     def predict(self,
                 data: xgb.DMatrix,
@@ -329,23 +330,16 @@ class XGBoostLSS:
         eval_set : list
             List of tuples containing the train and evaluation set.
         """
-        sets = [(item, label) for item, label in eval_set]
+        eval_label_expanded = False
+        for d_eval, _ in eval_set:
+            base_margin = (np.ones(shape=(d_eval.num_row(), 1))) * start_values
+            d_eval.set_base_margin(base_margin.flatten())
 
-        eval_set1, label1 = sets[0]
-        eval_set2, label2 = sets[1]
+            # Adjust labels to number of distributional parameters
+            if not (self.dist.univariate or self.multivariate_eval_label_expand):
+                eval_label_expanded = True
+                new_label = self.dist.target_append(d_eval.get_label(), self.dist.n_targets, self.dist.n_dist_param)
+                d_eval.set_label(new_label)
 
-        # Adjust labels to number of distributional parameters
-        if not (self.dist.univariate or self.multivariate_eval_label_expand):
+        if eval_label_expanded:
             self.multivariate_eval_label_expand = True
-            eval_set2_label = self.dist.target_append(eval_set2.get_label(), self.dist.n_targets, self.dist.n_dist_param)
-            eval_set2.set_label(eval_set2_label)
-
-        # Set base margins
-        base_margin_set1 = (np.ones(shape=(eval_set1.num_row(), 1))) * start_values
-        eval_set1.set_base_margin(base_margin_set1.flatten())
-        base_margin_set2 = (np.ones(shape=(eval_set2.num_row(), 1))) * start_values
-        eval_set2.set_base_margin(base_margin_set2.flatten())
-
-        eval_set = [(eval_set1, label1), (eval_set2, label2)]
-
-        return eval_set
