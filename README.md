@@ -79,7 +79,7 @@ If you use XGBoostLSS in your research, please cite it as:
 ```bibtex
 @misc{Maerz2023,
   author = {Alexander M\"arz},
-  title = {{XGBoostLSS: An Extension of XGBoost to Probabilistic Modelling and Prediction}},
+  title = {{XGBoostLSS: An Extension of XGBoost to Probabilistic Modelling}},
   year = {2023},
   note = {GitHub repository, Version 0.4.0},
   howpublished = {\url{https://github.com/StatMixedML/XGBoostLSS}}
