@@ -22,7 +22,7 @@
 #
 <img align="right" width="156.5223" height="181.3" src="../master/figures/XGBoostLSS_inv.png">
 
-# XGBoostLSS - An extension of XGBoost to probabilistic modelling and prediction
+# XGBoostLSS - An extension of XGBoost to probabilistic modelling
 We introduce a comprehensive framework that models and predicts the full conditional distribution of univariate and multivariate targets as a function of covariates. Choosing from a wide range of continuous, discrete, and mixed discrete-continuous distributions, modelling and predicting the entire conditional distribution greatly enhances the flexibility of XGBoost, as it allows to create probabilistic forecasts from which prediction intervals and quantiles of interest can be derived.
 
 ## `Features`
@@ -72,6 +72,19 @@ For more information and context, please visit the [documentation](https://statm
 
 ## `Feedback`
 We encourage you to provide feedback on how to enhance XGBoostLSS or request the implementation of additional distributions by opening a [new discussion](https://github.com/StatMixedML/XGBoostLSS/discussions).
+
+## `How to cite`
+If you use XGBoostLSS in your research, please cite it as:
+
+```bibtex
+@misc{Maerz2023,
+  author = {Alexander M\"arz},
+  title = {{XGBoostLSS: An Extension of XGBoost to Probabilistic Modelling and Prediction}},
+  year = {2023},
+  note = {GitHub repository, Version 0.4.0},
+  howpublished = {\url{https://github.com/StatMixedML/XGBoostLSS}}
+}
+```
 
 ## `Reference Paper`
 [![Arxiv link](https://img.shields.io/badge/arXiv-Multi%20Target%20XGBoostLSS%20Regression-color=brightgreen)](https://arxiv.org/abs/2210.06831) <br/>
