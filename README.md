@@ -64,7 +64,7 @@ pip install git+https://github.com/dsgibbons/shap.git
 ## `Available Distributions`
 Our framework is built upon PyTorch and Pyro, enabling users to harness a diverse set of distributional families. XGBoostLSS currently supports the [following distributions](https://statmixedml.github.io/XGBoostLSS/distributions/). 
 
-## `How to use`
+## `How to Use`
 Please visit the [example section](https://statmixedml.github.io/XGBoostLSS/examples/Gaussian_Regression/) for guidance on how to use the framework.
 
 ## `Documentation`
@@ -73,7 +73,7 @@ For more information and context, please visit the [documentation](https://statm
 ## `Feedback`
 We encourage you to provide feedback on how to enhance XGBoostLSS or request the implementation of additional distributions by opening a [new discussion](https://github.com/StatMixedML/XGBoostLSS/discussions).
 
-## `How to cite`
+## `How to Cite`
 If you use XGBoostLSS in your research, please cite it as:
 
 ```bibtex
