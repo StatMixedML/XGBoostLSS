@@ -679,9 +679,6 @@ class DistributionClass:
                 if _get_name(dist) == best_dist["distribution"].values[0]:
                     best_dist_sel = dist
                     break
-            #  best_dist_sel = best_dist distrgetattr(
-            #      best_dist_sel, best_dist["distribution"].values[0]
-            #  )()
             best_dist_sel = best_dist_sel()
             params = torch.tensor(best_dist["params"][0]).reshape(
                 -1, best_dist_sel.n_dist_param
