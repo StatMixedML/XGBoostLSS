@@ -23,7 +23,7 @@ from xgboostlss.utils import *
 import optuna
 from optuna.samplers import TPESampler
 
-# import shap
+import shap
 from typing import Any, Dict, Optional, Sequence, Tuple, Union
 
 

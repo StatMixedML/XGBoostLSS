@@ -3,8 +3,8 @@ from .distribution_utils import DistributionClass
 from ..utils import *
 
 
-class _DefaultTailLambertWWeibull(tlwd.TailLambertWDistribution):
-    """Default Tail Lambert W x Weibull distribution to use as args."""
+class _DefaultTailLambertWGamma(tlwd.TailLambertWDistribution):
+    """Default Tail Lambert W x Gamma distribution to use as args."""
 
     def __init__(
         self,
@@ -14,15 +14,15 @@ class _DefaultTailLambertWWeibull(tlwd.TailLambertWDistribution):
         **kwargs
     ):
         super().__init__(
-            base_distribution=torch.distributions.Weibull,
+            base_distribution=torch.distributions.Gamma,
             base_dist_args={"concentration": concentration, "scale": scale},
             use_mean_variance=False,
             tailweight=tailweight,
         )
 
 
-class _DefaultSkewLambertWWeibull(tlwd.SkewLambertWDistribution):
-    """Default Tail Lambert W x Weibull distribution to use as args."""
+class _DefaultSkewLambertWGamma(tlwd.SkewLambertWDistribution):
+    """Default Tail Lambert W x Gamma distribution to use as args."""
 
     def __init__(
         self,
@@ -32,23 +32,23 @@ class _DefaultSkewLambertWWeibull(tlwd.SkewLambertWDistribution):
         **kwargs
     ):
         super().__init__(
-            base_distribution=torch.distributions.Weibull,
+            base_distribution=torch.distributions.Gamma,
             base_dist_args={"concentration": concentration, "scale": scale},
             use_mean_variance=False,
             skewweight=skewweight,
         )
 
 
-class TailLambertWWeibull(DistributionClass):
+class TailLambertWGamma(DistributionClass):
     """
-    Tail Lambert W x Weibull distribution class.
+    Tail Lambert W x Gamma distribution class.
 
     Distributional Parameters
     -------------------------
     concentration: torch.Tensor
         Concentration of the distribution (often referred as the shape parameter).
     scale: torch.Tensor
-        Scale parameter of the Weibull distribution.
+        Scale parameter of the Gamma distribution.
     tailweight: torch.Tensor:
         Tail-weight of the distribution (often referred to as delta or h).
 
@@ -103,7 +103,7 @@ class TailLambertWWeibull(DistributionClass):
             )
 
         # Set the parameters specific to the distribution
-        distribution = _DefaultTailLambertWWeibull
+        distribution = _DefaultTailLambertWGamma
         param_dict = {
             "concentration": response_fn_concentration,
             "scale": response_fn_scale,
@@ -124,16 +124,16 @@ class TailLambertWWeibull(DistributionClass):
         )
 
 
-class SkewLambertWWeibull(DistributionClass):
+class SkewLambertWGamma(DistributionClass):
     """
-    Skew Lambert W x Weibull distribution class.
+    Skew Lambert W x Gamma distribution class.
 
     Distributional Parameters
     -------------------------
     concentration: torch.Tensor
         Concentration of the distribution (often referred as the shape parameter).
     scale: torch.Tensor
-        Scale parameter of the Weibull distribution.
+        Scale parameter of the Gamma distribution.
     skewweight: torch.Tensor:
         Skew-weight of the distribution (also referred to as gamma).
 
@@ -188,7 +188,7 @@ class SkewLambertWWeibull(DistributionClass):
             )
 
         # Set the parameters specific to the distribution
-        distribution = _DefaultSkewLambertWWeibull
+        distribution = _DefaultSkewLambertWGamma
         param_dict = {
             "concentration": response_fn_concentration,
             "scale": response_fn_scale,
