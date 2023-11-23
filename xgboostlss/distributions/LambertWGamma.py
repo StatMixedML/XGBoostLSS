@@ -15,7 +15,7 @@ class _DefaultTailLambertWGamma(tlwd.TailLambertWDistribution):
     ):
         super().__init__(
             base_distribution=torch.distributions.Gamma,
-            base_dist_args={"concentration": concentration, "scale": scale},
+            base_dist_args={"concentration": concentration, "rate": 1.0 / scale},
             use_mean_variance=True,
             tailweight=tailweight,
         )
@@ -33,7 +33,7 @@ class _DefaultSkewLambertWGamma(tlwd.SkewLambertWDistribution):
     ):
         super().__init__(
             base_distribution=torch.distributions.Gamma,
-            base_dist_args={"concentration": concentration, "scale": scale},
+            base_dist_args={"concentration": concentration, "rate": 1.0 / scale},
             use_mean_variance=True,
             skewweight=skewweight,
         )

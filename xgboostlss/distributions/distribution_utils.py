@@ -642,7 +642,6 @@ class DistributionClass:
             for i in range(len(candidate_distributions)):
                 dist_name = _get_name(candidate_distributions[i])
                 pbar.set_description(f"Fitting {dist_name} distribution")
-                # dist_sel = getattr(candidate_distributions[i], dist_name)()
                 dist_sel = candidate_distributions[i]()
                 try:
                     loss, params = dist_sel.calculate_start_values(
