@@ -10,7 +10,7 @@ class _DefaultTailLambertWExponential(tlwd.TailLambertWDistribution):
         super().__init__(
             base_distribution=torch.distributions.Exponential,
             base_dist_args={"rate": 1.0 / scale},
-            use_mean_variance=False,
+            use_mean_variance=True,
             tailweight=tailweight,
         )
 
@@ -22,7 +22,7 @@ class _DefaultSkewLambertWExponential(tlwd.SkewLambertWDistribution):
         super().__init__(
             base_distribution=torch.distributions.Exponential,
             base_dist_args={"rate": 1.0 / scale},
-            use_mean_variance=False,
+            use_mean_variance=True,
             skewweight=skewweight,
         )
 
