@@ -36,7 +36,7 @@ def gen_gaussian_data(n_samples: int) -> pd.DataFrame:
     return df
 
 
-def gen_lambertw_gaussian_data(n_samples):
+def gen_tail_lambertw_gaussian_data(n_samples):
     X = gen_features(n_samples, n_dims=11)
     loc_true = pd.Series([10.0] * n_samples, name="loc")
     scale_true = (
@@ -54,21 +54,18 @@ def gen_lambertw_gaussian_data(n_samples):
     tailweight_true.name = "tailweight"
 
     df = pd.concat([X, loc_true, scale_true, tailweight_true], axis=1)
-
-    df["y"] = (
-        tlwd.TailLambertWNormal(
-            loc=torch.tensor(df["loc"].values),
-            scale=torch.tensor(df["scale"].values),
-            tailweight=torch.tensor(df["tailweight"].values),
-        )
-        .sample([1])
-        .numpy()
-        .ravel()
+    distr = tlwd.TailLambertWNormal(
+        loc=torch.tensor(df["loc"].values),
+        scale=torch.tensor(df["scale"].values),
+        tailweight=torch.tensor(df["tailweight"].values),
     )
+    df["y"] = distr.sample([1]).numpy().ravel()
+    df["q5"] = distr.icdf(torch.tensor([0.05]))
+    df["q95"] = distr.icdf(torch.tensor([0.95]))
     return df
 
 
-def load_simulated_lambertw_gaussian_data():
+def load_simulated_tail_lambertw_gaussian_data():
     """
     Returns train/test dataframe of a simulated example.
 
@@ -78,7 +75,7 @@ def load_simulated_lambertw_gaussian_data():
         X1:X10         int64: random noise features
 
     """
-    all_df = gen_lambertw_gaussian_data(n_samples=10000)
+    all_df = gen_tail_lambertw_gaussian_data(n_samples=10000)
     train_df, test_df = all_df.iloc[:7000], all_df.iloc[7000:]
     return train_df, test_df
 

@@ -7,15 +7,11 @@ class _DefaultTailLambertWLogNormal(tlwd.TailLambertWDistribution):
     """Default Tail Lambert W x LogNormal distribution to use as args."""
 
     def __init__(
-        self,
-        concentration: torch.Tensor,
-        scale: torch.Tensor,
-        tailweight: torch.Tensor,
-        **kwargs
+        self, loc: torch.Tensor, scale: torch.Tensor, tailweight: torch.Tensor, **kwargs
     ):
         super().__init__(
             base_distribution=torch.distributions.LogNormal,
-            base_dist_args={"concentration": concentration, "scale": scale},
+            base_dist_args={"loc": loc, "scale": scale},
             use_mean_variance=False,
             tailweight=tailweight,
         )
@@ -25,15 +21,11 @@ class _DefaultSkewLambertWLogNormal(tlwd.SkewLambertWDistribution):
     """Default Tail Lambert W x LogNormal distribution to use as args."""
 
     def __init__(
-        self,
-        concentration: torch.Tensor,
-        scale: torch.Tensor,
-        skewweight: torch.Tensor,
-        **kwargs
+        self, loc: torch.Tensor, scale: torch.Tensor, skewweight: torch.Tensor, **kwargs
     ):
         super().__init__(
             base_distribution=torch.distributions.LogNormal,
-            base_dist_args={"concentration": concentration, "scale": scale},
+            base_dist_args={"loc": loc, "scale": scale},
             use_mean_variance=False,
             skewweight=skewweight,
         )
@@ -45,8 +37,8 @@ class TailLambertWLogNormal(DistributionClass):
 
     Distributional Parameters
     -------------------------
-    concentration: torch.Tensor
-        Concentration of the distribution (often referred as the shape parameter).
+    loc: torch.Tensor
+        loc of the distribution (often referred as the shape parameter).
     scale: torch.Tensor
         Scale parameter of the LogNormal distribution.
     tailweight: torch.Tensor:
@@ -88,12 +80,11 @@ class TailLambertWLogNormal(DistributionClass):
         # Specify Response Functions
         response_functions = {
             # For (concentation, scale, tailweight)
-            "exp": (exp_fn, exp_fn, exp_fn),
-            "softplus": (softplus_fn, softplus_fn, softplus_fn),
+            "exp": (exp_fn, exp_fn),
+            "softplus": (softplus_fn, softplus_fn),
         }
         if response_fn in response_functions:
             (
-                response_fn_concentration,
                 response_fn_scale,
                 response_fn_tailweight,
             ) = response_functions[response_fn]
@@ -105,7 +96,7 @@ class TailLambertWLogNormal(DistributionClass):
         # Set the parameters specific to the distribution
         distribution = _DefaultTailLambertWLogNormal
         param_dict = {
-            "concentration": response_fn_concentration,
+            "loc": identity_fn,
             "scale": response_fn_scale,
             "tailweight": response_fn_tailweight,
         }
@@ -130,8 +121,8 @@ class SkewLambertWLogNormal(DistributionClass):
 
     Distributional Parameters
     -------------------------
-    concentration: torch.Tensor
-        Concentration of the distribution (often referred as the shape parameter).
+    loc: torch.Tensor
+        loc of the distribution (often referred as the shape parameter).
     scale: torch.Tensor
         Scale parameter of the LogNormal distribution.
     skewweight: torch.Tensor:
@@ -173,12 +164,11 @@ class SkewLambertWLogNormal(DistributionClass):
         # Specify Response Functions
         response_functions = {
             # For (concentation, scale, tailweight)
-            "exp": (exp_fn, exp_fn, exp_fn),
-            "softplus": (softplus_fn, softplus_fn, softplus_fn),
+            "exp": (exp_fn, exp_fn),
+            "softplus": (softplus_fn, softplus_fn),
         }
         if response_fn in response_functions:
             (
-                response_fn_concentration,
                 response_fn_scale,
                 response_fn_skewweight,
             ) = response_functions[response_fn]
@@ -190,7 +180,7 @@ class SkewLambertWLogNormal(DistributionClass):
         # Set the parameters specific to the distribution
         distribution = _DefaultSkewLambertWLogNormal
         param_dict = {
-            "concentration": response_fn_concentration,
+            "loc": identity_fn,
             "scale": response_fn_scale,
             "skewweight": response_fn_skewweight,
         }
