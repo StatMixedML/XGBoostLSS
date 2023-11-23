@@ -6,16 +6,10 @@ from ..utils import *
 class _DefaultTailLambertWExponential(tlwd.TailLambertWDistribution):
     """Default Tail Lambert W x Exponential distribution to use as args."""
 
-    def __init__(
-        self,
-        concentration: torch.Tensor,
-        scale: torch.Tensor,
-        tailweight: torch.Tensor,
-        **kwargs
-    ):
+    def __init__(self, scale: torch.Tensor, tailweight: torch.Tensor, **kwargs):
         super().__init__(
             base_distribution=torch.distributions.Exponential,
-            base_dist_args={"concentration": concentration, "scale": scale},
+            base_dist_args={"rate": 1.0 / scale},
             use_mean_variance=False,
             tailweight=tailweight,
         )
@@ -24,16 +18,10 @@ class _DefaultTailLambertWExponential(tlwd.TailLambertWDistribution):
 class _DefaultSkewLambertWExponential(tlwd.SkewLambertWDistribution):
     """Default Tail Lambert W x Exponential distribution to use as args."""
 
-    def __init__(
-        self,
-        concentration: torch.Tensor,
-        scale: torch.Tensor,
-        skewweight: torch.Tensor,
-        **kwargs
-    ):
+    def __init__(self, scale: torch.Tensor, skewweight: torch.Tensor, **kwargs):
         super().__init__(
             base_distribution=torch.distributions.Exponential,
-            base_dist_args={"concentration": concentration, "scale": scale},
+            base_dist_args={"rate": 1.0 / scale},
             use_mean_variance=False,
             skewweight=skewweight,
         )
@@ -45,10 +33,8 @@ class TailLambertWExponential(DistributionClass):
 
     Distributional Parameters
     -------------------------
-    concentration: torch.Tensor
-        Concentration of the distribution (often referred as the shape parameter).
     scale: torch.Tensor
-        Scale parameter of the Exponential distribution.
+        Scale parameter of the Exponential distribution (inverse of 'rate' lambda)
     tailweight: torch.Tensor:
         Tail-weight of the distribution (often referred to as delta or h).
 
@@ -88,12 +74,11 @@ class TailLambertWExponential(DistributionClass):
         # Specify Response Functions
         response_functions = {
             # For (concentation, scale, tailweight)
-            "exp": (exp_fn, exp_fn, exp_fn),
-            "softplus": (softplus_fn, softplus_fn, softplus_fn),
+            "exp": (exp_fn, exp_fn),
+            "softplus": (softplus_fn, softplus_fn),
         }
         if response_fn in response_functions:
             (
-                response_fn_concentration,
                 response_fn_scale,
                 response_fn_tailweight,
             ) = response_functions[response_fn]
@@ -105,7 +90,6 @@ class TailLambertWExponential(DistributionClass):
         # Set the parameters specific to the distribution
         distribution = _DefaultTailLambertWExponential
         param_dict = {
-            "concentration": response_fn_concentration,
             "scale": response_fn_scale,
             "tailweight": response_fn_tailweight,
         }
@@ -130,10 +114,8 @@ class SkewLambertWExponential(DistributionClass):
 
     Distributional Parameters
     -------------------------
-    concentration: torch.Tensor
-        Concentration of the distribution (often referred as the shape parameter).
     scale: torch.Tensor
-        Scale parameter of the Exponential distribution.
+        Scale parameter of the Exponential distribution (inverse of rate 'lambda').
     skewweight: torch.Tensor:
         Skew-weight of the distribution (also referred to as gamma).
 
@@ -173,12 +155,11 @@ class SkewLambertWExponential(DistributionClass):
         # Specify Response Functions
         response_functions = {
             # For (concentation, scale, tailweight)
-            "exp": (exp_fn, exp_fn, exp_fn),
-            "softplus": (softplus_fn, softplus_fn, softplus_fn),
+            "exp": (exp_fn, exp_fn),
+            "softplus": (softplus_fn, softplus_fn),
         }
         if response_fn in response_functions:
             (
-                response_fn_concentration,
                 response_fn_scale,
                 response_fn_skewweight,
             ) = response_functions[response_fn]
@@ -190,7 +171,6 @@ class SkewLambertWExponential(DistributionClass):
         # Set the parameters specific to the distribution
         distribution = _DefaultSkewLambertWExponential
         param_dict = {
-            "concentration": response_fn_concentration,
             "scale": response_fn_scale,
             "skewweight": response_fn_skewweight,
         }
