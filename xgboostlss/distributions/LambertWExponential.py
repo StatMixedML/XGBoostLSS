@@ -3,19 +3,6 @@ from .distribution_utils import DistributionClass
 from ..utils import *
 
 
-def scale2rate(scale: float) -> float:
-    return 1.0 / scale
-
-
-def rate2scale(rate: float) -> float:
-    return 1.0 / rate
-
-
-class TailLambertWExponentialMean(tlwd.TailLambertWExponential):
-    def __init__(self, scale: torch.tensor, **kwargs):
-        super().__init__(rate=scale2rate(scale), **kwargs)
-
-
 class TailLambertWExponential(DistributionClass):
     """
     Tail Lambert W x Exponential distribution class.
@@ -49,7 +36,6 @@ class TailLambertWExponential(DistributionClass):
         stabilization: str = "None",
         response_fn: str = "softplus",
         loss_fn: str = "nll",
-        reparameterize_mean: bool = False,
     ):
         # Input Checks
         if stabilization not in ["None", "MAD", "L2"]:
