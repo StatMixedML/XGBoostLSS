@@ -27,7 +27,7 @@ setup(
         "plotnine~=0.8.0",
         "scipy>=1.0.0",
         "seaborn>=0.1.0",
-        "torchlambertw @ git+ssh://git@github.com/gmgeorg/torchlambertw.git#egg=torchlambertw-0.0.1",
+        "torchlambertw @ git+ssh://git@github.com/gmgeorg/torchlambertw.git#egg=torchlambertw-0.0.2",
         "tqdm>=4.0.0",
         "matplotlib>=3.6.0",
     ],

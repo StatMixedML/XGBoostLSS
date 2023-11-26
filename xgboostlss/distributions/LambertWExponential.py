@@ -3,28 +3,17 @@ from .distribution_utils import DistributionClass
 from ..utils import *
 
 
-class _DefaultTailLambertWExponential(tlwd.TailLambertWDistribution):
-    """Default Tail Lambert W x Exponential distribution to use as args."""
-
-    def __init__(self, scale: torch.Tensor, tailweight: torch.Tensor, **kwargs):
-        super().__init__(
-            base_distribution=torch.distributions.Exponential,
-            base_dist_args={"rate": 1.0 / scale},
-            use_mean_variance=True,
-            tailweight=tailweight,
-        )
+def scale2rate(scale: float) -> float:
+    return 1.0 / scale
 
 
-class _DefaultSkewLambertWExponential(tlwd.SkewLambertWDistribution):
-    """Default Tail Lambert W x Exponential distribution to use as args."""
+def rate2scale(rate: float) -> float:
+    return 1.0 / rate
 
-    def __init__(self, scale: torch.Tensor, skewweight: torch.Tensor, **kwargs):
-        super().__init__(
-            base_distribution=torch.distributions.Exponential,
-            base_dist_args={"rate": 1.0 / scale},
-            use_mean_variance=True,
-            skewweight=skewweight,
-        )
+
+class TailLambertWExponentialMean(tlwd.TailLambertWExponential):
+    def __init__(self, scale: torch.tensor, **kwargs):
+        super().__init__(rate=scale2rate(scale), **kwargs)
 
 
 class TailLambertWExponential(DistributionClass):
@@ -60,6 +49,7 @@ class TailLambertWExponential(DistributionClass):
         stabilization: str = "None",
         response_fn: str = "softplus",
         loss_fn: str = "nll",
+        reparameterize_mean: bool = False,
     ):
         # Input Checks
         if stabilization not in ["None", "MAD", "L2"]:
@@ -79,7 +69,7 @@ class TailLambertWExponential(DistributionClass):
         }
         if response_fn in response_functions:
             (
-                response_fn_scale,
+                response_fn_rate,
                 response_fn_tailweight,
             ) = response_functions[response_fn]
         else:
@@ -88,9 +78,10 @@ class TailLambertWExponential(DistributionClass):
             )
 
         # Set the parameters specific to the distribution
-        distribution = _DefaultTailLambertWExponential
+        distribution = tlwd.TailLambertWExponential
+
         param_dict = {
-            "scale": response_fn_scale,
+            "rate": response_fn_rate,
             "tailweight": response_fn_tailweight,
         }
         torch.distributions.Distribution.set_default_validate_args(False)
@@ -169,7 +160,7 @@ class SkewLambertWExponential(DistributionClass):
             )
 
         # Set the parameters specific to the distribution
-        distribution = _DefaultSkewLambertWExponential
+        distribution = tlwd.SkewLambertWExponential
         param_dict = {
             "scale": response_fn_scale,
             "skewweight": response_fn_skewweight,

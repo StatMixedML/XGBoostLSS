@@ -3,42 +3,6 @@ from .distribution_utils import DistributionClass
 from ..utils import *
 
 
-class _DefaultTailLambertWWeibull(tlwd.TailLambertWDistribution):
-    """Default Tail Lambert W x Weibull distribution to use as args."""
-
-    def __init__(
-        self,
-        concentration: torch.Tensor,
-        scale: torch.Tensor,
-        tailweight: torch.Tensor,
-        **kwargs
-    ):
-        super().__init__(
-            base_distribution=torch.distributions.Weibull,
-            base_dist_args={"concentration": concentration, "scale": scale},
-            use_mean_variance=True,
-            tailweight=tailweight,
-        )
-
-
-class _DefaultSkewLambertWWeibull(tlwd.SkewLambertWDistribution):
-    """Default Tail Lambert W x Weibull distribution to use as args."""
-
-    def __init__(
-        self,
-        concentration: torch.Tensor,
-        scale: torch.Tensor,
-        skewweight: torch.Tensor,
-        **kwargs
-    ):
-        super().__init__(
-            base_distribution=torch.distributions.Weibull,
-            base_dist_args={"concentration": concentration, "scale": scale},
-            use_mean_variance=True,
-            skewweight=skewweight,
-        )
-
-
 class TailLambertWWeibull(DistributionClass):
     """
     Tail Lambert W x Weibull distribution class.
@@ -103,7 +67,7 @@ class TailLambertWWeibull(DistributionClass):
             )
 
         # Set the parameters specific to the distribution
-        distribution = _DefaultTailLambertWWeibull
+        distribution = tlwd.TailLambertWWeibull
         param_dict = {
             "concentration": response_fn_concentration,
             "scale": response_fn_scale,
@@ -188,7 +152,7 @@ class SkewLambertWWeibull(DistributionClass):
             )
 
         # Set the parameters specific to the distribution
-        distribution = _DefaultSkewLambertWWeibull
+        distribution = tlwd.SkewLambertWWeibull
         param_dict = {
             "concentration": response_fn_concentration,
             "scale": response_fn_scale,

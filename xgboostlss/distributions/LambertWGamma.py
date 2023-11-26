@@ -3,42 +3,6 @@ from .distribution_utils import DistributionClass
 from ..utils import *
 
 
-class _DefaultTailLambertWGamma(tlwd.TailLambertWDistribution):
-    """Default Tail Lambert W x Gamma distribution to use as args."""
-
-    def __init__(
-        self,
-        concentration: torch.Tensor,
-        scale: torch.Tensor,
-        tailweight: torch.Tensor,
-        **kwargs
-    ):
-        super().__init__(
-            base_distribution=torch.distributions.Gamma,
-            base_dist_args={"concentration": concentration, "rate": 1.0 / scale},
-            use_mean_variance=True,
-            tailweight=tailweight,
-        )
-
-
-class _DefaultSkewLambertWGamma(tlwd.SkewLambertWDistribution):
-    """Default Tail Lambert W x Gamma distribution to use as args."""
-
-    def __init__(
-        self,
-        concentration: torch.Tensor,
-        scale: torch.Tensor,
-        skewweight: torch.Tensor,
-        **kwargs
-    ):
-        super().__init__(
-            base_distribution=torch.distributions.Gamma,
-            base_dist_args={"concentration": concentration, "rate": 1.0 / scale},
-            use_mean_variance=True,
-            skewweight=skewweight,
-        )
-
-
 class TailLambertWGamma(DistributionClass):
     """
     Tail Lambert W x Gamma distribution class.
@@ -94,7 +58,7 @@ class TailLambertWGamma(DistributionClass):
         if response_fn in response_functions:
             (
                 response_fn_concentration,
-                response_fn_scale,
+                response_fn_rate,
                 response_fn_tailweight,
             ) = response_functions[response_fn]
         else:
@@ -103,10 +67,10 @@ class TailLambertWGamma(DistributionClass):
             )
 
         # Set the parameters specific to the distribution
-        distribution = _DefaultTailLambertWGamma
+        distribution = tlwd.TailLambertWGamma
         param_dict = {
             "concentration": response_fn_concentration,
-            "scale": response_fn_scale,
+            "rate": response_fn_rate,
             "tailweight": response_fn_tailweight,
         }
         torch.distributions.Distribution.set_default_validate_args(False)
@@ -179,7 +143,7 @@ class SkewLambertWGamma(DistributionClass):
         if response_fn in response_functions:
             (
                 response_fn_concentration,
-                response_fn_scale,
+                response_fn_rate,
                 response_fn_skewweight,
             ) = response_functions[response_fn]
         else:
@@ -188,10 +152,10 @@ class SkewLambertWGamma(DistributionClass):
             )
 
         # Set the parameters specific to the distribution
-        distribution = _DefaultSkewLambertWGamma
+        distribution = tlwd.SkewLambertWGamma
         param_dict = {
             "concentration": response_fn_concentration,
-            "scale": response_fn_scale,
+            "rate": response_fn_rate,
             "skewweight": response_fn_skewweight,
         }
         torch.distributions.Distribution.set_default_validate_args(False)
