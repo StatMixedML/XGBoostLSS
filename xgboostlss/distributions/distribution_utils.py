@@ -600,126 +600,140 @@ class DistributionClass:
 
         return crps
 
-    def dist_select(
-        self,
-        target: np.ndarray,
-        candidate_distributions: List,
-        max_iter: int = 100,
-        plot: bool = False,
-        figure_size: tuple = (10, 5),
-    ) -> pd.DataFrame:
-        """
-        Function that selects the most suitable distribution among the candidate_distributions for the target variable,
-        based on the NegLogLikelihood (lower is better).
 
-        Parameters
-        ----------
-        target: np.ndarray
-            Response variable.
-        candidate_distributions: List
-            List of candidate distributions.
-        max_iter: int
-            Maximum number of iterations for the optimization.
-        plot: bool
-            If True, a density plot of the actual and fitted distribution is created.
-        figure_size: tuple
-            Figure size of the density plot.
+def dist_select(
+    target: np.ndarray,
+    candidate_distributions: List[DistributionClass],
+    target_test: Optional[np.ndarray] = None,
+    max_iter: int = 100,
+    plot: bool = False,
+    figure_size: tuple = (10, 5),
+) -> pd.DataFrame:
+    """
+    Function that selects the most suitable distribution among the candidate_distributions for the target variable,
+    based on the NegLogLikelihood (lower is better).
 
-        Returns
-        -------
-        fit_df: pd.DataFrame
-            Dataframe with the loss values of the fitted candidate distributions.
-        """
-        dist_list = []
-        total_iterations = len(candidate_distributions)
+    Parameters
+    ----------
+    target: np.ndarray
+        Response variable.
+    candidate_distributions: List
+        List of candidate distributions.
+    target_test: np.ndarray
+        Response variable on test data (optional); if not provided, will re-use training data.
+    max_iter: int
+        Maximum number of iterations for the optimization.
+    plot: bool
+        If True, a density plot of the actual and fitted distribution is created.
+    figure_size: tuple
+        Figure size of the density plot.
 
-        def _get_name(distr) -> str:
-            return distr.__name__.split(".")[-1]
+    Returns
+    -------
+    fit_df: pd.DataFrame
+        Dataframe with the loss values of the fitted candidate distributions.
+    """
+    dist_list = []
+    total_iterations = len(candidate_distributions)
 
-        with tqdm(
-            total=total_iterations, desc="Fitting candidate distributions"
-        ) as pbar:
-            for i in range(len(candidate_distributions)):
-                dist_name = _get_name(candidate_distributions[i])
-                pbar.set_description(f"Fitting {dist_name} distribution")
-                dist_sel = candidate_distributions[i]()
-                try:
-                    loss, params = dist_sel.calculate_start_values(
-                        target=target.reshape(-1, 1), max_iter=max_iter
-                    )
-                    fit_df = pd.DataFrame.from_dict(
-                        {
-                            self.loss_fn: loss.reshape(
-                                -1,
-                            ),
-                            "distribution": str(dist_name),
-                            "params": [params],
-                        }
-                    )
-                except Exception as e:
-                    warnings.warn(f"Error fitting {dist_name} distribution: {str(e)}")
-                    fit_df = pd.DataFrame(
-                        {
-                            self.loss_fn: np.nan,
-                            "distribution": str(dist_name),
-                            "params": [np.nan] * self.n_dist_param,
-                        }
-                    )
-                dist_list.append(fit_df)
-                pbar.update(1)
-            pbar.set_description(f"Fitting of candidate distributions completed")
-            fit_df = pd.concat(dist_list).sort_values(by=self.loss_fn, ascending=True)
-            fit_df["rank"] = fit_df[self.loss_fn].rank().astype(int)
-            fit_df.set_index(fit_df["rank"], inplace=True)
-        if plot:
-            # Select best distribution
-            best_dist = fit_df[fit_df["rank"] == 1].reset_index(drop=True)
-            for dist in candidate_distributions:
-                if _get_name(dist) == best_dist["distribution"].values[0]:
-                    best_dist_sel = dist
-                    break
-            best_dist_sel = best_dist_sel()
-            params = torch.tensor(best_dist["params"][0]).reshape(
-                -1, best_dist_sel.n_dist_param
-            )
+    # Use 'target' if target_test is not provided.
+    if target_test is None:
+        target_test = target
 
-            # Transform parameters to the response scale and draw samples
-            fitted_params = np.concatenate(
-                [
-                    response_fun(params[:, i].reshape(-1, 1)).numpy()
-                    for i, (dist_param, response_fun) in enumerate(
-                        best_dist_sel.param_dict.items()
-                    )
-                ],
-                axis=1,
-            )
-            fitted_params = pd.DataFrame(
-                fitted_params, columns=best_dist_sel.param_dict.keys()
-            )
-            n_samples = np.max([10000, target.shape[0]])
-            n_samples = np.where(n_samples > 500000, 100000, n_samples)
-            dist_samples = best_dist_sel.draw_samples(
-                fitted_params, n_samples=n_samples, seed=123
-            ).values
+    loss_col = "loss"
+    loss_test_col = "loss_test"
 
-            # Plot actual and fitted distribution
-            plt.figure(figsize=figure_size)
-            sns.kdeplot(
-                target.reshape(
-                    -1,
-                ),
-                label="Actual",
-            )
-            sns.kdeplot(
-                dist_samples.reshape(
-                    -1,
-                ),
-                label=f"Best-Fit: {best_dist['distribution'].values[0]}",
-            )
-            plt.legend()
-            plt.title("Actual vs. Best-Fit Density", fontweight="bold", fontsize=16)
-            plt.show()
+    def _get_name(distr) -> str:
+        return distr.__class__.__name__
 
-        fit_df.drop(columns=["rank", "params"], inplace=True)
+    with tqdm(total=total_iterations, desc="Fitting candidate distributions") as pbar:
+        for i in range(len(candidate_distributions)):
+            dist_sel = candidate_distributions[i]
+            dist_name = _get_name(dist_sel)
+            pbar.set_description(f"Fitting {dist_name} distribution")
+            try:
+                loss, params = dist_sel.calculate_start_values(
+                    target=target.reshape(-1, 1), max_iter=max_iter
+                )
+                loss_test = dist_sel.get_params_loss(
+                    params, torch.tensor(target_test), params
+                )[1].numpy()
 
-        return fit_df
+                fit_df = pd.DataFrame.from_dict(
+                    {
+                        loss_test_col: loss_test,
+                        loss_col: loss.reshape(
+                            -1,
+                        ),
+                        "distribution": dist_name,
+                        "params": [params],
+                    }
+                )
+            except Exception as e:
+                warnings.warn(f"Error fitting {dist_name} distribution: {str(e)}")
+                fit_df = pd.DataFrame(
+                    {
+                        loss_test_col: np.nan,
+                        loss_col: np.nan,
+                        "distribution": str(dist_name),
+                        "params": [np.nan] * dist_sel.n_dist_param,
+                    }
+                )
+            dist_list.append(fit_df)
+            pbar.update(1)
+        pbar.set_description(f"Fitting of candidate distributions completed")
+        fit_df = pd.concat(dist_list).sort_values(by=loss_test_col, ascending=True)
+        fit_df["rank"] = fit_df[loss_test_col].rank().astype(pd.Int64Dtype())
+
+    if plot:
+        # Select best distribution (rank = 1)
+        best_dist = fit_df[fit_df["rank"] == 1].reset_index(drop=True)
+        for dist in candidate_distributions:
+            if _get_name(dist) == best_dist["distribution"].values[0]:
+                best_dist_sel = dist
+                break
+        best_dist_sel = best_dist_sel
+        params = torch.tensor(best_dist["params"][0]).reshape(
+            -1, best_dist_sel.n_dist_param
+        )
+
+        # Transform parameters to the response scale and draw samples
+        fitted_params = np.concatenate(
+            [
+                response_fun(params[:, i].reshape(-1, 1)).numpy()
+                for i, (dist_param, response_fun) in enumerate(
+                    best_dist_sel.param_dict.items()
+                )
+            ],
+            axis=1,
+        )
+        fitted_params = pd.DataFrame(
+            fitted_params, columns=best_dist_sel.param_dict.keys()
+        )
+        n_samples = np.max([10000, target.shape[0]])
+        n_samples = np.where(n_samples > 500000, 100000, n_samples)
+        dist_samples = best_dist_sel.draw_samples(
+            fitted_params, n_samples=n_samples, seed=123
+        ).values
+
+        # Plot actual and fitted distribution
+        plt.figure(figsize=figure_size)
+        sns.kdeplot(
+            target.reshape(
+                -1,
+            ),
+            label="Actual",
+        )
+        sns.kdeplot(
+            dist_samples.reshape(
+                -1,
+            ),
+            label=f"Best-Fit: {best_dist['distribution'].values[0]}",
+        )
+        plt.legend()
+        plt.title("Actual vs. Best-Fit Density", fontweight="bold", fontsize=16)
+        plt.show()
+
+    fit_df = fit_df.reset_index()  # .drop(columns=["index", "params"])
+
+    return fit_df

@@ -3,34 +3,6 @@ from .distribution_utils import DistributionClass
 from ..utils import *
 
 
-class _DefaultTailLambertWLogNormal(tlwd.TailLambertWDistribution):
-    """Default Tail Lambert W x LogNormal distribution to use as args."""
-
-    def __init__(
-        self, loc: torch.Tensor, scale: torch.Tensor, tailweight: torch.Tensor, **kwargs
-    ):
-        super().__init__(
-            base_distribution=torch.distributions.LogNormal,
-            base_dist_args={"loc": loc, "scale": scale},
-            use_mean_variance=True,
-            tailweight=tailweight,
-        )
-
-
-class _DefaultSkewLambertWLogNormal(tlwd.SkewLambertWDistribution):
-    """Default Tail Lambert W x LogNormal distribution to use as args."""
-
-    def __init__(
-        self, loc: torch.Tensor, scale: torch.Tensor, skewweight: torch.Tensor, **kwargs
-    ):
-        super().__init__(
-            base_distribution=torch.distributions.LogNormal,
-            base_dist_args={"loc": loc, "scale": scale},
-            use_mean_variance=True,
-            skewweight=skewweight,
-        )
-
-
 class TailLambertWLogNormal(DistributionClass):
     """
     Tail Lambert W x LogNormal distribution class.
@@ -94,7 +66,7 @@ class TailLambertWLogNormal(DistributionClass):
             )
 
         # Set the parameters specific to the distribution
-        distribution = _DefaultTailLambertWLogNormal
+        distribution = tlwd.TailLambertWLogNormal
         param_dict = {
             "loc": identity_fn,
             "scale": response_fn_scale,
@@ -178,7 +150,7 @@ class SkewLambertWLogNormal(DistributionClass):
             )
 
         # Set the parameters specific to the distribution
-        distribution = _DefaultSkewLambertWLogNormal
+        distribution = tlwd.SkewLambertWLogNormal
         param_dict = {
             "loc": identity_fn,
             "scale": response_fn_scale,
