@@ -16,7 +16,7 @@ setup(
     zip_safe=True,
     python_requires=">=3.8",
     install_requires=[
-        "xgboost>=1.2.0",
+        "xgboost>=1.6.1",
         "torch>=2.0.1",
         "pyro-ppl>=1.5.0",
         "optuna>=3.0.0",

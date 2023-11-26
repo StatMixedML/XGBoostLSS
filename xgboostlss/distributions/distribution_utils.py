@@ -214,7 +214,7 @@ class DistributionClass:
         # Specify optimizer
         optimizer = LBFGS(
             params,
-            lr=0.1,
+            lr=0.01,
             max_iter=np.min([int(max_iter / 4), 20]),
             line_search_fn="strong_wolfe",
         )
@@ -293,7 +293,6 @@ class DistributionClass:
             response_fn(predt[i].reshape(-1, 1))
             for i, response_fn in enumerate(self.param_dict.values())
         ]
-
         # Specify Distribution and Loss
         if self.tau is None:
             dist_kwargs = dict(zip(self.distribution_arg_names, predt_transformed))
@@ -734,6 +733,6 @@ def dist_select(
         plt.title("Actual vs. Best-Fit Density", fontweight="bold", fontsize=16)
         plt.show()
 
-    fit_df = fit_df.reset_index()  # .drop(columns=["index", "params"])
+    fit_df = fit_df.reset_index().drop(columns=["index", "params"])
 
     return fit_df
