@@ -124,6 +124,7 @@ class SplineFlow(NormalizingFlowClass):
                          order=order,
                          n_dist_param=n_params,
                          param_dict=param_dict,
+                         distribution_arg_names=list(param_dict.keys()),
                          target_transform=target_transform,
                          discrete=discrete,
                          univariate=True,

@@ -40,6 +40,8 @@ class NormalizingFlowClass:
         Number of parameters.
     param_dict: Dict[str, Any]
         Dictionary that maps parameters to their response scale.
+    distribution_arg_names: List
+        List of distributional parameter names.
     target_transform: Transform
         Specify the target transform.
     discrete: bool
@@ -61,6 +63,7 @@ class NormalizingFlowClass:
                  order: Optional[str] = "quadratic",
                  n_dist_param: int = None,
                  param_dict: Dict[str, Any] = None,
+                 distribution_arg_names: List = None,
                  target_transform: Transform = None,
                  discrete: bool = False,
                  univariate: bool = True,
@@ -75,6 +78,7 @@ class NormalizingFlowClass:
         self.order = order
         self.n_dist_param = n_dist_param
         self.param_dict = param_dict
+        self.distribution_arg_names = distribution_arg_names
         self.target_transform = target_transform
         self.discrete = discrete
         self.univariate = univariate
