@@ -22,7 +22,7 @@ setup(
         "optuna~=3.4.0",
         "properscoring~=0.1",
         "scikit-learn~=1.3.2",
-        "numpy~=1.26.3",
+        "numpy~=1.26.2",
         "pandas~=2.1.3",
         "plotnine~=0.12.4",
         "scipy~=1.11.4",
