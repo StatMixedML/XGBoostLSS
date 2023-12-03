@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import xgboost as xgb
 from xgboost.core import (
-    Booster, 
+    Booster,
     DMatrix,
 )
 
@@ -21,7 +21,6 @@ import pickle
 from xgboostlss.utils import *
 import optuna
 from optuna.samplers import TPESampler
-import shap
 from typing import Any, Dict, Optional, Sequence, Tuple, Union
 
 
@@ -530,6 +529,11 @@ class XGBoostLSS:
                 "Partial_Dependence" plots the partial dependence of the parameter on the feature.
                 "Feature_Importance" plots the feature importance of the parameter.
         """
+        try:
+            import shap
+        except ImportError:
+            raise ImportError("Please install shap to use this function.")
+
         shap.initjs()
         explainer = shap.TreeExplainer(self.booster)
         shap_values = explainer(X)
@@ -567,6 +571,10 @@ class XGBoostLSS:
             Specifies which SHapley-plot to visualize. Currently, "Partial_Dependence" and "Feature_Importance"
             are supported.
         """
+        try:
+            import shap
+        except ImportError:
+            raise ImportError("Please install shap to use this function.")
 
         shap.initjs()
         explainer = shap.TreeExplainer(self.booster)
