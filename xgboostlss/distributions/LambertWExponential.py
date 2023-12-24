@@ -1,6 +1,7 @@
 import torchlambertw.distributions as tlwd
 from .distribution_utils import DistributionClass
-from ..utils import *
+from .. import utils
+import torch
 
 
 class TailLambertWExponential(DistributionClass):
@@ -50,8 +51,8 @@ class TailLambertWExponential(DistributionClass):
         # Specify Response Functions
         response_functions = {
             # For (concentation, scale, tailweight)
-            "exp": (exp_fn, exp_fn),
-            "softplus": (softplus_fn, softplus_fn),
+            "exp": (utils.exp_fn, utils.exp_fn),
+            "softplus": (utils.softplus_fn, utils.softplus_fn),
         }
         if response_fn in response_functions:
             (
@@ -132,12 +133,12 @@ class SkewLambertWExponential(DistributionClass):
         # Specify Response Functions
         response_functions = {
             # For (concentation, scale, tailweight)
-            "exp": (exp_fn, exp_fn),
-            "softplus": (softplus_fn, softplus_fn),
+            "exp": (utils.exp_fn, utils.exp_fn),
+            "softplus": (utils.softplus_fn, utils.softplus_fn),
         }
         if response_fn in response_functions:
             (
-                response_fn_scale,
+                response_fn_rate,
                 response_fn_skewweight,
             ) = response_functions[response_fn]
         else:
@@ -148,7 +149,7 @@ class SkewLambertWExponential(DistributionClass):
         # Set the parameters specific to the distribution
         distribution = tlwd.SkewLambertWExponential
         param_dict = {
-            "scale": response_fn_scale,
+            "rate": response_fn_rate,
             "skewweight": response_fn_skewweight,
         }
         torch.distributions.Distribution.set_default_validate_args(False)

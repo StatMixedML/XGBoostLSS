@@ -1,8 +1,21 @@
 from setuptools import setup, find_packages
 
+
+import re
+
+_VERSION_FILE = "xgboostlss/_version.py"
+verstrline = open(_VERSION_FILE, "rt").read()
+_VERSION = r"^__version__ = ['\"]([^'\"]*)['\"]"
+mo = re.search(_VERSION, verstrline, re.M)
+if mo:
+    verstr = mo.group(1)
+else:
+    raise RuntimeError("Unable to find version string in %s." % (_VERSION_FILE,))
+
+
 setup(
     name="xgboostlss",
-    version="0.4.1",
+    version=verstr,
     description="XGBoostLSS - An extension of XGBoost to probabilistic modelling",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
@@ -27,8 +40,8 @@ setup(
         "plotnine>=0.10.0",
         "statsmodels>=0.14.0",
         "scipy>=1.0.0",
-        "seaborn>=0.1.0",
-        "torchlambertw @ git+ssh://git@github.com/gmgeorg/torchlambertw.git#egg=torchlambertw-0.0.2",
+        "seaborn>=0.13.0",
+        "torchlambertw @ git+ssh://git@github.com/gmgeorg/torchlambertw.git#egg=torchlambertw-0.0.3",
         "tqdm>=4.0.0",
         "matplotlib>=3.6.0",
     ],

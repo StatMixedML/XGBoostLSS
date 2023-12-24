@@ -1,6 +1,8 @@
+import torch
 import torchlambertw.distributions as tlwd
+
 from .distribution_utils import DistributionClass
-from ..utils import *
+from .. import utils
 
 
 class TailLambertWGamma(DistributionClass):
@@ -52,8 +54,8 @@ class TailLambertWGamma(DistributionClass):
         # Specify Response Functions
         response_functions = {
             # For (concentation, scale, tailweight)
-            "exp": (exp_fn, exp_fn, exp_fn),
-            "softplus": (softplus_fn, softplus_fn, softplus_fn),
+            "exp": (utils.exp_fn, utils.exp_fn, utils.exp_fn),
+            "softplus": (utils.softplus_fn, utils.softplus_fn, utils.softplus_fn),
         }
         if response_fn in response_functions:
             (
@@ -137,8 +139,8 @@ class SkewLambertWGamma(DistributionClass):
         # Specify Response Functions
         response_functions = {
             # For (concentation, scale, tailweight)
-            "exp": (exp_fn, exp_fn, exp_fn),
-            "softplus": (softplus_fn, softplus_fn, softplus_fn),
+            "exp": (utils.exp_fn, utils.exp_fn, utils.exp_fn),
+            "softplus": (utils.softplus_fn, utils.softplus_fn, utils.softplus_fn),
         }
         if response_fn in response_functions:
             (

@@ -44,6 +44,7 @@ class XGBoostLSS:
         self.start_values = None  # Starting values for distributional parameters
         self.multivariate_label_expand = False
         self.multivariate_eval_label_expand = False
+        self.optuna_study = None
 
     def set_params_adj(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -459,12 +460,19 @@ class XGBoostLSS:
         if silence:
             optuna.logging.set_verbosity(optuna.logging.WARNING)
 
+        # Use first 10% of trials for (random) startup trials (at least 5).
+        n_startup_trials = 5
+        if n_trials is not None:
+            n_startup_trials = int(max(np.ceil(n_trials / 10.0), 5))
+        print(f"Using {n_startup_trials} out of {n_trials} trials for (random) startup")
         if hp_seed is not None:
-            sampler = TPESampler(seed=hp_seed)
+            sampler = TPESampler(seed=hp_seed, n_startup_trials=n_startup_trials)
         else:
-            sampler = TPESampler()
+            sampler = TPESampler(n_startup_trials=n_startup_trials)
 
-        pruner = optuna.pruners.MedianPruner(n_startup_trials=10, n_warmup_steps=20)
+        pruner = optuna.pruners.MedianPruner(
+            n_startup_trials=n_startup_trials, n_warmup_steps=20
+        )
         study = optuna.create_study(
             sampler=sampler, pruner=pruner, direction="minimize", study_name=study_name
         )
@@ -480,6 +488,7 @@ class XGBoostLSS:
         print("  Best trial:")
         opt_param = study.best_trial
 
+        self.optuna_study = study
         # Add optimal stopping round
         opt_param.params["opt_rounds"] = study.trials_dataframe()[
             "user_attrs_opt_round"

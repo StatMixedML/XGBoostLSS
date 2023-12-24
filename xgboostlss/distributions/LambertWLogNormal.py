@@ -1,6 +1,8 @@
+import torch
 import torchlambertw.distributions as tlwd
+
 from .distribution_utils import DistributionClass
-from ..utils import *
+from .. import utils
 
 
 class TailLambertWLogNormal(DistributionClass):
@@ -52,8 +54,8 @@ class TailLambertWLogNormal(DistributionClass):
         # Specify Response Functions
         response_functions = {
             # For (concentation, scale, tailweight)
-            "exp": (exp_fn, exp_fn),
-            "softplus": (softplus_fn, softplus_fn),
+            "exp": (utils.exp_fn, utils.exp_fn),
+            "softplus": (utils.softplus_fn, utils.softplus_fn),
         }
         if response_fn in response_functions:
             (
@@ -68,7 +70,7 @@ class TailLambertWLogNormal(DistributionClass):
         # Set the parameters specific to the distribution
         distribution = tlwd.TailLambertWLogNormal
         param_dict = {
-            "loc": identity_fn,
+            "loc": utils.identity_fn,
             "scale": response_fn_scale,
             "tailweight": response_fn_tailweight,
         }
@@ -136,8 +138,8 @@ class SkewLambertWLogNormal(DistributionClass):
         # Specify Response Functions
         response_functions = {
             # For (concentation, scale, tailweight)
-            "exp": (exp_fn, exp_fn),
-            "softplus": (softplus_fn, softplus_fn),
+            "exp": (utils.exp_fn, utils.exp_fn),
+            "softplus": (utils.softplus_fn, utils.softplus_fn),
         }
         if response_fn in response_functions:
             (
@@ -152,7 +154,7 @@ class SkewLambertWLogNormal(DistributionClass):
         # Set the parameters specific to the distribution
         distribution = tlwd.SkewLambertWLogNormal
         param_dict = {
-            "loc": identity_fn,
+            "loc": utils.identity_fn,
             "scale": response_fn_scale,
             "skewweight": response_fn_skewweight,
         }

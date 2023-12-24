@@ -1,6 +1,8 @@
+import torch
 import torchlambertw.distributions as tlwd
+
 from .distribution_utils import DistributionClass
-from ..utils import *
+from .. import utils
 
 
 class TailLambertWWeibull(DistributionClass):
@@ -51,9 +53,9 @@ class TailLambertWWeibull(DistributionClass):
 
         # Specify Response Functions
         response_functions = {
-            # For (concentation, scale, tailweight)
-            "exp": (exp_fn, exp_fn, exp_fn),
-            "softplus": (softplus_fn, softplus_fn, softplus_fn),
+            # For (concentration, scale, tailweight)
+            "exp": (utils.exp_fn, utils.exp_fn, utils.exp_fn),
+            "softplus": (utils.softplus_fn, utils.softplus_fn, utils.softplus_fn),
         }
         if response_fn in response_functions:
             (
@@ -69,8 +71,8 @@ class TailLambertWWeibull(DistributionClass):
         # Set the parameters specific to the distribution
         distribution = tlwd.TailLambertWWeibull
         param_dict = {
-            "scale": response_fn_scale,
             "concentration": response_fn_concentration,
+            "scale": response_fn_scale,
             "tailweight": response_fn_tailweight,
         }
         torch.distributions.Distribution.set_default_validate_args(False)
@@ -137,8 +139,8 @@ class SkewLambertWWeibull(DistributionClass):
         # Specify Response Functions
         response_functions = {
             # For (concentation, scale, tailweight)
-            "exp": (exp_fn, exp_fn, exp_fn),
-            "softplus": (softplus_fn, softplus_fn, softplus_fn),
+            "exp": (utils.exp_fn, utils.exp_fn, utils.exp_fn),
+            "softplus": (utils.softplus_fn, utils.softplus_fn, utils.softplus_fn),
         }
         if response_fn in response_functions:
             (
@@ -154,8 +156,8 @@ class SkewLambertWWeibull(DistributionClass):
         # Set the parameters specific to the distribution
         distribution = tlwd.SkewLambertWWeibull
         param_dict = {
-            "scale": response_fn_scale,
             "concentration": response_fn_concentration,
+            "scale": response_fn_scale,
             "skewweight": response_fn_skewweight,
         }
         torch.distributions.Distribution.set_default_validate_args(False)

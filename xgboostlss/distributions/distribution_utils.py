@@ -1,10 +1,11 @@
 import torch
 from torch.autograd import grad as autograd
 from torch.optim import LBFGS
-from torch.optim.lr_scheduler import ReduceLROnPlateau
+from torch.optim import lr_scheduler
 
 import xgboost as xgb
 import numpy as np
+import scipy
 import pandas as pd
 from tqdm import tqdm
 
@@ -12,6 +13,69 @@ from typing import Any, Dict, Optional, List, Tuple
 import matplotlib.pyplot as plt
 import seaborn as sns
 import warnings
+from .. import utils
+
+_LOSS_TOL = 1e-6
+
+
+def mme(values: np.ndarray, distribution_name: str) -> Dict[str, float]:
+    """A method of moments estimator (MME) that can be used as starting values for calculate_start_values()."""
+    sample_mean = np.mean(values)
+    sample_median = np.median(values)
+    sample_var = np.var(values)
+    sample_std = np.std(values)
+    sample_kurt = float(scipy.stats.kurtosis(values) + 3)
+
+    if distribution_name == "Normal":
+        return {"loc": sample_mean, "scale": sample_std}
+
+    if distribution_name == "Laplace":
+        sample_mad = scipy.stats.median_abs_deviation(values)
+        return {"loc": sample_median, "scale": sample_mad}
+
+    if distribution_name == "StudentT":
+        # k = 3 + 6 / (nu - 4)
+        # ==> nu = 6 / (k - 3) + 4
+        return {
+            "loc": sample_median,
+            "scale": sample_std,
+            "df": 6.0 / (sample_kurt - 3) + 4,
+        }
+
+    if distribution_name == "Exponential":
+        return {"rate": 1.0 / sample_mean}
+
+    if distribution_name == "Gamma":
+        return {
+            "concentration": sample_mean**2 / sample_var,
+            "rate": sample_mean / sample_var,
+        }
+    if distribution_name == "Weibull":
+        # Newtown approximation for concentration parameter.
+        # https://www.m-hikari.com/ams/ams-2014/ams-81-84-2014/sedliackovaAMS81-84-2014.pdf
+        conc_est = (sample_mean / sample_std) ** (1.086)
+        scale_est = np.mean(values**conc_est) ** (1 / conc_est)
+        return {
+            "scale": scale_est,
+            "concentration": conc_est,
+        }
+
+    if distribution_name == "LogNormal":
+        return mme(np.log(values[values > 0]), "Normal")
+
+    if "LambertW" in distribution_name:
+        base_dist_name = distribution_name.split("LambertW")[1]
+        base_params = mme(values, base_dist_name)
+        params = base_params.copy()
+        if "Skew" in distribution_name:
+            sample_skew = scipy.stats.skew(values)
+            params["skewweight"] = float(np.sign(sample_skew)) * 0.01
+        elif "Tail" in distribution_name:
+            # First order Taylor approximation for Lambert W x Gaussian
+            params["tailweight"] = max(0.01, (sample_kurt - 3) / 12.0)
+        return params
+
+    return {}
 
 
 class DistributionClass:
@@ -167,20 +231,25 @@ class DistributionClass:
         )
         params = torch.where(nan_inf_idx, torch.tensor(0.5), torch.stack(params))
 
+        # print("logit scale")
+        # print(params)
         # Transform parameters to response scale
         params = [
             response_fn(params[i].reshape(-1, 1))
             for i, response_fn in enumerate(self.param_dict.values())
         ]
-
+        # print("response scale")
+        # print(params)
         # Specify Distribution and Loss
         if self.tau is None:
             dist = self.distribution(*params)
+            # print(target[:5])
+            # print(dist.log_prob(target)[:5])
             loss = -torch.nansum(dist.log_prob(target))
         else:
             dist = self.distribution(params, self.penalize_crossing)
             loss = -torch.nansum(dist.log_prob(target, self.tau))
-
+        # print(loss)
         return loss
 
     def calculate_start_values(
@@ -203,14 +272,35 @@ class DistributionClass:
         start_values: np.ndarray
             Starting values for each distributional parameter.
         """
+        params_init = mme(target, self.distribution.__name__)
+        logits_init = {}
+
+        if params_init:
+            #  print(params_init)
+            for k, v in self.param_dict.items():
+                inverse_fn = utils.INVERSE_LOOKUP.get(v.__name__, None)
+                if inverse_fn is None:
+                    logits_init[k] = 0.25
+                else:
+                    logits_init[k] = float(
+                        inverse_fn(torch.tensor(params_init[k])).numpy()
+                    )
+
+        # print(logits_init)
+        # Initialize parameters
+        if logits_init:
+            params = [
+                torch.tensor(list(logits_init.values())[i], requires_grad=True)
+                for i in range(self.n_dist_param)
+            ]
+        else:
+            params = [
+                torch.tensor(0.25, requires_grad=True) for i in range(self.n_dist_param)
+            ]
+
+        # print(params)
         # Convert target to torch.tensor
         target = torch.tensor(target).reshape(-1, 1)
-
-        # Initialize parameters
-        params = [
-            torch.tensor(0.5, requires_grad=True) for _ in range(self.n_dist_param)
-        ]
-
         # Specify optimizer
         optimizer = LBFGS(
             params,
@@ -219,8 +309,15 @@ class DistributionClass:
             line_search_fn="strong_wolfe",
         )
 
-        # Define learning rate scheduler
-        lr_scheduler = ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=10)
+        # Define learning rate reducer
+        lr_reducer = lr_scheduler.ReduceLROnPlateau(
+            optimizer, mode="min", factor=0.5, patience=3, min_lr=0.001
+        )
+
+        # Define early stopping parameters
+        early_stop_counter = 0
+        early_stop_patience = 5  # Adjust as needed
+        early_stop_threshold = 0.0001  # Adjust as needed
 
         # Define closure
         def closure():
@@ -233,7 +330,16 @@ class DistributionClass:
         loss_vals = []
         for epoch in range(max_iter):
             loss = optimizer.step(closure)
-            lr_scheduler.step(loss)
+            lr_reducer.step(loss)
+            # print(params, loss)
+            # Early stopping check
+            if epoch > 0 and loss.item() > loss_vals[-1] - early_stop_threshold:
+                early_stop_counter += 1
+            else:
+                early_stop_counter = 0
+
+            if early_stop_counter >= early_stop_patience:
+                break
             loss_vals.append(loss.item())
 
         # Get final loss
@@ -246,6 +352,50 @@ class DistributionClass:
         start_values = np.nan_to_num(start_values, nan=0.5, posinf=0.5, neginf=0.5)
 
         return loss, start_values
+
+    def get_params_df_loss(
+        self,
+        params_df: pd.DataFrame,
+        target: pd.Series,
+    ) -> float:
+        """
+        Function that returns the loss for a given set of parameters and targets.
+
+        Arguments
+        ---------
+        params_df: pd.DataFrame
+            Predicted values on response scale.
+        target: torch.Tensor
+            Target values.
+        Returns
+        -------
+        float; the loss value
+        """
+
+        predt_transformed = {
+            k: torch.tensor(list(v.values())).reshape(-1, 1)
+            for k, v in params_df.to_dict().items()
+        }
+        target = torch.tensor(target.values)
+
+        # Specify Distribution and Loss
+        if self.tau is None:
+            dist_fit = self.distribution(**predt_transformed)
+            if self.loss_fn == "nll":
+                loss = -torch.nansum(dist_fit.log_prob(target))
+            elif self.loss_fn == "crps":
+                torch.manual_seed(123)
+                dist_samples = dist_fit.rsample((50,)).squeeze(-1)
+                loss = torch.nansum(self.crps_score(target, dist_samples))
+            else:
+                raise ValueError(
+                    "Invalid loss function. Please select 'nll' or 'crps'."
+                )
+        else:
+            dist_fit = self.distribution(predt_transformed, self.penalize_crossing)
+            loss = -torch.nansum(dist_fit.log_prob(target, self.tau))
+
+        return loss
 
     def get_params_loss(
         self,
@@ -301,7 +451,7 @@ class DistributionClass:
                 loss = -torch.nansum(dist_fit.log_prob(target))
             elif self.loss_fn == "crps":
                 torch.manual_seed(123)
-                dist_samples = dist_fit.rsample((30,)).squeeze(-1)
+                dist_samples = dist_fit.rsample((50,)).squeeze(-1)
                 loss = torch.nansum(self.crps_score(target, dist_samples))
             else:
                 raise ValueError(
@@ -680,7 +830,7 @@ def dist_select(
                 )
             dist_list.append(fit_df)
             pbar.update(1)
-        pbar.set_description(f"Fitting of candidate distributions completed")
+        pbar.set_description("Fitting of candidate distributions completed")
         fit_df = pd.concat(dist_list).sort_values(by=loss_test_col, ascending=True)
         fit_df["rank"] = fit_df[loss_test_col].rank().astype(pd.Int64Dtype())
 
