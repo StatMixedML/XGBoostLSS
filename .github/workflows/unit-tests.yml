@@ -30,7 +30,6 @@ jobs:
         python -m pip install pytest
         python -m pip install pytest-coverage
         python -m pip install .
-        python -m pip install git+https://github.com/dsgibbons/shap.git
     - name: Test with pytest 
       run: |
         pytest --cov
