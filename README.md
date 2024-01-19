@@ -38,6 +38,7 @@ We introduce a comprehensive framework that models and predicts the full conditi
 :white_check_mark: XGBoostLSS is available in Python. <br/>
 
 ## `News`
+:boom: [2024-01-19] Release of XGBoostLSS to [PyPi](https://pypi.org/project/xgboostlss/). <br/>
 :boom: [2023-08-25] Release of v0.4.0 introduces Mixture-Densities. See the [release notes](https://github.com/StatMixedML/XGBoostLSS/releases) for an overview. <br/>
 :boom: [2023-07-19] Release of v0.3.0 introduces Normalizing Flows. See the [release notes](https://github.com/StatMixedML/XGBoostLSS/releases) for an overview. <br/>
 :boom: [2023-06-22] Release of v0.2.2. See the [release notes](https://github.com/StatMixedML/XGBoostLSS/releases) for an overview. <br/>
@@ -52,9 +53,13 @@ We introduce a comprehensive framework that models and predicts the full conditi
 :boom: [2021-11-14] XGBoostLSS v0.1.0 is released!
 
 ## `Installation`
-To install XGBoostLSS, please run
+To install the development version, please use
 ```python
 pip install git+https://github.com/StatMixedML/XGBoostLSS.git
+```
+For the PyPI version, please use
+```python
+pip install xgboostlss
 ```
 
 ## `Available Distributions`
