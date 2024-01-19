@@ -14,7 +14,7 @@ setup(
     include_package_data=True,
     package_data={'': ['datasets/*.csv']},
     zip_safe=True,
-    python_requires=">=3.9",
+    python_requires=">=3.10",
     install_requires=[
         "xgboost~=2.0.3",
         "torch~=2.1.2",
