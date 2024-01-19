@@ -16,10 +16,10 @@ keywords = [
     "probabilistic modelling",
     "uncertainty estimation"]
 authors = [
-    {name="Alexander März", email="alex.maerz@gmx.net" },
+    {name="Alexander März", email="alex.maerz@gmx.net"},
 ]
 maintainers = [
-    {name="Alexander März", email="alex.maerz@gmx.net" },
+    {name="Alexander März", email="alex.maerz@gmx.net"},
 ]
 readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.10"
