@@ -52,13 +52,9 @@ We introduce a comprehensive framework that models and predicts the full conditi
 :boom: [2021-11-14] XGBoostLSS v0.1.0 is released!
 
 ## `Installation`
-To install XGBoostLSS, please first run
+To install XGBoostLSS, please run
 ```python
 pip install git+https://github.com/StatMixedML/XGBoostLSS.git
-```
-Then, to install the shap-dependency, run
-```python
-pip install git+https://github.com/dsgibbons/shap.git
 ```
 
 ## `Available Distributions`
