@@ -120,31 +120,6 @@ def softplus_fn_df(predt: torch.tensor) -> torch.tensor:
     return predt + torch.tensor(2.0, dtype=predt.dtype)
 
 
-def softplus_fn_quantile(predt: torch.tensor,
-                         beta: int,
-                         threshold: int) -> torch.tensor:
-    """
-    Softplus function used for Student-T distribution.
-
-    Arguments
-    ---------
-    predt: torch.tensor
-        Predicted values.
-    beta: int
-        Beta parameter for softplus function.
-    threshold: int
-        Threshold parameter for softplus function.
-
-    Returns
-    -------
-    predt: torch.tensor
-        Predicted values.
-    """
-    predt = softplus(input=nan_to_num(predt), beta=beta, threshold=threshold) + torch.tensor(1e-06, dtype=predt.dtype)
-
-    return predt
-
-
 def squareplus_fn(predt: torch.tensor) -> torch.tensor:
     """
     Square-Plus function used to ensure predt is strictly positive.
