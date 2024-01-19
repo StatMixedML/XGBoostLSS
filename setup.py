@@ -9,7 +9,6 @@ setup(
     author="Alexander März",
     author_email="alex.maerz@gmx.net",
     url="https://github.com/StatMixedML/XGBoostLSS",
-    download_url="https://github.com/StatMixedML/XGBoostLSS/archive/refs/tags/v0.4.0.tar.gz",
     license="Apache License 2.0",
     packages=find_packages(exclude=["docs", "tests*"]),
     include_package_data=True,
