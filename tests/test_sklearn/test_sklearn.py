@@ -3,10 +3,15 @@
 import numpy as np
 import pandas as pd
 
+from xgboost import Booster
+
 from xgboostlss.sklearn import XGBLSSRegressor
 from xgboostlss.model import XGBoostLSS
-from xgboost import Booster
+
 from xgboostlss.distributions.Gaussian import Gaussian
+from xgboostlss.distributions.Mixture import Mixture
+from xgboostlss.distributions.SplineFlow import SplineFlow
+from xgboostlss.distributions.Expectile import Expectile
 from xgboostlss.datasets.data_loader import load_simulated_gaussian_data
 import pytest
 from pytest import approx
@@ -24,7 +29,7 @@ def univariate_data():
 @pytest.fixture
 def univariate_xgblss():
     params = {
-        "eta": 0.10015347345470738,
+        "learning_rate": 0.10015347345470738,
         "max_depth": 8,
         "gamma": 24.75078796889987,
         "subsample": 0.6161756203438147,
@@ -36,11 +41,75 @@ def univariate_xgblss():
     return XGBLSSRegressor(Gaussian(), **params)
 
 
+@pytest.fixture
+def mixture_xgblss():
+    params = {"learning_rate": 0.1, "n_estimators": 10}
+    return XGBLSSRegressor(Mixture(Gaussian()), **params)
+
+
+@pytest.fixture
+def flow_xgblss():
+    params = {"learning_rate": 0.1, "n_estimators": 10}
+    spline_flow = SplineFlow(target_support="real", count_bins=2)
+    return XGBLSSRegressor(spline_flow, **params)
+
+
+@pytest.fixture
+def expectile_xgblss():
+    params = {
+        "learning_rate": 0.7298897353706068,
+        "max_depth": 2,
+        "gamma": 5.90940257278992e-06,
+        "subsample": 0.9810129322454306,
+        "colsample_bytree": 0.9546244491014185,
+        "min_child_weight": 113.32324947486019,
+        "booster": "gbtree",
+    }
+
+    return XGBLSSRegressor(Expectile(), **params)
+
+
 class TestClass:
     def test_model_univ_train(self, univariate_data, univariate_xgblss):
         # Unpack
         X_train, y_train, _, _ = univariate_data
         xgblss = univariate_xgblss
+
+        # Train the model
+        xgblss.fit(X_train, y_train)
+
+        # Assertions
+        assert isinstance(xgblss._Booster, Booster)
+        assert isinstance(xgblss._BoosterLSS, XGBoostLSS)
+
+    def test_model_mixture_train(self, univariate_data, mixture_xgblss):
+        # Unpack
+        X_train, y_train, _, _ = univariate_data
+        xgblss = mixture_xgblss
+
+        # Train the model
+        xgblss.fit(X_train, y_train)
+
+        # Assertions
+        assert isinstance(xgblss._Booster, Booster)
+        assert isinstance(xgblss._BoosterLSS, XGBoostLSS)
+
+    def test_model_flow_train(self, univariate_data, flow_xgblss):
+        # Unpack
+        X_train, y_train, _, _ = univariate_data
+        xgblss = flow_xgblss
+
+        # Train the model
+        xgblss.fit(X_train, y_train)
+
+        # Assertions
+        assert isinstance(xgblss._Booster, Booster)
+        assert isinstance(xgblss._BoosterLSS, XGBoostLSS)
+
+    def test_model_expectile_train(self, univariate_data, expectile_xgblss):
+        # Unpack
+        X_train, y_train, _, _ = univariate_data
+        xgblss = expectile_xgblss
 
         # Train the model
         xgblss.fit(X_train, y_train)
