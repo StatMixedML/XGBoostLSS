@@ -1,6 +1,7 @@
 import torch
 from torch.nn.functional import softplus, gumbel_softmax, softmax
 
+
 def nan_to_num(predt: torch.tensor) -> torch.tensor:
     """
     Replace nan, inf and -inf with the mean of predt.
@@ -185,7 +186,7 @@ def gumbel_softmax_fn(predt: torch.tensor,
     Gumbel-softmax function used to ensure predt is adding to one.
 
     The Gumbel-softmax distribution is a continuous distribution over the simplex, which can be thought of as a "soft"
-    version of a categorical distribution. It’s a way to draw samples from a categorical distribution in a
+    version of a categorical distribution. It's a way to draw samples from a categorical distribution in a
     differentiable way. The motivation behind using the Gumbel-Softmax is to make the discrete sampling process of
     categorical variables differentiable, which is useful in gradient-based optimization problems. To sample from a
     Gumbel-Softmax distribution, one would use the Gumbel-max trick: add a Gumbel noise to logits and apply the softmax.
