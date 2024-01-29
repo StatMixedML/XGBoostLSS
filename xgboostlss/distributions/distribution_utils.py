@@ -339,7 +339,8 @@ class DistributionClass:
                      pred_type: str = "parameters",
                      n_samples: int = 1000,
                      quantiles: list = [0.1, 0.5, 0.9],
-                     seed: str = 123
+                     seed: str = 123,
+                     **kwargs,
                      ) -> pd.DataFrame:
         """
         Function that predicts from the trained model.
@@ -374,7 +375,7 @@ class DistributionClass:
         base_margin_test = (np.ones(shape=(data.num_row(), 1))) * start_values
         data.set_base_margin(base_margin_test.flatten())
 
-        predt = np.array(booster.predict(data, output_margin=True)).reshape(-1, self.n_dist_param)
+        predt = np.array(booster.predict(data, output_margin=True, **kwargs)).reshape(-1, self.n_dist_param)
         predt = torch.tensor(predt, dtype=torch.float32)
 
         # Transform predicted parameters to response scale

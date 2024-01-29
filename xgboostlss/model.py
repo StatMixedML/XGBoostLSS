@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import xgboost as xgb
 from xgboost.core import (
-    Booster, 
+    Booster,
     DMatrix,
 )
 
@@ -21,7 +21,6 @@ import pickle
 from xgboostlss.utils import *
 import optuna
 from optuna.samplers import TPESampler
-import shap
 from typing import Any, Dict, Optional, Sequence, Tuple, Union
 
 
@@ -119,91 +118,92 @@ class XGBoostLSS:
             xgb_model: Optional[Union[str, os.PathLike, Booster, bytearray]] = None,
             callbacks: Optional[Sequence[TrainingCallback]] = None,
     ) -> Booster:
-            """
-            Train a booster with given parameters.
+        """
+        Train a booster with given parameters.
 
-            Arguments
-            ---------
-            params :
-                Booster params.
-            dtrain :
-                Data to be trained.
-            num_boost_round :
-                Number of boosting iterations.
-            evals :
-                List of validation sets for which metrics will evaluated during training.
-                Validation metrics will help us track the performance of the model.
-            early_stopping_rounds :
-                Activates early stopping. Validation metric needs to improve at least once in
-                every **early_stopping_rounds** round(s) to continue training.
-                Requires at least one item in **evals**.
-                The method returns the model from the last iteration (not the best one).  Use
-                custom callback or model slicing if the best model is desired.
-                If there's more than one item in **evals**, the last entry will be used for early
-                stopping.
-                If there's more than one metric in the **eval_metric** parameter given in
-                **params**, the last metric will be used for early stopping.
-                If early stopping occurs, the model will have two additional fields:
-                ``bst.best_score``, ``bst.best_iteration``.
-            evals_result :
-                This dictionary stores the evaluation results of all the items in watchlist.
-                Example: with a watchlist containing
-                ``[(dtest,'eval'), (dtrain,'train')]`` and
-                a parameter containing ``('eval_metric': 'logloss')``,
-                the **evals_result** returns
-                .. code-block:: python
-                    {'train': {'logloss': ['0.48253', '0.35953']},
-                     'eval': {'logloss': ['0.480385', '0.357756']}}
-            verbose_eval :
-                Requires at least one item in **evals**.
-                If **verbose_eval** is True then the evaluation metric on the validation set is
-                printed at each boosting stage.
-                If **verbose_eval** is an integer then the evaluation metric on the validation set
-                is printed at every given **verbose_eval** boosting stage. The last boosting stage
-                / the boosting stage found by using **early_stopping_rounds** is also printed.
-                Example: with ``verbose_eval=4`` and at least one item in **evals**, an evaluation metric
-                is printed every 4 boosting stages, instead of every boosting stage.
-            xgb_model :
-                Xgb model to be loaded before training (allows training continuation).
-            callbacks :
-                List of callback functions that are applied at end of each iteration.
-                It is possible to use predefined callbacks by using
-                :ref:`Callback API <callback_api>`.
-                .. note::
-                   States in callback are not preserved during training, which means callback
-                   objects can not be reused for multiple training sessions without
-                   reinitialization or deepcopy.
-                .. code-block:: python
-                    for params in parameters_grid:
-                        # be sure to (re)initialize the callbacks before each run
-                        callbacks = [xgb.callback.LearningRateScheduler(custom_rates)]
-                        xgboost.train(params, Xy, callbacks=callbacks)
+        Arguments
+        ---------
+        params :
+            Booster params.
+        dtrain :
+            Data to be trained.
+        num_boost_round :
+            Number of boosting iterations.
+        evals :
+            List of validation sets for which metrics will evaluated during training.
+            Validation metrics will help us track the performance of the model.
+        early_stopping_rounds :
+            Activates early stopping. Validation metric needs to improve at least once in
+            every **early_stopping_rounds** round(s) to continue training.
+            Requires at least one item in **evals**.
+            The method returns the model from the last iteration (not the best one).  Use
+            custom callback or model slicing if the best model is desired.
+            If there's more than one item in **evals**, the last entry will be used for early
+            stopping.
+            If there's more than one metric in the **eval_metric** parameter given in
+            **params**, the last metric will be used for early stopping.
+            If early stopping occurs, the model will have two additional fields:
+            ``bst.best_score``, ``bst.best_iteration``.
+        evals_result :
+            This dictionary stores the evaluation results of all the items in watchlist.
+            Example: with a watchlist containing
+            ``[(dtest,'eval'), (dtrain,'train')]`` and
+            a parameter containing ``('eval_metric': 'logloss')``,
+            the **evals_result** returns
+            .. code-block:: python
+                {'train': {'logloss': ['0.48253', '0.35953']},
+                    'eval': {'logloss': ['0.480385', '0.357756']}}
+        verbose_eval :
+            Requires at least one item in **evals**.
+            If **verbose_eval** is True then the evaluation metric on the validation set is
+            printed at each boosting stage.
+            If **verbose_eval** is an integer then the evaluation metric on the validation set
+            is printed at every given **verbose_eval** boosting stage. The last boosting stage
+            / the boosting stage found by using **early_stopping_rounds** is also printed.
+            Example: with ``verbose_eval=4`` and at least one item in **evals**, an evaluation metric
+            is printed every 4 boosting stages, instead of every boosting stage.
+        xgb_model :
+            Xgb model to be loaded before training (allows training continuation).
+        callbacks :
+            List of callback functions that are applied at end of each iteration.
+            It is possible to use predefined callbacks by using
+            :ref:`Callback API <callback_api>`.
+            .. note::
+                States in callback are not preserved during training, which means callback
+                objects can not be reused for multiple training sessions without
+                reinitialization or deepcopy.
+            .. code-block:: python
+                for params in parameters_grid:
+                    # be sure to (re)initialize the callbacks before each run
+                    callbacks = [xgb.callback.LearningRateScheduler(custom_rates)]
+                    xgboost.train(params, Xy, callbacks=callbacks)
 
-            Returns
-            -------
-            Booster:
-                The trained booster model.
-            """
-            self.set_params_adj(params)
-            self.adjust_labels(dtrain)
-            self.set_base_margin(dtrain)
+        Returns
+        -------
+        Booster:
+            The trained booster model.
+    """
+        self.set_params_adj(params)
+        self.adjust_labels(dtrain)
+        self.set_base_margin(dtrain)
 
-            # Set base_margin for evals
-            if evals is not None:
-                evals = self.set_eval_margin(evals, self.start_values)
+        # Set base_margin for evals
+        if evals is not None:
+            evals = self.set_eval_margin(evals, self.start_values)
 
-            self.booster = xgb.train(params,
-                                     dtrain,
-                                     num_boost_round=num_boost_round,
-                                     evals=evals,
-                                     obj=self.dist.objective_fn,
-                                     custom_metric=self.dist.metric_fn,
-                                     xgb_model=xgb_model,
-                                     callbacks=callbacks,
-                                     verbose_eval=verbose_eval,
-                                     evals_result=evals_result,
-                                     maximize=False,
-                                     early_stopping_rounds=early_stopping_rounds)
+        self.booster = xgb.train(
+            params,
+            dtrain,
+            num_boost_round=num_boost_round,
+            evals=evals,
+            obj=self.dist.objective_fn,
+            custom_metric=self.dist.metric_fn,
+            xgb_model=xgb_model,
+            callbacks=callbacks,
+            verbose_eval=verbose_eval,
+            evals_result=evals_result,
+            maximize=False,
+            early_stopping_rounds=early_stopping_rounds)
 
     def cv(
         self,
@@ -468,7 +468,8 @@ class XGBoostLSS:
                 pred_type: str = "parameters",
                 n_samples: int = 1000,
                 quantiles: list = [0.1, 0.5, 0.9],
-                seed: str = 123):
+                seed: str = 123,
+                **kwargs):
         """
         Function that predicts from the trained model.
 
@@ -502,7 +503,8 @@ class XGBoostLSS:
                                           pred_type=pred_type,
                                           n_samples=n_samples,
                                           quantiles=quantiles,
-                                          seed=seed)
+                                          seed=seed,
+                                          **kwargs)
 
         return predt_df
 
@@ -530,6 +532,11 @@ class XGBoostLSS:
                 "Partial_Dependence" plots the partial dependence of the parameter on the feature.
                 "Feature_Importance" plots the feature importance of the parameter.
         """
+        try:
+            import shap
+        except ImportError:
+            raise ImportError("Please install shap to use this function.")
+
         shap.initjs()
         explainer = shap.TreeExplainer(self.booster)
         shap_values = explainer(X)
@@ -567,6 +574,10 @@ class XGBoostLSS:
             Specifies which SHapley-plot to visualize. Currently, "Partial_Dependence" and "Feature_Importance"
             are supported.
         """
+        try:
+            import shap
+        except ImportError:
+            raise ImportError("Please install shap to use this function.")
 
         shap.initjs()
         explainer = shap.TreeExplainer(self.booster)

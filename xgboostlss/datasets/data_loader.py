@@ -21,6 +21,15 @@ def load_simulated_gaussian_data():
     return train_df, test_df
 
 
+def generate_simulated_gaussian_data(X):
+    """Generate the true scale of the Gaussian distribution."""
+    return (
+        1
+        + 4 * ((0.3 < X["x_true"].values) & (X["x_true"].values < 0.5))
+        + 2 * (X["x_true"].values > 0.7)
+    )
+
+
 def load_simulated_studentT_data():
     """
     Returns train/test dataframe of a simulated example.
