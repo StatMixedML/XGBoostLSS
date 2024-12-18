@@ -9,7 +9,7 @@ import pandas as pd
 from tqdm import tqdm
 
 from typing import Any, Dict, Optional, List, Tuple, Callable
-import seaborn as sns
+
 import warnings
 
 
@@ -44,20 +44,22 @@ class Multivariate_DistributionClass:
     loss_fn: str
         Loss function. Options are "nll" (negative log-likelihood).
     """
-    def __init__(self,
-                 distribution: torch.distributions.Distribution = None,
-                 univariate: bool = False,
-                 distribution_arg_names: List = None,
-                 n_targets: int = 2,
-                 rank: Optional[int] = None,
-                 n_dist_param: int = None,
-                 param_dict: Dict[str, Any] = None,
-                 param_transform: Callable = None,
-                 get_dist_params: Callable = None,
-                 discrete: bool = False,
-                 stabilization: str = "None",
-                 loss_fn: str = "nll",
-                 ):
+
+    def __init__(
+        self,
+        distribution: torch.distributions.Distribution = None,
+        univariate: bool = False,
+        distribution_arg_names: List = None,
+        n_targets: int = 2,
+        rank: Optional[int] = None,
+        n_dist_param: int = None,
+        param_dict: Dict[str, Any] = None,
+        param_transform: Callable = None,
+        get_dist_params: Callable = None,
+        discrete: bool = False,
+        stabilization: str = "None",
+        loss_fn: str = "nll",
+    ):
 
         self.distribution = distribution
         self.univariate = univariate
@@ -73,7 +75,6 @@ class Multivariate_DistributionClass:
         self.loss_fn = loss_fn
 
     def objective_fn(self, predt: np.ndarray, data: xgb.DMatrix) -> Tuple[np.ndarray, np.ndarray]:
-
         """
         Function to estimate gradients and hessians of distributional parameters.
 
@@ -92,7 +93,7 @@ class Multivariate_DistributionClass:
             Hessian.
         """
         # Target
-        target = torch.tensor(data.get_label().reshape(-1, self.n_dist_param))[:, :self.n_targets]
+        target = torch.tensor(data.get_label().reshape(-1, self.n_dist_param))[:, : self.n_targets]
 
         # Weights
         if data.get_weight().size == 0:
@@ -129,7 +130,7 @@ class Multivariate_DistributionClass:
             Loss value.
         """
         # Target
-        target = torch.tensor(data.get_label().reshape(-1, self.n_dist_param))[:, :self.n_targets]
+        target = torch.tensor(data.get_label().reshape(-1, self.n_dist_param))[:, : self.n_targets]
 
         # Start values (needed to replace NaNs in predt)
         start_values = data.get_base_margin().reshape(-1, self.n_dist_param)[0, :].tolist()
@@ -139,9 +140,7 @@ class Multivariate_DistributionClass:
 
         return self.loss_fn, loss
 
-    def loss_fn_start_values(self,
-                             params: torch.Tensor,
-                             target: torch.Tensor) -> torch.Tensor:
+    def loss_fn_start_values(self, params: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
         """
         Function that calculates the loss for a given set of distributional parameters. Only used for calculating
         the loss for the start values.
@@ -176,10 +175,7 @@ class Multivariate_DistributionClass:
 
         return loss
 
-    def calculate_start_values(self,
-                               target: np.ndarray,
-                               max_iter: int = 50
-                               ) -> Tuple[float, np.ndarray]:
+    def calculate_start_values(self, target: np.ndarray, max_iter: int = 50) -> Tuple[float, np.ndarray]:
         """
         Function that calculates the starting values for each distributional parameter.
 
@@ -198,7 +194,7 @@ class Multivariate_DistributionClass:
             Starting values for each distributional parameter.
         """
         # Convert target to torch.tensor
-        target = torch.tensor(target.reshape(-1, self.n_dist_param))[:, :self.n_targets]
+        target = torch.tensor(target.reshape(-1, self.n_dist_param))[:, : self.n_targets]
 
         # Initialize parameters
         params = [
@@ -206,7 +202,7 @@ class Multivariate_DistributionClass:
         ]
 
         # Specify optimizer
-        optimizer = LBFGS(params, lr=0.1, max_iter=np.min([int(max_iter/4), 20]), line_search_fn="strong_wolfe")
+        optimizer = LBFGS(params, lr=0.1, max_iter=np.min([int(max_iter / 4), 20]), line_search_fn="strong_wolfe")
 
         # Define learning rate scheduler
         lr_scheduler = ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=10)
@@ -232,16 +228,19 @@ class Multivariate_DistributionClass:
         start_values = np.array([params[i][0].detach().numpy() for i in range(self.n_dist_param)])
 
         # Replace any remaining NaNs or infinity values with 0.5
-        start_values = np.nan_to_num(start_values, nan=0.5, posinf=0.5, neginf=0.5).reshape(-1,)
+        start_values = np.nan_to_num(start_values, nan=0.5, posinf=0.5, neginf=0.5).reshape(
+            -1,
+        )
 
         return loss, start_values
 
-    def get_params_loss(self,
-                        predt: np.ndarray,
-                        target: torch.Tensor,
-                        start_values: List[float],
-                        requires_grad: bool = False,
-                        ) -> Tuple[List[torch.Tensor], np.ndarray]:
+    def get_params_loss(
+        self,
+        predt: np.ndarray,
+        target: torch.Tensor,
+        start_values: List[float],
+        requires_grad: bool = False,
+    ) -> Tuple[List[torch.Tensor], np.ndarray]:
         """
         Function that returns the predicted parameters and the loss.
 
@@ -291,11 +290,9 @@ class Multivariate_DistributionClass:
 
         return predt, loss
 
-    def draw_samples(self,
-                     dist_pred: torch.distributions.Distribution,
-                     n_samples: int = 1000,
-                     seed: int = 123
-                     ) -> pd.DataFrame:
+    def draw_samples(
+        self, dist_pred: torch.distributions.Distribution, n_samples: int = 1000, seed: int = 123
+    ) -> pd.DataFrame:
         """
         Function that draws n_samples from a predicted distribution.
 
@@ -330,15 +327,16 @@ class Multivariate_DistributionClass:
 
         return samples_df
 
-    def predict_dist(self,
-                     booster: xgb.Booster,
-                     start_values: np.ndarray,
-                     data: xgb.DMatrix,
-                     pred_type: str = "parameters",
-                     n_samples: int = 1000,
-                     quantiles: list = [0.1, 0.5, 0.9],
-                     seed: str = 123
-                     ) -> pd.DataFrame:
+    def predict_dist(
+        self,
+        booster: xgb.Booster,
+        start_values: np.ndarray,
+        data: xgb.DMatrix,
+        pred_type: str = "parameters",
+        n_samples: int = 1000,
+        quantiles: list = [0.1, 0.5, 0.9],
+        seed: str = 123,
+    ) -> pd.DataFrame:
         """
         Function that predicts from the trained model.
 
@@ -409,11 +407,9 @@ class Multivariate_DistributionClass:
 
             return pred_quant_df
 
-    def compute_gradients_and_hessians(self,
-                                       loss: torch.tensor,
-                                       predt: torch.tensor,
-                                       weights: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-
+    def compute_gradients_and_hessians(
+        self, loss: torch.tensor, predt: torch.tensor, weights: np.ndarray
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Calculates gradients and hessians.
 
@@ -501,17 +497,12 @@ class Multivariate_DistributionClass:
 
         return stab_der
 
-
-    def dist_select(self,
-                    target: np.ndarray,
-                    candidate_distributions: List,
-                    max_iter: int = 100,
-                    plot: bool = False,
-                    ncol: int = 3,
-                    height: float = 4,
-                    sharex: bool = True,
-                    sharey: bool = True,
-                    ) -> pd.DataFrame:
+    def dist_select(
+        self,
+        target: np.ndarray,
+        candidate_distributions: List,
+        max_iter: int = 100,
+    ) -> pd.DataFrame:
         """
         Function that selects the most suitable distribution among the candidate_distributions for the target variable,
         based on the NegLogLikelihood (lower is better).
@@ -554,17 +545,21 @@ class Multivariate_DistributionClass:
                 try:
                     loss, params = dist_sel.calculate_start_values(target=target_expand, max_iter=max_iter)
                     fit_df = pd.DataFrame.from_dict(
-                        {dist_sel.loss_fn: loss.reshape(-1,),
-                         "distribution": str(dist_name),
-                         "params": [params]
-                         }
+                        {
+                            dist_sel.loss_fn: loss.reshape(
+                                -1,
+                            ),
+                            "distribution": str(dist_name),
+                            "params": [params],
+                        }
                     )
                 except Exception as e:
                     warnings.warn(f"Error fitting {dist_name} distribution: {str(e)}")
                     fit_df = pd.DataFrame(
-                        {dist_sel.loss_fn: np.nan,
-                         "distribution": str(dist_name),
-                         "params": [np.nan] * dist_sel.n_dist_param
+                        {
+                            dist_sel.loss_fn: np.nan,
+                            "distribution": str(dist_name),
+                            "params": [np.nan] * dist_sel.n_dist_param,
                         }
                     )
                 dist_list.append(fit_df)
@@ -573,71 +568,12 @@ class Multivariate_DistributionClass:
             fit_df = pd.concat(dist_list).sort_values(by=dist_sel.loss_fn, ascending=True)
             fit_df["rank"] = fit_df[dist_sel.loss_fn].rank().astype(int)
             fit_df.set_index(fit_df["rank"], inplace=True)
-        if plot:
-            warnings.simplefilter(action='ignore', category=UserWarning)
-            # Select distribution
-            best_dist = fit_df[fit_df["rank"] == 1].reset_index(drop=True)
-            for dist in candidate_distributions:
-                dist_name = dist.__class__.__name__
-                if dist_name == "MVN_LoRa":
-                    dist_name = dist_name + f"(rank={dist.rank})"
-                if dist_name == best_dist["distribution"].values[0]:
-                    best_dist_sel = dist
-                    break
-
-            # Draw samples from distribution
-            dist_params = [
-                torch.tensor(best_dist["params"][0][i].reshape(-1, 1)) for i in range(best_dist_sel.n_dist_param)
-            ]
-            dist_params = best_dist_sel.param_transform(dist_params,
-                                                        best_dist_sel.param_dict,
-                                                        n_targets=best_dist_sel.n_targets,
-                                                        rank=best_dist_sel.rank,
-                                                        n_obs=1)
-
-            if best_dist["distribution"][0] == "Dirichlet":
-                dist_kwargs = dict(zip(best_dist_sel.distribution_arg_names, [dist_params]))
-            else:
-                dist_kwargs = dict(zip(best_dist_sel.distribution_arg_names, dist_params))
-            dist_fit = best_dist_sel.distribution(**dist_kwargs)
-            n_samples = np.max([1000, target.shape[0]])
-            n_samples = np.where(n_samples > 10000, 1000, n_samples)
-            df_samples = best_dist_sel.draw_samples(dist_fit, n_samples=n_samples, seed=123)
-
-            # Plot actual and fitted distribution
-            df_samples["type"] = f"Best-Fit: {best_dist['distribution'].values[0]}"
-            df_samples = df_samples.melt(id_vars=["target", "type"]).drop(columns="variable")
-
-            df_actual = pd.DataFrame(target)
-            df_actual.columns = [f"y{i + 1}" for i in range(best_dist_sel.n_targets)]
-            df_actual["type"] = "Actual"
-            df_actual = df_actual.melt(id_vars="type", var_name="target")[df_samples.columns]
-
-            plot_df = pd.concat([df_actual, df_samples])
-
-            g = sns.FacetGrid(plot_df,
-                              col="target",
-                              hue="type",
-                              col_wrap=ncol,
-                              height=height,
-                              sharex=sharex,
-                              sharey=sharey,
-                              )
-            g.map(sns.kdeplot, "value", lw=2.5)
-            handles, labels = g.axes[0].get_legend_handles_labels()
-            g.fig.legend(handles, labels, loc='upper center', ncol=len(labels), title="", bbox_to_anchor=(0.5, 0.92))
-            g.fig.suptitle("Actual vs. Best-Fit Density", weight="bold", fontsize=16)
-            g.fig.tight_layout(rect=[0, 0, 1, 0.9])
 
         fit_df.drop(columns=["rank", "params"], inplace=True)
 
         return fit_df
 
-    def target_append(self,
-                      target: np.ndarray,
-                      n_targets: int,
-                      n_dist_param: int
-                      ) -> np.ndarray:
+    def target_append(self, target: np.ndarray, n_targets: int, n_dist_param: int) -> np.ndarray:
         """
         Function that appends target to the number of specified parameters.
 

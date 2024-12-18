@@ -25,12 +25,12 @@ class TestClass(BaseTestClass):
             predt = np.array([0.5 for _ in range(dist_class.dist.n_dist_param)])
             predt = predt.reshape(-1, dist_class.dist.n_dist_param)
             predt = [
-                torch.tensor(predt[:, i].reshape(-1, 1), requires_grad=False) for i in
-                range(dist_class.dist.n_dist_param)
+                torch.tensor(predt[:, i].reshape(-1, 1), requires_grad=False)
+                for i in range(dist_class.dist.n_dist_param)
             ]
-            predt_transformed = dist_class.dist.param_transform(predt, dist_class.dist.param_dict,
-                                                                dist_class.dist.n_targets, rank=dist_class.dist.rank,
-                                                                n_obs=n_obs)
+            predt_transformed = dist_class.dist.param_transform(
+                predt, dist_class.dist.param_dict, dist_class.dist.n_targets, rank=dist_class.dist.rank, n_obs=n_obs
+            )
 
             # Call the function
             if dist_class.dist.distribution.__name__ == "Dirichlet":
@@ -56,5 +56,3 @@ class TestClass(BaseTestClass):
         assert isinstance(dist_samples, (pd.DataFrame, type(None)))
         assert not dist_samples.isna().any().any()
         assert not np.isinf(dist_samples).any().any()
-
-

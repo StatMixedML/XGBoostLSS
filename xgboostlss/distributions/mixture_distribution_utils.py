@@ -10,8 +10,6 @@ import pandas as pd
 from tqdm import tqdm
 
 from typing import Any, Dict, Optional, List, Tuple
-import matplotlib.pyplot as plt
-import seaborn as sns
 import warnings
 
 from xgboostlss import distributions
@@ -35,15 +33,7 @@ def get_component_distributions():
     mixture_distns = [dist for dist in dir(distributions) if dist[0].isupper()]
 
     # Remove specific distributions
-    distns_remove = [
-        "Dirichlet",
-        "Expectile",
-        "MVN",
-        "MVN_LoRa",
-        "MVT",
-        "Mixture",
-        "SplineFlow"
-    ]
+    distns_remove = ["Dirichlet", "Expectile", "MVN", "MVN_LoRa", "MVT", "Mixture", "SplineFlow"]
 
     mixture_distns = [item for item in mixture_distns if item not in distns_remove]
 
@@ -90,19 +80,21 @@ class MixtureDistributionClass:
     loss_fn: str
         Loss function. Options are "nll" (negative log-likelihood).
     """
-    def __init__(self,
-                 distribution: torch.distributions.Distribution = None,
-                 M: int = 2,
-                 temperature: float = 1.0,
-                 hessian_mode: str = "individual",
-                 univariate: bool = True,
-                 discrete: bool = False,
-                 n_dist_param: int = None,
-                 stabilization: str = "None",
-                 param_dict: Dict[str, Any] = None,
-                 distribution_arg_names: List = None,
-                 loss_fn: str = "nll",
-                 ):
+
+    def __init__(
+        self,
+        distribution: torch.distributions.Distribution = None,
+        M: int = 2,
+        temperature: float = 1.0,
+        hessian_mode: str = "individual",
+        univariate: bool = True,
+        discrete: bool = False,
+        n_dist_param: int = None,
+        stabilization: str = "None",
+        param_dict: Dict[str, Any] = None,
+        distribution_arg_names: List = None,
+        loss_fn: str = "nll",
+    ):
 
         self.distribution = distribution
         self.M = M
@@ -117,7 +109,6 @@ class MixtureDistributionClass:
         self.loss_fn = loss_fn
 
     def objective_fn(self, predt: np.ndarray, data: xgb.DMatrix) -> Tuple[np.ndarray, np.ndarray]:
-
         """
         Function to estimate gradients and hessians of distributional parameters.
 
@@ -183,9 +174,10 @@ class MixtureDistributionClass:
 
         return self.loss_fn, loss
 
-    def create_mixture_distribution(self,
-                                    params: List[torch.Tensor],
-                                    ) -> torch.distributions.Distribution:
+    def create_mixture_distribution(
+        self,
+        params: List[torch.Tensor],
+    ) -> torch.distributions.Distribution:
         """
         Function that creates a mixture distribution.
 
@@ -207,9 +199,7 @@ class MixtureDistributionClass:
 
         return mixture_dist
 
-    def loss_fn_start_values(self,
-                             params: torch.Tensor,
-                             target: torch.Tensor) -> torch.Tensor:
+    def loss_fn_start_values(self, params: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
         """
         Function that calculates the loss for a given set of distributional parameters. Only used for calculating
         the loss for the start values.
@@ -240,10 +230,7 @@ class MixtureDistributionClass:
 
         return loss
 
-    def calculate_start_values(self,
-                               target: np.ndarray,
-                               max_iter: int = 50
-                               ) -> Tuple[float, np.ndarray]:
+    def calculate_start_values(self, target: np.ndarray, max_iter: int = 50) -> Tuple[float, np.ndarray]:
         """
         Function that calculates the starting values for each distributional parameter.
 
@@ -268,7 +255,7 @@ class MixtureDistributionClass:
         params = [torch.tensor(0.5, requires_grad=True) for _ in range(self.n_dist_param)]
 
         # Specify optimizer
-        optimizer = LBFGS(params, lr=0.1, max_iter=np.min([int(max_iter/4), 20]), line_search_fn="strong_wolfe")
+        optimizer = LBFGS(params, lr=0.1, max_iter=np.min([int(max_iter / 4), 20]), line_search_fn="strong_wolfe")
 
         # Define learning rate scheduler
         lr_scheduler = ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=10)
@@ -314,12 +301,13 @@ class MixtureDistributionClass:
 
         return loss, start_values
 
-    def get_params_loss(self,
-                        predt: np.ndarray,
-                        target: torch.Tensor,
-                        start_values: List[float],
-                        requires_grad: bool = False,
-                        ) -> Tuple[List[torch.Tensor], np.ndarray]:
+    def get_params_loss(
+        self,
+        predt: np.ndarray,
+        target: torch.Tensor,
+        start_values: List[float],
+        requires_grad: bool = False,
+    ) -> Tuple[List[torch.Tensor], np.ndarray]:
         """
         Function that returns the predicted parameters and the loss.
 
@@ -377,11 +365,7 @@ class MixtureDistributionClass:
 
         return predt, loss
 
-    def draw_samples(self,
-                     predt_params: pd.DataFrame,
-                     n_samples: int = 1000,
-                     seed: int = 123
-                     ) -> pd.DataFrame:
+    def draw_samples(self, predt_params: pd.DataFrame, n_samples: int = 1000, seed: int = 123) -> pd.DataFrame:
         """
         Function that draws n_samples from a predicted distribution.
 
@@ -414,15 +398,16 @@ class MixtureDistributionClass:
 
         return dist_samples
 
-    def predict_dist(self,
-                     booster: xgb.Booster,
-                     start_values: np.ndarray,
-                     data: xgb.DMatrix,
-                     pred_type: str = "parameters",
-                     n_samples: int = 1000,
-                     quantiles: list = [0.1, 0.5, 0.9],
-                     seed: str = 123
-                     ) -> pd.DataFrame:
+    def predict_dist(
+        self,
+        booster: xgb.Booster,
+        start_values: np.ndarray,
+        data: xgb.DMatrix,
+        pred_type: str = "parameters",
+        n_samples: int = 1000,
+        quantiles: list = [0.1, 0.5, 0.9],
+        seed: str = 123,
+    ) -> pd.DataFrame:
         """
         Function that predicts from the trained model.
 
@@ -460,18 +445,14 @@ class MixtureDistributionClass:
 
         # Transform predicted parameters to response scale
         dist_params_predt = np.concatenate(
-            [
-                response_fun(predt[i]).numpy() for i, (dist_param, response_fun) in enumerate(self.param_dict.items())
-            ],
+            [response_fun(predt[i]).numpy() for i, (dist_param, response_fun) in enumerate(self.param_dict.items())],
             axis=1,
         )
         dist_params_predt = pd.DataFrame(dist_params_predt)
         dist_params_predt.columns = self.distribution_arg_names
 
         # Draw samples from predicted response distribution
-        pred_samples_df = self.draw_samples(predt_params=dist_params_predt,
-                                            n_samples=n_samples,
-                                            seed=seed)
+        pred_samples_df = self.draw_samples(predt_params=dist_params_predt, n_samples=n_samples, seed=seed)
 
         if pred_type == "parameters":
             return dist_params_predt
@@ -487,11 +468,9 @@ class MixtureDistributionClass:
                 pred_quant_df = pred_quant_df.astype(int)
             return pred_quant_df
 
-    def compute_gradients_and_hessians(self,
-                                       loss: torch.Tensor,
-                                       predt: List[torch.Tensor],
-                                       weights: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-
+    def compute_gradients_and_hessians(
+        self, loss: torch.Tensor, predt: List[torch.Tensor], weights: np.ndarray
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Calculates gradients and hessians.
 
@@ -579,13 +558,12 @@ class MixtureDistributionClass:
 
         return stab_der
 
-    def dist_select(self,
-                    target: np.ndarray,
-                    candidate_distributions: List,
-                    max_iter: int = 100,
-                    plot: bool = False,
-                    figure_size: tuple = (8, 5),
-                    ) -> pd.DataFrame:
+    def dist_select(
+        self,
+        target: np.ndarray,
+        candidate_distributions: List,
+        max_iter: int = 100,
+    ) -> pd.DataFrame:
         """
         Function that selects the most suitable distribution among the candidate_distributions for the target variable,
         based on the NegLogLikelihood (lower is better).
@@ -620,22 +598,26 @@ class MixtureDistributionClass:
                 try:
                     loss, params = candidate_distributions[i].calculate_start_values(target=target, max_iter=max_iter)
                     fit_df = pd.DataFrame.from_dict(
-                        {candidate_distributions[i].loss_fn: loss.reshape(-1, ),
-                         "distribution": str(dist_name),
-                         "params": [params],
-                         "dist_pos": i,
-                         "M": candidate_distributions[i].M
-                         }
+                        {
+                            candidate_distributions[i].loss_fn: loss.reshape(
+                                -1,
+                            ),
+                            "distribution": str(dist_name),
+                            "params": [params],
+                            "dist_pos": i,
+                            "M": candidate_distributions[i].M,
+                        }
                     )
                 except Exception as e:
                     warnings.warn(f"Error fitting {dist_name} distribution: {str(e)}")
                     fit_df = pd.DataFrame(
-                        {candidate_distributions[i].loss_fn: np.nan,
-                         "distribution": str(dist_name),
-                         "params": [np.nan] * self.n_dist_param,
-                         "dist_pos": i,
-                         "M": candidate_distributions[i].M
-                         }
+                        {
+                            candidate_distributions[i].loss_fn: np.nan,
+                            "distribution": str(dist_name),
+                            "params": [np.nan] * self.n_dist_param,
+                            "dist_pos": i,
+                            "M": candidate_distributions[i].M,
+                        }
                     )
                 dist_list.append(fit_df)
                 pbar.update(1)
@@ -643,37 +625,6 @@ class MixtureDistributionClass:
             fit_df = pd.concat(dist_list).sort_values(by=candidate_distributions[i].loss_fn, ascending=True)
             fit_df["rank"] = fit_df[candidate_distributions[i].loss_fn].rank().astype(int)
             fit_df.set_index(fit_df["rank"], inplace=True)
-
-        if plot:
-            # Select best distribution
-            best_dist = fit_df[fit_df["rank"] == fit_df["rank"].min()].reset_index(drop=True).iloc[[0]]
-            best_dist_pos = int(best_dist["dist_pos"].values[0])
-            best_dist_sel = candidate_distributions[best_dist_pos]
-            params = torch.tensor(best_dist["params"][0]).reshape(1, -1)
-            params = torch.split(params, best_dist_sel.M, dim=1)
-
-            fitted_params = np.concatenate(
-                [
-                    response_fun(params[i]).numpy()
-                    for i, (dist_param, response_fun) in enumerate(best_dist_sel.param_dict.items())
-                ],
-                axis=1,
-            )
-
-            fitted_params = pd.DataFrame(fitted_params, columns=best_dist_sel.distribution_arg_names)
-            n_samples = np.max([10000, target.shape[0]])
-            n_samples = np.where(n_samples > 500000, 100000, n_samples)
-            dist_samples = best_dist_sel.draw_samples(fitted_params,
-                                                      n_samples=n_samples,
-                                                      seed=123).values
-
-            # Plot actual and fitted distribution
-            plt.figure(figsize=figure_size)
-            sns.kdeplot(target.reshape(-1,), label="Actual")
-            sns.kdeplot(dist_samples.reshape(-1,), label=f"Best-Fit: {best_dist['distribution'].values[0]}")
-            plt.legend()
-            plt.title("Actual vs. Best-Fit Density", fontweight="bold", fontsize=16)
-            plt.show()
 
         fit_df.drop(columns=["rank", "params", "dist_pos", "M"], inplace=True)
 
