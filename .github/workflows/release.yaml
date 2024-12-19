@@ -1,0 +1,36 @@
+name: release
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: twig-energy/ci-actions/tailscale@v1
+      with:
+        oauth-client-id: ${{ secrets.CI_TS_OAUTH_CLIENT_ID }}
+        oauth-secret: ${{ secrets.CI_TS_OAUTH_SECRET }}
+
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install build dependencies
+      run: |
+        python3.12 -m venv .venv
+        source .venv/bin/activate
+        pip install setuptools wheel twine
+
+    - name: Release
+      env:
+        TWINE_REPOSITORY_URL: http://package-registry-ts/repository/twig-pip/
+        TWINE_USERNAME: ${{ secrets.TWIG_PYPI_RW_USER }}
+        TWINE_PASSWORD: ${{ secrets.TWIG_PYPI_RW_PASSWORD }}
+      run: |
+        source .venv/bin/activate
+        python setup.py sdist bdist_wheel
+        twine upload dist/*
