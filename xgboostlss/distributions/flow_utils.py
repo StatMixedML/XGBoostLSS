@@ -11,8 +11,6 @@ import pandas as pd
 from tqdm import tqdm
 
 from typing import Any, Dict, Optional, List, Tuple
-import matplotlib.pyplot as plt
-import seaborn as sns
 import warnings
 
 
@@ -55,21 +53,23 @@ class NormalizingFlowClass:
         Note that if "crps" is used, the Hessian is set to 1, as the current CRPS version is not twice differentiable.
         Hence, using the CRPS disregards any variation in the curvature of the loss function.
     """
-    def __init__(self,
-                 base_dist: torch.distributions.Distribution = None,
-                 flow_transform: Transform = None,
-                 count_bins: Optional[int] = 8,
-                 bound: Optional[float] = 3.0,
-                 order: Optional[str] = "quadratic",
-                 n_dist_param: int = None,
-                 param_dict: Dict[str, Any] = None,
-                 distribution_arg_names: List = None,
-                 target_transform: Transform = None,
-                 discrete: bool = False,
-                 univariate: bool = True,
-                 stabilization: str = "None",
-                 loss_fn: str = "nll",
-                 ):
+
+    def __init__(
+        self,
+        base_dist: torch.distributions.Distribution = None,
+        flow_transform: Transform = None,
+        count_bins: Optional[int] = 8,
+        bound: Optional[float] = 3.0,
+        order: Optional[str] = "quadratic",
+        n_dist_param: int = None,
+        param_dict: Dict[str, Any] = None,
+        distribution_arg_names: List = None,
+        target_transform: Transform = None,
+        discrete: bool = False,
+        univariate: bool = True,
+        stabilization: str = "None",
+        loss_fn: str = "nll",
+    ):
 
         self.base_dist = base_dist
         self.flow_transform = flow_transform
@@ -86,7 +86,6 @@ class NormalizingFlowClass:
         self.loss_fn = loss_fn
 
     def objective_fn(self, predt: np.ndarray, data: xgb.DMatrix) -> Tuple[np.ndarray, np.ndarray]:
-
         """
         Function to estimate gradients and hessians of normalizing flow parameters.
 
@@ -152,10 +151,7 @@ class NormalizingFlowClass:
 
         return self.loss_fn, loss
 
-    def calculate_start_values(self,
-                               target: np.ndarray,
-                               max_iter: int = 50
-                               ) -> Tuple[float, np.ndarray]:
+    def calculate_start_values(self, target: np.ndarray, max_iter: int = 50) -> Tuple[float, np.ndarray]:
         """
         Function that calculates starting values for each parameter.
 
@@ -180,10 +176,12 @@ class NormalizingFlowClass:
         flow_dist = self.create_spline_flow(input_dim=1)
 
         # Specify optimizer
-        optimizer = LBFGS(flow_dist.transforms[0].parameters(),
-                          lr=0.3,
-                          max_iter=np.min([int(max_iter/4), 50]),
-                          line_search_fn="strong_wolfe")
+        optimizer = LBFGS(
+            flow_dist.transforms[0].parameters(),
+            lr=0.3,
+            max_iter=np.min([int(max_iter / 4), 50]),
+            line_search_fn="strong_wolfe",
+        )
 
         # Define learning rate scheduler
         lr_scheduler = ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=5)
@@ -198,8 +196,8 @@ class NormalizingFlowClass:
 
         # Optimize parameters
         loss_vals = []
-        tolerance = 1e-5           # Tolerance level for loss change
-        patience = 5               # Patience level for loss change
+        tolerance = 1e-5  # Tolerance level for loss change
+        patience = 5  # Patience level for loss change
         best_loss = float("inf")
         epochs_without_change = 0
 
@@ -231,12 +229,13 @@ class NormalizingFlowClass:
 
         return loss, start_values
 
-    def get_params_loss(self,
-                        predt: np.ndarray,
-                        target: torch.Tensor,
-                        start_values: List[float],
-                        requires_grad: bool = False,
-                        ) -> Tuple[List[torch.Tensor], np.ndarray]:
+    def get_params_loss(
+        self,
+        predt: np.ndarray,
+        target: torch.Tensor,
+        start_values: List[float],
+        requires_grad: bool = False,
+    ) -> Tuple[List[torch.Tensor], np.ndarray]:
         """
         Function that returns the predicted parameters and the loss.
 
@@ -287,10 +286,10 @@ class NormalizingFlowClass:
 
         return params, loss
 
-    def create_spline_flow(self,
-                           input_dim: int = None,
-                           ) -> Transform:
-
+    def create_spline_flow(
+        self,
+        input_dim: int = None,
+    ) -> Transform:
         """
         Function that constructs a Normalizing Flow.
 
@@ -311,20 +310,20 @@ class NormalizingFlowClass:
 
         # Create Spline Transform
         torch.manual_seed(123)
-        spline_transform = self.flow_transform(input_dim,
-                                               count_bins=self.count_bins,
-                                               bound=self.bound,
-                                               order=self.order)
+        spline_transform = self.flow_transform(
+            input_dim, count_bins=self.count_bins, bound=self.bound, order=self.order
+        )
 
         # Create Normalizing Flow
         spline_flow = TransformedDistribution(flow_dist, [spline_transform, self.target_transform])
 
         return spline_flow
 
-    def replace_parameters(self,
-                           params: torch.Tensor,
-                           flow_dist: Transform,
-                           ) -> Tuple[List, Transform]:
+    def replace_parameters(
+        self,
+        params: torch.Tensor,
+        flow_dist: Transform,
+    ) -> Tuple[List, Transform]:
         """
         Replace parameters with estimated ones.
 
@@ -345,13 +344,11 @@ class NormalizingFlowClass:
 
         # Split parameters into list
         if self.order == "quadratic":
-            params_list = torch.split(
-                params, [self.count_bins, self.count_bins, self.count_bins - 1],
-                dim=1)
+            params_list = torch.split(params, [self.count_bins, self.count_bins, self.count_bins - 1], dim=1)
         elif self.order == "linear":
             params_list = torch.split(
-                params, [self.count_bins, self.count_bins, self.count_bins - 1, self.count_bins],
-                dim=1)
+                params, [self.count_bins, self.count_bins, self.count_bins - 1, self.count_bins], dim=1
+            )
 
         # Replace parameters
         for param, new_value in zip(flow_dist.transforms[0].parameters(), params_list):
@@ -362,11 +359,7 @@ class NormalizingFlowClass:
 
         return params_list, flow_dist
 
-    def draw_samples(self,
-                     predt_params: pd.DataFrame,
-                     n_samples: int = 1000,
-                     seed: int = 123
-                     ) -> pd.DataFrame:
+    def draw_samples(self, predt_params: pd.DataFrame, n_samples: int = 1000, seed: int = 123) -> pd.DataFrame:
         """
         Function that draws n_samples from a predicted distribution.
 
@@ -404,15 +397,16 @@ class NormalizingFlowClass:
 
         return flow_samples
 
-    def predict_dist(self,
-                     booster: xgb.Booster,
-                     start_values: np.ndarray,
-                     data: xgb.DMatrix,
-                     pred_type: str = "parameters",
-                     n_samples: int = 1000,
-                     quantiles: list = [0.1, 0.5, 0.9],
-                     seed: int = 123
-                     ) -> pd.DataFrame:
+    def predict_dist(
+        self,
+        booster: xgb.Booster,
+        start_values: np.ndarray,
+        data: xgb.DMatrix,
+        pred_type: str = "parameters",
+        n_samples: int = 1000,
+        quantiles: list = [0.1, 0.5, 0.9],
+        seed: int = 123,
+    ) -> pd.DataFrame:
         """
         Function that predicts from the trained model.
 
@@ -452,9 +446,7 @@ class NormalizingFlowClass:
         dist_params_predt.columns = self.param_dict.keys()
 
         # Draw samples from predicted response distribution
-        pred_samples_df = self.draw_samples(predt_params=dist_params_predt,
-                                            n_samples=n_samples,
-                                            seed=seed)
+        pred_samples_df = self.draw_samples(predt_params=dist_params_predt, n_samples=n_samples, seed=seed)
 
         if pred_type == "parameters":
             return dist_params_predt
@@ -470,11 +462,9 @@ class NormalizingFlowClass:
                 pred_quant_df = pred_quant_df.astype(int)
             return pred_quant_df
 
-    def compute_gradients_and_hessians(self,
-                                       loss: torch.tensor,
-                                       predt: torch.tensor,
-                                       weights: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-
+    def compute_gradients_and_hessians(
+        self, loss: torch.tensor, predt: torch.tensor, weights: np.ndarray
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Calculates gradients and hessians.
 
@@ -611,7 +601,7 @@ class NormalizingFlowClass:
         for yhat in yhat_dist_sorted:
             yhat = yhat.reshape(-1, 1)
             flag = (y_cdf == 0) * (y < yhat)
-            crps += flag * ((y - yhat_prev) * yhat_cdf ** 2)
+            crps += flag * ((y - yhat_prev) * yhat_cdf**2)
             crps += flag * ((yhat - y) * (yhat_cdf - 1) ** 2)
             crps += (~flag) * ((yhat - yhat_prev) * (yhat_cdf - y_cdf) ** 2)
             y_cdf += flag
@@ -619,18 +609,17 @@ class NormalizingFlowClass:
             yhat_prev = yhat
 
         # In case y_cdf == 0 after the loop
-        flag = (y_cdf == 0)
+        flag = y_cdf == 0
         crps += flag * (y - yhat)
 
         return crps
 
-    def flow_select(self,
-                    target: np.ndarray,
-                    candidate_flows: List,
-                    max_iter: int = 100,
-                    plot: bool = False,
-                    figure_size: tuple = (10, 5),
-                    ) -> pd.DataFrame:
+    def flow_select(
+        self,
+        target: np.ndarray,
+        candidate_flows: List,
+        max_iter: int = 100,
+    ) -> pd.DataFrame:
         """
         Function that selects the most suitable normalizing flow specification among the candidate_flow for the
         target variable, based on the NegLogLikelihood (lower is better).
@@ -666,18 +655,22 @@ class NormalizingFlowClass:
                 try:
                     loss, params = flow_sel.calculate_start_values(target=target, max_iter=max_iter)
                     fit_df = pd.DataFrame.from_dict(
-                        {flow_sel.loss_fn: loss.reshape(-1, ),
-                         "NormFlow": str(flow_name),
-                         "params": [params]
-                         }
+                        {
+                            flow_sel.loss_fn: loss.reshape(
+                                -1,
+                            ),
+                            "NormFlow": str(flow_name),
+                            "params": [params],
+                        }
                     )
                 except Exception as e:
                     warnings.warn(f"Error fitting {flow_sel} NormFlow: {str(e)}")
                     fit_df = pd.DataFrame(
-                        {flow_sel.loss_fn: np.nan,
-                         "NormFlow": str(flow_sel),
-                         "params": [np.nan] * flow_sel.n_dist_param
-                         }
+                        {
+                            flow_sel.loss_fn: np.nan,
+                            "NormFlow": str(flow_sel),
+                            "params": [np.nan] * flow_sel.n_dist_param,
+                        }
                     )
                 flow_list.append(fit_df)
                 pbar.update(1)
@@ -685,32 +678,6 @@ class NormalizingFlowClass:
             fit_df = pd.concat(flow_list).sort_values(by=flow_sel.loss_fn, ascending=True)
             fit_df["rank"] = fit_df[flow_sel.loss_fn].rank().astype(int)
             fit_df.set_index(fit_df["rank"], inplace=True)
-        if plot:
-            # Select normalizing flow with the lowest loss
-            best_flow = fit_df[fit_df["rank"] == 1].reset_index(drop=True)
-            for flow in candidate_flows:
-                flow_name = str(flow.__class__).split(".")[-1].split("'>")[0]
-                flow_spec = f"(count_bins: {flow.count_bins}, order: {flow.order})"
-                flow_name = flow_name + flow_spec
-                if flow_name == best_flow["NormFlow"].values[0]:
-                    best_flow_sel = flow
-                    break
-
-            # Draw samples from distribution
-            flow_params = torch.tensor(best_flow["params"][0]).reshape(1, -1)
-            flow_dist_sel = best_flow_sel.create_spline_flow(input_dim=1)
-            _, flow_dist_sel = best_flow_sel.replace_parameters(flow_params, flow_dist_sel)
-            n_samples = np.max([10000, target.shape[0]])
-            n_samples = np.where(n_samples > 500000, 100000, n_samples)
-            flow_samples = pd.DataFrame(flow_dist_sel.sample((n_samples,)).squeeze().detach().numpy().T).values
-
-            # Plot actual and fitted distribution
-            plt.figure(figsize=figure_size)
-            sns.kdeplot(target.reshape(-1, ), label="Actual")
-            sns.kdeplot(flow_samples.reshape(-1, ), label=f"Best-Fit: {best_flow['NormFlow'].values[0]}")
-            plt.legend()
-            plt.title("Actual vs. Best-Fit Density", fontweight="bold", fontsize=16)
-            plt.show()
 
         fit_df.drop(columns=["rank", "params"], inplace=True)
 
