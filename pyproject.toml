@@ -1,0 +1,55 @@
+[project]
+name = "xgboostlss"
+version = "0.4.0"
+description = "XGBoostLSS - An extension of XGBoost to probabilistic modelling"
+readme = { file = "README.md", content-type = "text/markdown" }
+authors = [
+    { name = "Alexander März", email = "alex.maerz@gmx.net" }
+]
+license = { text = "Apache License 2.0" }
+requires-python = ">=3.10"
+dependencies = [
+    "xgboost>=2.0,<4.0",
+    "torch>=2.1,<2.7",
+    "pyro-ppl>=1.8,<1.10",
+    "optuna>=3.5.0,<4.4",
+    "properscoring~=0.1",
+    "scikit-learn>=1.4.0,<1.7.0",
+    "numpy>=1.26.0,<2.0",
+    "pandas>=2.0,<2.3",
+    "plotnine>=0.12.0,<0.15.0",
+    "scipy>=1.11,<1.16",
+    "shap>=0.44,<0.48",
+    "seaborn>=0.13.0,<0.14.0",
+    "tqdm>=4.66,<4.68",
+    "matplotlib>=3.8,<3.11",
+    "ipython>=8.20,<9.2"
+]
+
+[project.optional-dependencies]
+docs = [
+    "mkdocs",
+    "mkdocstrings[python]",
+    "mkdocs-jupyter"
+]
+test = [
+    "flake8",
+    "pytest"
+]
+
+[project.urls]
+Homepage = "https://github.com/StatMixedML/XGBoostLSS"
+
+[tool.setuptools]
+include-package-data = true
+zip-safe = true
+
+[tool.setuptools.packages.find]
+exclude = ["docs", "tests*"]
+
+[tool.setuptools.package-data]
+xgboostlss = ["datasets/*.csv"]
+
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
