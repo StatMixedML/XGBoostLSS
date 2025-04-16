@@ -13,6 +13,7 @@ dependencies = [
     "torch>=2.1,<2.7",
     "pyro-ppl>=1.8,<1.10",
     "optuna>=3.5.0,<4.4",
+    "optuna-integration",
     "properscoring~=0.1",
     "scikit-learn>=1.4.0,<1.7.0",
     "numpy>=1.26.0,<2.0",
