@@ -48,7 +48,7 @@ zip-safe = true
 exclude = ["docs", "tests*"]
 
 [tool.setuptools.package-data]
-"" = ["datasets/*.csv"]
+xgboostlss = ["datasets/*.csv"]
 
 [build-system]
 requires = ["setuptools>=61", "wheel"]
