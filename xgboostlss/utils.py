@@ -119,6 +119,46 @@ def softplus_fn_df(predt: torch.tensor) -> torch.tensor:
     return softplus_fn(predt) + torch.tensor(2.0, dtype=predt.dtype)
 
 
+def squareplus_fn(predt: torch.tensor) -> torch.tensor:
+    """
+    Square-Plus function used to ensure predt is strictly positive.
+
+    Arguments
+    ---------
+    predt: torch.tensor
+        Predicted values.
+
+    Returns
+    -------
+    predt: torch.tensor
+        Predicted values.
+    """
+    b = torch.tensor(4., dtype=predt.dtype)
+    predt = 0.5 * (predt + torch.sqrt(predt ** 2 + b)) + torch.tensor(1e-06, dtype=predt.dtype)
+
+    return predt
+
+
+def squareplus_fn_df(predt: torch.tensor) -> torch.tensor:
+    """
+    Square-Plus function used to ensure predt is strictly positive.
+
+    Arguments
+    ---------
+    predt: torch.tensor
+        Predicted values.
+
+    Returns
+    -------
+    predt: torch.tensor
+        Predicted values.
+    """
+    b = torch.tensor(4., dtype=predt.dtype)
+    predt = 0.5 * (predt + torch.sqrt(predt ** 2 + b)) + torch.tensor(1e-06, dtype=predt.dtype)
+
+    return predt + torch.tensor(2.0, dtype=predt.dtype)
+
+
 def sigmoid_fn(predt: torch.tensor) -> torch.tensor:
     """
     Function used to ensure predt are scaled to (0,1).
@@ -156,6 +196,25 @@ def relu_fn(predt: torch.tensor) -> torch.tensor:
     predt = torch.relu(nan_to_num(predt)) + torch.tensor(_EPS, dtype=predt.dtype)
 
     return predt
+
+
+def relu_fn_df(predt: torch.tensor) -> torch.tensor:
+    """
+    Function used to ensure predt are scaled to max(0, predt).
+
+    Arguments
+    ---------
+    predt: torch.tensor
+        Predicted values.
+
+    Returns
+    -------
+    predt: torch.tensor
+        Predicted values.
+    """
+    predt = torch.relu(nan_to_num(predt)) + torch.tensor(1e-06, dtype=predt.dtype)
+
+    return predt + torch.tensor(2.0, dtype=predt.dtype)
 
 
 def softmax_fn(predt: torch.tensor) -> torch.tensor:

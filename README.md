@@ -1,13 +1,14 @@
 <h4 align="center">
 
-![Python Version](https://img.shields.io/badge/python-3.9%20|%20%203.10%20|%20%203.11-lightblue.svg)
+![Python Version](https://img.shields.io/badge/python-3.10%20|%20%203.11-lightblue.svg)
 ![GitHub tag (with filter)](https://img.shields.io/github/v/tag/StatMixedML/XGBoostLSS?label=release&color=lightblue)
-[![Github License](https://img.shields.io/badge/license-Apache%202.0-lightblue.svg)](https://opensource.org/licenses/Apache-2.0)
 <img src="https://github.com/StatMixedML/XGBoostLSS/actions/workflows/mkdocs.yaml/badge.svg" alt="Documentation status badge">
 <img src="https://github.com/StatMixedML/XGBoostLSS/workflows/unit-tests/badge.svg" alt="Unit test status badge">
 <img src="https://codecov.io/gh/StatMixedML/XGBoostLSS/branch/master/graph/badge.svg" alt="Code coverage status badge"> 
+![Pepy Total Downlods](https://img.shields.io/pepy/dt/xgboostlss?label=PyPI%20Downloads%2FMonth&color=green)
 
 <!---
+[![Github License](https://img.shields.io/badge/license-Apache%202.0-lightblue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Documentation](https://github.com/StatMixedML/XGBoostLSS/actions/workflows/mkdocs.yaml/badge.svg)](https://StatMixedML.github.io/XGBoostLSS/)
 ![Build Status](https://github.com/StatMixedML/XGBoostLSS/workflows/build%20status/badge.svg)
 ![GitHub repo size](https://img.shields.io/github/repo-size/StatMixedML/XGBoostLSS?label=repo%20size&color=lightblue)
@@ -38,6 +39,7 @@ We introduce a comprehensive framework that models and predicts the full conditi
 :white_check_mark: XGBoostLSS is available in Python. <br/>
 
 ## `News`
+:boom: [2024-01-19] Release of XGBoostLSS to [PyPI](https://pypi.org/project/xgboostlss/). <br/>
 :boom: [2023-08-25] Release of v0.4.0 introduces Mixture-Densities. See the [release notes](https://github.com/StatMixedML/XGBoostLSS/releases) for an overview. <br/>
 :boom: [2023-07-19] Release of v0.3.0 introduces Normalizing Flows. See the [release notes](https://github.com/StatMixedML/XGBoostLSS/releases) for an overview. <br/>
 :boom: [2023-06-22] Release of v0.2.2. See the [release notes](https://github.com/StatMixedML/XGBoostLSS/releases) for an overview. <br/>
@@ -52,13 +54,13 @@ We introduce a comprehensive framework that models and predicts the full conditi
 :boom: [2021-11-14] XGBoostLSS v0.1.0 is released!
 
 ## `Installation`
-To install XGBoostLSS, please first run
+To install the development version, please use
 ```python
 pip install git+https://github.com/StatMixedML/XGBoostLSS.git
 ```
-Then, to install the shap-dependency, run
+For the PyPI version, please use
 ```python
-pip install git+https://github.com/dsgibbons/shap.git
+pip install xgboostlss
 ```
 
 ## `Available Distributions`
