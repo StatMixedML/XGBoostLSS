@@ -1,10 +1,12 @@
 from xgboostlss.model import XGBoostLSS
 from xgboostlss import distributions
-from xgboostlss.distributions.mixture_distribution_utils import get_component_distributions
+from xgboostlss.distributions.mixture_distribution_utils import (
+    get_component_distributions,
+)
 
 import pytest
 import importlib
-from typing import List
+from typing import List, Dict
 import torch
 import numpy as np
 import xgboost as xgb
@@ -34,7 +36,9 @@ def gen_test_data(dist_class, weights: bool = False):
     """
     if dist_class.dist.univariate:
         np.random.seed(123)
-        predt = np.random.rand(dist_class.dist.n_dist_param * 4).reshape(-1, dist_class.dist.n_dist_param)
+        predt = np.random.rand(dist_class.dist.n_dist_param * 4).reshape(
+            -1, dist_class.dist.n_dist_param
+        )
         labels = np.array([0.2, 0.4, 0.6, 0.8]).reshape(-1, 1)
         if weights:
             weights = np.ones_like(labels)
@@ -49,12 +53,12 @@ def gen_test_data(dist_class, weights: bool = False):
             return predt, labels, dmatrix
     else:
         np.random.seed(123)
-        predt = np.random.rand(dist_class.dist.n_dist_param * 4).reshape(-1, dist_class.dist.n_dist_param)
+        predt = np.random.rand(dist_class.dist.n_dist_param * 4).reshape(
+            -1, dist_class.dist.n_dist_param
+        )
         labels = np.arange(0.1, 0.9, 0.1)
         labels = dist_class.dist.target_append(
-            labels,
-            dist_class.dist.n_targets,
-            dist_class.dist.n_dist_param
+            labels, dist_class.dist.n_targets, dist_class.dist.n_dist_param
         )
         if weights:
             weights = np.ones_like(labels[:, 0], dtype=labels.dtype).reshape(-1, 1)
@@ -69,14 +73,41 @@ def gen_test_data(dist_class, weights: bool = False):
             return predt, labels, dmatrix
 
 
-def get_distribution_classes(univariate: bool = True,
-                             continuous: bool = False,
-                             discrete: bool = False,
-                             rsample: bool = False,
-                             flow: bool = False,
-                             expectile: bool = False,
-                             mixture: bool = False,
-                             ) -> List:
+def get_dist_module_lookup() -> Dict[str, str]:
+    """Function that returns a lookup from distribution class name to its module name.
+
+    Usually this is 1:1, but some modules (py files) contain multiple class names.
+    """
+    # Get all distribution names
+    distns_submodules = [dist for dist in dir(distributions) if dist[0].isupper()]
+
+    # Remove specific distributions
+    modules_remove = ["SplineFlow", "Expectile", "Mixture"]
+    distns_submodules = [
+        item for item in distns_submodules if item not in modules_remove
+    ]
+
+    dist_module_lookup = {k: k for k in distns_submodules}
+    for mod_name in distns_submodules:
+        if "LambertW" in mod_name:
+            dist_module_lookup["Skew" + mod_name] = mod_name
+            dist_module_lookup["Tail" + mod_name] = mod_name
+            dist_module_lookup.pop(mod_name)
+            if mod_name == "LambertWGaussian":
+                dist_module_lookup.pop("Skew" + mod_name)
+
+    return dist_module_lookup
+
+
+def get_distribution_classes(
+    univariate: bool = True,
+    continuous: bool = False,
+    discrete: bool = False,
+    rsample: bool = False,
+    flow: bool = False,
+    expectile: bool = False,
+    mixture: bool = False,
+) -> List:
     """
     Function that returns a list of specified distribution classes.
 
@@ -102,22 +133,12 @@ def get_distribution_classes(univariate: bool = True,
     distribution_classes (List):
         List of all distribution classes in the distributions folder.
     """
-    # Get all distribution names
-    distns = [dist for dist in dir(distributions) if dist[0].isupper()]
-
-    # Remove specific distributions
-    distns_remove = [
-        "SplineFlow",
-        "Expectile",
-        "Mixture"
-    ]
-    distns = [item for item in distns if item not in distns_remove]
-
+    dist_module_lookup = get_dist_module_lookup()
     # Extract all continous univariate distributions
     univar_cont_distns = []
-    for distribution_name in distns:
+    for distribution_name, mod_name in dist_module_lookup.items():
         # Import the module dynamically
-        module = importlib.import_module(f"xgboostlss.distributions.{distribution_name}")
+        module = importlib.import_module(f"xgboostlss.distributions.{mod_name}")
 
         # Get the class dynamically from the module
         distribution_class = getattr(module, distribution_name)
@@ -127,9 +148,9 @@ def get_distribution_classes(univariate: bool = True,
 
     # Exctract discrete univariate distributions only
     univar_discrete_distns = []
-    for distribution_name in distns:
+    for distribution_name, mod_name in dist_module_lookup.items():
         # Import the module dynamically
-        module = importlib.import_module(f"xgboostlss.distributions.{distribution_name}")
+        module = importlib.import_module(f"xgboostlss.distributions.{mod_name}")
 
         # Get the class dynamically from the module
         distribution_class = getattr(module, distribution_name)
@@ -139,9 +160,9 @@ def get_distribution_classes(univariate: bool = True,
 
     # Extract all multivariate distributions
     multivar_distns = []
-    for distribution_name in distns:
+    for distribution_name, mod_name in dist_module_lookup.items():
         # Import the module dynamically
-        module = importlib.import_module(f"xgboostlss.distributions.{distribution_name}")
+        module = importlib.import_module(f"xgboostlss.distributions.{mod_name}")
 
         # Get the class dynamically from the module
         distribution_class = getattr(module, distribution_name)
@@ -151,9 +172,9 @@ def get_distribution_classes(univariate: bool = True,
 
     # Extract distributions only that have a rsample method
     rsample_distns = []
-    for distribution_name in distns:
+    for distribution_name, mod_name in dist_module_lookup.items():
         # Import the module dynamically
-        module = importlib.import_module(f"xgboostlss.distributions.{distribution_name}")
+        module = importlib.import_module(f"xgboostlss.distributions.{mod_name}")
 
         # Get the class dynamically from the module
         distribution_class = getattr(module, distribution_name)
@@ -192,7 +213,9 @@ def get_distribution_classes(univariate: bool = True,
 
     elif flow:
         distribution_name = "SplineFlow"
-        module = importlib.import_module(f"xgboostlss.distributions.{distribution_name}")
+        module = importlib.import_module(
+            f"xgboostlss.distributions.{distribution_name}"
+        )
         # Get the class dynamically from the module
         distribution_class = [getattr(module, distribution_name)]
 
@@ -200,7 +223,9 @@ def get_distribution_classes(univariate: bool = True,
 
     elif expectile:
         distribution_name = "Expectile"
-        module = importlib.import_module(f"xgboostlss.distributions.{distribution_name}")
+        module = importlib.import_module(
+            f"xgboostlss.distributions.{distribution_name}"
+        )
         # Get the class dynamically from the module
         distribution_class = [getattr(module, distribution_name)]
 
@@ -208,7 +233,9 @@ def get_distribution_classes(univariate: bool = True,
 
     elif mixture:
         distribution_name = "Mixture"
-        module = importlib.import_module(f"xgboostlss.distributions.{distribution_name}")
+        module = importlib.import_module(
+            f"xgboostlss.distributions.{distribution_name}"
+        )
         # Get the class dynamically from the module
         distribution_class = [getattr(module, distribution_name)]
 
@@ -231,9 +258,14 @@ def get_mixture_distribution_classes():
     mix_class = get_distribution_classes(mixture=True)[0]
     comp_dists = get_component_distributions()
     mixt_dist = []
-    for dist in comp_dists:
-        module = importlib.import_module(f"xgboostlss.distributions.{dist}")
-        comp_dist = getattr(module, dist)
+
+    dist_module_lookup = get_dist_module_lookup()
+    dist_module_lookup = {
+        k: v for k, v in dist_module_lookup.items() if k in comp_dists
+    }
+    for distribution_name, mod_name in dist_module_lookup.items():
+        module = importlib.import_module(f"xgboostlss.distributions.{mod_name}")
+        comp_dist = getattr(module, distribution_name)
         mixt_dist.append(XGBoostLSS(mix_class(comp_dist())))
 
     return mixt_dist
@@ -264,13 +296,13 @@ class BaseTestClass:
     def mixture_dist(self, request):
         return request.param
 
-    @pytest.fixture(params=
-                    get_distribution_classes() +
-                    get_distribution_classes(discrete=True) +
-                    get_distribution_classes(expectile=True) +
-                    get_distribution_classes(flow=True) +
-                    get_distribution_classes(univariate=False)
-                    )
+    @pytest.fixture(
+        params=get_distribution_classes()
+        + get_distribution_classes(discrete=True)
+        + get_distribution_classes(expectile=True)
+        + get_distribution_classes(flow=True)
+        + get_distribution_classes(univariate=False)
+    )
     def dist_class(self, request):
         return XGBoostLSS(request.param())
 

@@ -1,5 +1,6 @@
 from ..utils import BaseTestClass
 import pytest
+import torch
 
 
 class TestClass(BaseTestClass):
@@ -19,12 +20,25 @@ class TestClass(BaseTestClass):
 
     def test_distribution_parameters(self, univariate_cont_dist):
         assert isinstance(univariate_cont_dist().param_dict, dict)
-        assert set(univariate_cont_dist().param_dict.keys()) == set(univariate_cont_dist().distribution_arg_names)
-        assert all(callable(func) for func in univariate_cont_dist().param_dict.values())
-        assert univariate_cont_dist().n_dist_param == len(univariate_cont_dist().distribution_arg_names)
+        assert set(univariate_cont_dist().param_dict.keys()) == set(
+            univariate_cont_dist().distribution_arg_names
+        )
+        assert all(
+            callable(func) for func in univariate_cont_dist().param_dict.values()
+        )
+        assert univariate_cont_dist().n_dist_param == len(
+            univariate_cont_dist().distribution_arg_names
+        )
         assert isinstance(univariate_cont_dist().n_dist_param, int)
         assert isinstance(univariate_cont_dist().distribution_arg_names, list)
-        assert univariate_cont_dist().distribution_arg_names == list(univariate_cont_dist().distribution.arg_constraints.keys())
+
+        dist_args_dict = {
+            k: v(torch.tensor(0.0))
+            for k, v in univariate_cont_dist().param_dict.items()
+        }
+        assert univariate_cont_dist().distribution_arg_names == list(
+            univariate_cont_dist().distribution(**dist_args_dict).arg_constraints.keys()
+        )
 
     def test_defaults(self, univariate_cont_dist):
         assert isinstance(univariate_cont_dist().univariate, bool)

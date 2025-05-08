@@ -1,6 +1,8 @@
 import torch
 from torch.nn.functional import softplus, gumbel_softmax, softmax
 
+_EPS = 1e-6
+
 
 def nan_to_num(predt: torch.tensor) -> torch.tensor:
     """
@@ -16,11 +18,12 @@ def nan_to_num(predt: torch.tensor) -> torch.tensor:
     predt: torch.tensor
         Predicted values.
     """
-    predt = torch.nan_to_num(predt,
-                             nan=float(torch.nanmean(predt)),
-                             posinf=float(torch.nanmean(predt)),
-                             neginf=float(torch.nanmean(predt))
-                             )
+    predt = torch.nan_to_num(
+        predt,
+        nan=float(torch.nanmean(predt)),
+        posinf=float(torch.nanmean(predt)),
+        neginf=float(torch.nanmean(predt)),
+    )
 
     return predt
 
@@ -58,7 +61,7 @@ def exp_fn(predt: torch.tensor) -> torch.tensor:
     predt: torch.tensor
         Predicted values.
     """
-    predt = torch.exp(nan_to_num(predt)) + torch.tensor(1e-06, dtype=predt.dtype)
+    predt = torch.exp(nan_to_num(predt)) + torch.tensor(_EPS, dtype=predt.dtype)
 
     return predt
 
@@ -77,9 +80,7 @@ def exp_fn_df(predt: torch.tensor) -> torch.tensor:
     predt: torch.tensor
         Predicted values.
     """
-    predt = torch.exp(nan_to_num(predt)) + torch.tensor(1e-06, dtype=predt.dtype)
-
-    return predt + torch.tensor(2.0, dtype=predt.dtype)
+    return exp_fn(predt) + torch.tensor(2.0, dtype=predt.dtype)
 
 
 def softplus_fn(predt: torch.tensor) -> torch.tensor:
@@ -96,7 +97,7 @@ def softplus_fn(predt: torch.tensor) -> torch.tensor:
     predt: torch.tensor
         Predicted values.
     """
-    predt = softplus(nan_to_num(predt)) + torch.tensor(1e-06, dtype=predt.dtype)
+    predt = softplus(nan_to_num(predt)) + torch.tensor(_EPS, dtype=predt.dtype)
 
     return predt
 
@@ -115,9 +116,7 @@ def softplus_fn_df(predt: torch.tensor) -> torch.tensor:
     predt: torch.tensor
         Predicted values.
     """
-    predt = softplus(nan_to_num(predt)) + torch.tensor(1e-06, dtype=predt.dtype)
-
-    return predt + torch.tensor(2.0, dtype=predt.dtype)
+    return softplus_fn(predt) + torch.tensor(2.0, dtype=predt.dtype)
 
 
 def squareplus_fn(predt: torch.tensor) -> torch.tensor:
@@ -174,8 +173,8 @@ def sigmoid_fn(predt: torch.tensor) -> torch.tensor:
     predt: torch.tensor
         Predicted values.
     """
-    predt = torch.sigmoid(nan_to_num(predt)) + torch.tensor(1e-06, dtype=predt.dtype)
-    predt = torch.clamp(predt, 1e-03, 1-1e-03)
+    predt = torch.sigmoid(nan_to_num(predt))
+    predt = torch.clamp(predt, _EPS, 1 - _EPS)
 
     return predt
 
@@ -194,7 +193,7 @@ def relu_fn(predt: torch.tensor) -> torch.tensor:
     predt: torch.tensor
         Predicted values.
     """
-    predt = torch.relu(nan_to_num(predt)) + torch.tensor(1e-06, dtype=predt.dtype)
+    predt = torch.relu(nan_to_num(predt)) + torch.tensor(_EPS, dtype=predt.dtype)
 
     return predt
 
@@ -238,9 +237,7 @@ def softmax_fn(predt: torch.tensor) -> torch.tensor:
     return predt
 
 
-def gumbel_softmax_fn(predt: torch.tensor,
-                      tau: float = 1.0
-                      ) -> torch.tensor:
+def gumbel_softmax_fn(predt: torch.tensor, tau: float = 1.0) -> torch.tensor:
     """
     Gumbel-softmax function used to ensure predt is adding to one.
 
@@ -274,6 +271,78 @@ def gumbel_softmax_fn(predt: torch.tensor,
         Predicted values.
     """
     torch.manual_seed(123)
-    predt = gumbel_softmax(nan_to_num(predt), tau=tau, dim=1) + torch.tensor(0, dtype=predt.dtype)
+    predt = gumbel_softmax(nan_to_num(predt), tau=tau, dim=1) + torch.tensor(
+        0, dtype=predt.dtype
+    )
 
     return predt
+
+
+def log_fn(predt: torch.tensor) -> torch.tensor:
+    """
+    Log function as the inverse of exp_fn.
+
+    Arguments
+    ---------
+    predt: torch.tensor
+        Predicted values.
+
+    Returns
+    -------
+    predt: torch.tensor
+        Predicted values.
+    """
+    predt = torch.log(nan_to_num(predt) - torch.tensor(_EPS, dtype=predt.dtype))
+
+    return predt
+
+
+def softplus_inverse_fn(predt: torch.tensor) -> torch.tensor:
+    """
+    Softplus inverse function.
+
+    Arguments
+    ---------
+    predt: torch.tensor
+        Predicted values.
+
+    Returns
+    -------
+    predt: torch.tensor
+        Predicted values.
+    """
+    predt = nan_to_num(predt) - torch.tensor(_EPS, dtype=predt.dtype)
+
+    predt = predt + torch.log(-torch.expm1(-predt))
+
+    return predt
+
+
+def logit_fn(predt: torch.tensor) -> torch.tensor:
+    """
+    Logit (inverse of sigmoid) to mape (0, 1) to real line.
+
+    Arguments
+    ---------
+    predt: torch.tensor
+        Predicted values.
+
+    Returns
+    -------
+    predt: torch.tensor
+        Predicted values.
+    """
+
+    predt = torch.logit(nan_to_num(predt))
+
+    return predt
+
+
+INVERSE_LOOKUP = {
+    "exp_fn": log_fn,
+    "softplus_fn": softplus_inverse_fn,
+    "exp_fn_df": lambda x: log_fn(x - 2),
+    "softplus_fn_df": lambda x: softplus_inverse_fn(x - 2),
+    "identity_fn": identity_fn,
+    "sigmoid_fn": logit_fn,
+}

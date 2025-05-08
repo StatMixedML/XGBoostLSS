@@ -10,7 +10,7 @@ license = { text = "Apache License 2.0" }
 requires-python = ">=3.10"
 dependencies = [
     "xgboost~=2.0.3",
-    "torch~=2.1.2",
+    "torch>=2.1.2",
     "pyro-ppl~=1.8.6",
     "optuna~=3.5.0",
     "properscoring~=0.1",
@@ -23,7 +23,8 @@ dependencies = [
     "seaborn~=0.13.1",
     "tqdm~=4.66.1",
     "matplotlib~=3.8.2",
-    "ipython~=8.20.0"
+    "ipython~=8.20.0",
+    "torchlambertw @ git+ssh://git@github.com/gmgeorg/torchlambertw.git#egg=torchlambertw-0.0.3"
 ]
 
 [project.optional-dependencies]
@@ -53,3 +54,7 @@ xgboostlss = ["datasets/*.csv"]
 [build-system]
 requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
+
+dependencies = [
+    "torchlambertw @ git+ssh://git@github.com/gmgeorg/torchlambertw.git#egg=torchlambertw-0.0.3"
+]
