@@ -71,8 +71,8 @@ class TailLambertWWeibull(DistributionClass):
         # Set the parameters specific to the distribution
         distribution = tlwd.TailLambertWWeibull
         param_dict = {
-            "concentration": response_fn_concentration,
             "scale": response_fn_scale,
+            "concentration": response_fn_concentration,
             "tailweight": response_fn_tailweight,
         }
         torch.distributions.Distribution.set_default_validate_args(False)
@@ -156,8 +156,8 @@ class SkewLambertWWeibull(DistributionClass):
         # Set the parameters specific to the distribution
         distribution = tlwd.SkewLambertWWeibull
         param_dict = {
-            "concentration": response_fn_concentration,
             "scale": response_fn_scale,
+            "concentration": response_fn_concentration,
             "skewweight": response_fn_skewweight,
         }
         torch.distributions.Distribution.set_default_validate_args(False)
