@@ -100,18 +100,8 @@ class DistributionClass:
         start_values = data.get_base_margin().reshape(-1, self.n_dist_param)[0, :].tolist()
 
         # Calculate gradients and hessians
-        # Censor bounds (empty array if unset)
-        lower = data.get_float_info("label_lower_bound")
-        upper = data.get_float_info("label_upper_bound")
-        if lower.size > 0 or upper.size > 0:
-            predt_list, loss = self.get_params_loss_censored(
-                predt, target, start_values, lower, upper, requires_grad=True
-            )
-        else:
-            predt_list, loss = self.get_params_loss(
-                predt, target, start_values, requires_grad=True
-            )
-        grad, hess = self.compute_gradients_and_hessians(loss, predt_list, weights)
+        predt, loss = self.get_params_loss(predt, target, start_values, requires_grad=True)
+        grad, hess = self.compute_gradients_and_hessians(loss, predt, weights)
 
         return grad, hess
 
@@ -140,15 +130,7 @@ class DistributionClass:
         start_values = data.get_base_margin().reshape(-1, self.n_dist_param)[0, :].tolist()
 
         # Calculate loss
-        # Censor bounds (empty array if unset)
-        lower = data.get_float_info("label_lower_bound")
-        upper = data.get_float_info("label_upper_bound")
-        if lower.size > 0 or upper.size > 0:
-            _, loss = self.get_params_loss_censored(
-                predt, target, start_values, lower, upper, requires_grad=False
-            )
-        else:
-            _, loss = self.get_params_loss(predt, target, start_values, requires_grad=False)
+        _, loss = self.get_params_loss(predt, target, start_values, requires_grad=False)
 
         return self.loss_fn, loss
 
@@ -580,43 +562,6 @@ class DistributionClass:
         crps += flag * (y - yhat)
 
         return crps
-
-    def get_params_loss_censored(self,
-                                 predt: np.ndarray,
-                                 target: torch.Tensor,
-                                 start_values: List[float],
-                                 lower: np.ndarray,
-                                 upper: np.ndarray,
-                                 requires_grad: bool = False,
-                                 ) -> Tuple[List[torch.Tensor], torch.Tensor]:
-        """Compute loss for interval-censored data."""
-        predt_arr = predt.reshape(-1, self.n_dist_param)
-        # replace nan/inf
-        mask = np.isnan(predt_arr) | np.isinf(predt_arr)
-        predt_arr[mask] = np.take(start_values, np.where(mask)[1])
-        # convert to tensors
-        predt_list = [
-            torch.tensor(predt_arr[:, i].reshape(-1, 1), requires_grad=requires_grad)
-            for i in range(self.n_dist_param)
-        ]
-        # transform parameters
-        params_transformed = [
-            fn(predt_list[i]) for i, fn in enumerate(self.param_dict.values())
-        ]
-        # instantiate distribution
-        dist = self.distribution(**dict(zip(self.distribution_arg_names, params_transformed)))
-        # compute cdf bounds
-        low = torch.tensor(lower).reshape(-1, 1)
-        hi = torch.tensor(upper).reshape(-1, 1)
-        # TODO: should I transform these to the dtype of params_transformed?
-        # low = low.to(params_transformed[0].dtype)
-        # hi = hi.to(params_transformed[0].dtype)
-        cdf_low = dist.cdf(low)
-        cdf_hi = dist.cdf(hi)
-        # interval mass & loss
-        mass = cdf_hi - cdf_low
-        loss = -torch.sum(torch.log(mass))
-        return predt_list, loss
 
     def dist_select(self,
                     target: np.ndarray,
