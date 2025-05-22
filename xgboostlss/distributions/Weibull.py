@@ -1,5 +1,6 @@
 from torch.distributions import Weibull as Weibull_Torch
 from .distribution_utils import DistributionClass
+from .censored_utils import CensoredMixin
 from ..utils import *
 
 
@@ -65,3 +66,9 @@ class Weibull(DistributionClass):
                          distribution_arg_names=list(param_dict.keys()),
                          loss_fn=loss_fn
                          )
+
+class CensoredWeibull(CensoredMixin, Weibull):
+    """
+    Weibull distribution class with interval censoring support.
+    """
+    pass
