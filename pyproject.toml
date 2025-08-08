@@ -9,29 +9,54 @@ authors = [
 license = { text = "Apache License 2.0" }
 requires-python = ">=3.10"
 dependencies = [
-    "xgboost~=2.0.3",
-    "torch~=2.1.2",
-    "pyro-ppl~=1.8.6",
-    "optuna~=3.5.0",
-    "properscoring~=0.1",
-    "scikit-learn~=1.4.0",
-    "numpy~=1.26.3",
-    "pandas~=2.1.4",
-    "plotnine~=0.12.4",
-    "scipy~=1.11.4",
-    "shap~=0.44.0",
-    "seaborn~=0.13.1",
-    "tqdm~=4.66.1",
-    "matplotlib~=3.8.2",
-    "ipython~=8.20.0"
+    "xgboost>=2.0.0",
+    "scikit-learn>=1.3.0",
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+    "scipy>=1.10.0",
+    "tqdm>=4.65.0"
 ]
 
 [project.optional-dependencies]
+# Core probabilistic modeling dependencies
+torch = [
+    "torch>=2.1.0",
+    "pyro-ppl>=1.8.0"
+]
+# Optimization and hyperparameter tuning
+optim = [
+    "optuna>=3.5.0"
+]
+# Visualization and interpretation
+viz = [
+    "matplotlib>=3.7.0",
+    "seaborn>=0.12.0",
+    "plotnine>=0.12.0",
+    "shap>=0.42.0"
+]
+# Development utilities
+dev = [
+    "ipython>=8.10.0"
+]
+# All features (legacy compatibility)
+all = [
+    "torch>=2.1.0",
+    "pyro-ppl>=1.8.0",
+    "optuna>=3.5.0",
+    "properscoring>=0.1",
+    "matplotlib>=3.7.0",
+    "seaborn>=0.12.0", 
+    "plotnine>=0.12.0",
+    "shap>=0.42.0",
+    "ipython>=8.10.0"
+]
+# Documentation
 docs = [
     "mkdocs",
     "mkdocstrings[python]",
     "mkdocs-jupyter"
 ]
+# Testing
 test = [
     "flake8",
     "pytest"
