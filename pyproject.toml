@@ -13,7 +13,6 @@ dependencies = [
     "torch~=2.1.2",
     "pyro-ppl~=1.8.6",
     "optuna~=3.5.0",
-    "properscoring~=0.1",
     "scikit-learn~=1.4.0",
     "numpy~=1.26.3",
     "pandas~=2.1.4",
@@ -22,8 +21,7 @@ dependencies = [
     "shap~=0.44.0",
     "seaborn~=0.13.1",
     "tqdm~=4.66.1",
-    "matplotlib~=3.8.2",
-    "ipython~=8.20.0"
+    "matplotlib~=3.8.2"
 ]
 
 [project.optional-dependencies]
