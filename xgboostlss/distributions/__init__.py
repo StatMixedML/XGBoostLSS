@@ -10,6 +10,11 @@ from . import StudentT
 from . import Gamma
 from . import Gumbel
 from . import Laplace
+from . import LambertWExponential
+from . import LambertWGamma
+from . import LambertWGaussian
+from . import LambertWLogNormal
+from . import LambertWWeibull
 from . import Weibull
 from . import Beta
 from . import NegativeBinomial
@@ -28,4 +33,3 @@ from . import MVT
 from . import Dirichlet
 from . import SplineFlow
 from . import Mixture
-

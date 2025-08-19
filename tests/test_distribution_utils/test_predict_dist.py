@@ -12,24 +12,27 @@ class TestClass(BaseTestClass):
         if dist_class.dist.univariate and not hasattr(dist_class.dist, "base_dist"):
             # Create data for testing
             np.random.seed(123)
-            X_dta = np.random.rand(10).reshape(-1, 1)
-            y_dta = np.random.rand(10).reshape(-1, 1)
+            X_dta = np.random.rand(100).reshape(-1, 1)
+            y_dta = np.random.rand(100).reshape(-1, 1)
             dtrain = xgb.DMatrix(X_dta, label=y_dta)
 
             # Train the model
-            params = {"eta": 0.01}
+            params = {"eta": 0.001}
             dist_class.train(params, dtrain, num_boost_round=2)
-
             # Call the function
-            if dist_class.dist.tau is not None and pred_type in ["quantiles", "samples"]:
+            if dist_class.dist.tau is not None and pred_type in [
+                "quantiles",
+                "samples",
+            ]:
                 pred_type = "parameters"
-            predt_df = dist_class.dist.predict_dist(dist_class.booster,
-                                                    dist_class.start_values,
-                                                    dtrain,
-                                                    pred_type,
-                                                    n_samples=100,
-                                                    quantiles=[0.1, 0.5, 0.9]
-                                                    )
+            predt_df = dist_class.dist.predict_dist(
+                dist_class.booster,
+                dist_class.start_values,
+                dtrain,
+                pred_type,
+                n_samples=100,
+                quantiles=[0.1, 0.5, 0.9],
+            )
 
             # Assertions
             assert isinstance(predt_df, pd.DataFrame)
@@ -60,13 +63,14 @@ class TestClass(BaseTestClass):
         # Call the function
         if pred_type in ["expectiles"]:
             pred_type = "parameters"
-        predt_df = flow_class.dist.predict_dist(flow_class.booster,
-                                                flow_class.start_values,
-                                                dtrain,
-                                                pred_type,
-                                                n_samples=100,
-                                                quantiles=[0.1, 0.5, 0.9]
-                                                )
+        predt_df = flow_class.dist.predict_dist(
+            flow_class.booster,
+            flow_class.start_values,
+            dtrain,
+            pred_type,
+            n_samples=100,
+            quantiles=[0.1, 0.5, 0.9],
+        )
 
         # Assertions
         assert isinstance(predt_df, pd.DataFrame)
@@ -96,13 +100,14 @@ class TestClass(BaseTestClass):
         # Call the function
         if pred_type in ["expectiles"]:
             pred_type = "parameters"
-        predt_df = mixture_class.dist.predict_dist(mixture_class.booster,
-                                                   mixture_class.start_values,
-                                                   dtrain,
-                                                   pred_type,
-                                                   n_samples=100,
-                                                   quantiles=[0.1, 0.5, 0.9]
-                                                   )
+        predt_df = mixture_class.dist.predict_dist(
+            mixture_class.booster,
+            mixture_class.start_values,
+            dtrain,
+            pred_type,
+            n_samples=100,
+            quantiles=[0.1, 0.5, 0.9],
+        )
 
         # Assertions
         assert isinstance(predt_df, pd.DataFrame)
@@ -134,13 +139,14 @@ class TestClass(BaseTestClass):
             pred_type = "parameters"
         n_samples = 100
         quantiles = [0.1, 0.5, 0.9]
-        predt_df = multivariate_class.dist.predict_dist(multivariate_class.booster,
-                                                        multivariate_class.start_values,
-                                                        dtrain,
-                                                        pred_type,
-                                                        n_samples=n_samples,
-                                                        quantiles=quantiles
-                                                        )
+        predt_df = multivariate_class.dist.predict_dist(
+            multivariate_class.booster,
+            multivariate_class.start_values,
+            dtrain,
+            pred_type,
+            n_samples=n_samples,
+            quantiles=quantiles,
+        )
 
         # Assertions
         assert isinstance(predt_df, pd.DataFrame)
