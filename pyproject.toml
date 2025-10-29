@@ -20,13 +20,16 @@ dependencies = [
     "plotnine>=0.12.0,<0.16.0",
     "scipy>=1.11,<1.17",
     "shap>=0.44,<0.49.1",
-    "seaborn>=0.13.0,<0.14.0",
     "tqdm>=4.66,<4.68",
-    "matplotlib>=3.8,<3.11",
-    "ipython>=8.20,<9.7"
+    "ipython>=8.20,<9.7",
+    "scikit-base"
 ]
 
 [project.optional-dependencies]
+all_extras = [
+    "matplotlib>=3.8,<3.11",
+    "seaborn>=0.13.0,<0.14.0",
+]
 docs = [
     "mkdocs",
     "mkdocstrings[python]",

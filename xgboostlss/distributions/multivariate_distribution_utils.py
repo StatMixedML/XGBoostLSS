@@ -574,6 +574,18 @@ class Multivariate_DistributionClass:
             fit_df["rank"] = fit_df[dist_sel.loss_fn].rank().astype(int)
             fit_df.set_index(fit_df["rank"], inplace=True)
         if plot:
+            from skbase.utils.dependencies import _check_soft_dependencies
+
+            msg = (
+                "dist_select with plot=True requires 'seaborn' "
+                "to be installed. Please install the packages to use this feature. "
+                "Installing via pip install xgboostlss[all_extras] also installs "
+                "the required dependencies."
+            )
+            _check_soft_dependencies(["seaborn"], msg=msg)
+
+            import seaborn as sns
+
             warnings.simplefilter(action='ignore', category=UserWarning)
             # Select distribution
             best_dist = fit_df[fit_df["rank"] == 1].reset_index(drop=True)
@@ -615,14 +627,15 @@ class Multivariate_DistributionClass:
 
             plot_df = pd.concat([df_actual, df_samples])
 
-            g = sns.FacetGrid(plot_df,
-                              col="target",
-                              hue="type",
-                              col_wrap=ncol,
-                              height=height,
-                              sharex=sharex,
-                              sharey=sharey,
-                              )
+            g = sns.FacetGrid(
+                plot_df,
+                col="target",
+                hue="type",
+                col_wrap=ncol,
+                height=height,
+                sharex=sharex,
+                sharey=sharey,
+            )
             g.map(sns.kdeplot, "value", lw=2.5)
             handles, labels = g.axes[0].get_legend_handles_labels()
             g.fig.legend(handles, labels, loc='upper center', ncol=len(labels), title="", bbox_to_anchor=(0.5, 0.92))
