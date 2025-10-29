@@ -46,6 +46,9 @@ jobs:
         python -m pip install pytest-coverage
         python -m pip install .
 
+    - name: Show dependencies
+      run: python -m pip list
+
     - name: Test with pytest 
       run: |
         pytest --cov
