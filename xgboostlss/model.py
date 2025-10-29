@@ -613,7 +613,7 @@ class XGBoostLSS:
         from skbase.utils.dependencies import _check_soft_dependencies
 
         msg = (
-            "XGBoostLSS.plot requires 'shap' "
+            "XGBoostLSS.expectile_plot requires 'shap' "
             "to be installed. Please install the package to use this feature. "
             "Installing via pip install xgboostlss[all_extras] also installs "
             "the required dependencies."
