@@ -14,7 +14,6 @@ dependencies = [
     "pyro-ppl>=1.8,<1.10",
     "optuna>=3.5.0,<4.4",
     "optuna-integration",
-    "properscoring~=0.1",
     "scikit-learn>=1.4.0,<1.8.0",
     "numpy>=1.26.0,<2.4",
     "pandas>=2.0,<2.3",
