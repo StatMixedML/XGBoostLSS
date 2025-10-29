@@ -9,8 +9,6 @@ import pandas as pd
 from tqdm import tqdm
 
 from typing import Any, Dict, Optional, List, Tuple
-import matplotlib.pyplot as plt
-import seaborn as sns
 import warnings
 
 
@@ -622,6 +620,19 @@ class DistributionClass:
             fit_df["rank"] = fit_df[self.loss_fn].rank().astype(int)
             fit_df.set_index(fit_df["rank"], inplace=True)
         if plot:
+            from skbase.utils.dependencies import _check_soft_dependencies
+
+            msg = (
+                "dist_select with plot=True requires 'matplotlib' and 'seaborn' "
+                "to be installed. Please install the packages to use this feature. "
+                "Installing via pip install xgboostlss[all_extras] also installs "
+                "the required dependencies."
+            )
+            _check_soft_dependencies(["matplotlib", "seaborn"], msg=msg)
+
+            import matplotlib.pyplot as plt
+            import seaborn as sns
+
             # Select best distribution
             best_dist = fit_df[fit_df["rank"] == 1].reset_index(drop=True)
             for dist in candidate_distributions:

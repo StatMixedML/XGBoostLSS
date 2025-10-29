@@ -12,22 +12,23 @@ dependencies = [
     "xgboost>=2.0,<4.0",
     "torch>=2.1,<2.10",
     "pyro-ppl>=1.8,<1.10",
-    "optuna>=3.5.0,<4.4",
-    "optuna-integration",
-    "properscoring~=0.1",
     "scikit-learn>=1.4.0,<1.8.0",
     "numpy>=1.26.0,<2.4",
     "pandas>=2.0,<2.3",
-    "plotnine>=0.12.0,<0.16.0",
     "scipy>=1.11,<1.17",
-    "shap>=0.44,<0.49.1",
-    "seaborn>=0.13.0,<0.14.0",
     "tqdm>=4.66,<4.68",
-    "matplotlib>=3.8,<3.11",
-    "ipython>=8.20,<9.7"
+    "scikit-base"
 ]
 
 [project.optional-dependencies]
+all_extras = [
+    "matplotlib>=3.8,<3.11",
+    "optuna>=3.5.0,<4.4",
+    "optuna-integration",
+    "plotnine>=0.12.0,<0.16.0",
+    "seaborn>=0.13.0,<0.14.0",
+    "shap>=0.44,<0.49.1",
+]
 docs = [
     "mkdocs",
     "mkdocstrings[python]",
