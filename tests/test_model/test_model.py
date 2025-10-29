@@ -1,3 +1,7 @@
+import pytest
+from pytest import approx
+from skbase.utils.dependencies import _check_soft_dependencies
+
 from xgboostlss.model import *
 from xgboostlss.distributions.Gaussian import *
 from xgboostlss.distributions.Mixture import *
@@ -5,8 +9,6 @@ from xgboostlss.distributions.Expectile import *
 from xgboostlss.distributions.MVN import *
 from xgboostlss.distributions.SplineFlow import *
 from xgboostlss.datasets.data_loader import load_simulated_gaussian_data, load_simulated_multivariate_gaussian_data
-import pytest
-from pytest import approx
 
 
 @pytest.fixture
@@ -33,11 +35,7 @@ def mixture_xgblss():
 
 @pytest.fixture
 def flow_xgblss():
-    return XGBoostLSS(
-        SplineFlow(target_support="real",
-                   count_bins=2
-                   )
-    )
+    return XGBoostLSS(SplineFlow(target_support="real",count_bins=2))
 
 
 @pytest.fixture
@@ -63,14 +61,15 @@ def univariate_params():
 
 @pytest.fixture
 def expectile_params():
-    opt_params = {"eta": 0.7298897353706068,
-                  "max_depth": 2,
-                  "gamma": 5.90940257278992e-06,
-                  "subsample": 0.9810129322454306,
-                  "colsample_bytree": 0.9546244491014185,
-                  "min_child_weight": 113.32324947486019,
-                  "booster": "gbtree"
-                  }
+    opt_params = {
+        "eta": 0.7298897353706068,
+        "max_depth": 2,
+        "gamma": 5.90940257278992e-06,
+        "subsample": 0.9810129322454306,
+        "colsample_bytree": 0.9546244491014185,
+        "min_child_weight": 113.32324947486019,
+        "booster": "gbtree",
+    }
     n_rounds = 3
 
     return opt_params, n_rounds
@@ -81,8 +80,10 @@ def multivariate_data():
     data_sim = load_simulated_multivariate_gaussian_data()
 
     # Create 60%, 20%, 20% split for train, validation and test
-    train, validate, test = np.split(data_sim.sample(frac=1, random_state=123),
-                                     [int(0.6 * len(data_sim)), int(0.8 * len(data_sim))])
+    train, validate, test = np.split(
+        data_sim.sample(frac=1, random_state=123),
+        [int(0.6 * len(data_sim)), int(0.8 * len(data_sim))],
+    )
 
     # Train
     x_train = train.filter(regex="x")
@@ -108,14 +109,15 @@ def multivariate_xgblss():
 
 @pytest.fixture
 def multivariate_params():
-    opt_params = {"eta": 0.06058920928573687,
-                  "max_depth": 2,
-                  "gamma": 2.8407158704437237e-05,
-                  "subsample": 0.5214068113552733,
-                  "colsample_bytree": 0.8185136492497096,
-                  "min_child_weight": 8.847572679915343,
-                  "booster": "gbtree"
-                  }
+    opt_params = {
+        "eta": 0.06058920928573687,
+        "max_depth": 2,
+        "gamma": 2.8407158704437237e-05,
+        "subsample": 0.5214068113552733,
+        "colsample_bytree": 0.8185136492497096,
+        "min_child_weight": 8.847572679915343,
+        "booster": "gbtree",
+    }
     n_rounds = 100
 
     return opt_params, n_rounds
@@ -160,15 +162,21 @@ class TestClass:
         eval_result = {}
 
         # Train the model
-        xgblss_mvn.train(opt_params,
-                         dtrain,
-                         n_rounds,
-                         evals=eval_set,
-                         evals_result=eval_result)
+        xgblss_mvn.train(
+            opt_params,
+            dtrain,
+            n_rounds,
+            evals=eval_set,
+            evals_result=eval_result,
+        )
 
         # Assertions
         assert isinstance(xgblss_mvn.booster, xgb.Booster)
 
+    @pytest.mark.skipif(
+        not _check_soft_dependencies(["optuna"], severity="none"),
+        reason="optuna is required to run this test."
+    )
     def test_model_hpo(self, univariate_data, univariate_xgblss,):
         # Unpack
         dtrain, _, _, _ = univariate_data
@@ -193,7 +201,7 @@ class TestClass:
             n_trials=5,
             silence=True,
             seed=123,
-            hp_seed=123
+            hp_seed=123,
         )
 
         # Assertions
@@ -236,7 +244,7 @@ class TestClass:
     @pytest.mark.skip(reason="Known failure #98, to be investigated")
     def test_model_plot(self, univariate_data, univariate_xgblss, univariate_params):
         # Unpack
-        dtrain, dtest, _, X_test = univariate_data
+        dtrain, _, _, X_test = univariate_data
         opt_params, n_rounds = univariate_params
         xgblss = univariate_xgblss
 
@@ -258,15 +266,19 @@ class TestClass:
         xgblss_expectile.train(opt_params, dtrain, n_rounds)
 
         # Call the function
-        xgblss_expectile.expectile_plot(X_test,
-                                        expectile="expectile_0.9",
-                                        feature="x_true",
-                                        plot_type="Partial_Dependence")
+        xgblss_expectile.expectile_plot(
+            X_test,
+            expectile="expectile_0.9",
+            feature="x_true",
+            plot_type="Partial_Dependence",
+        )
 
-        xgblss_expectile.expectile_plot(X_test,
-                                        expectile="expectile_0.9",
-                                        feature="x_true",
-                                        plot_type="Feature_Importance")
+        xgblss_expectile.expectile_plot(
+            X_test,
+            expectile="expectile_0.9",
+            feature="x_true",
+            plot_type="Feature_Importance",
+        )
 
     def test_model_mixture_train(self, univariate_data, mixture_xgblss):
         # Unpack
