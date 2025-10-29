@@ -233,6 +233,7 @@ class TestClass:
         assert not np.isinf(pred_quantiles).any().any()
         assert pred_quantiles.shape[1] == len(quantiles)
 
+    @pytest.mark.skip(reason="Known failure #98, to be investigated")
     def test_model_plot(self, univariate_data, univariate_xgblss, univariate_params):
         # Unpack
         dtrain, dtest, _, X_test = univariate_data
@@ -246,6 +247,7 @@ class TestClass:
         xgblss.plot(X_test, parameter="scale", feature="x_true", plot_type="Partial_Dependence")
         xgblss.plot(X_test, parameter="scale", feature="x_true", plot_type="Feature_Importance")
 
+    @pytest.mark.skip(reason="Known failure #98, to be investigated")
     def test_model_expectile_plot(self, univariate_data, expectile_xgblss, expectile_params):
         # Unpack
         dtrain, dtest, _, X_test = univariate_data

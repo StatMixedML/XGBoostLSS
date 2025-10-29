@@ -6,15 +6,10 @@ from xgboost.core import (
     DMatrix,
 )
 
-from xgboost.callback import (
-    CallbackContainer,
-    EarlyStopping,
-    EvaluationMonitor,
-    TrainingCallback,
-)
+from xgboost.callback import TrainingCallback
 
 from xgboost._typing import FPreProcCallable
-from xgboost.compat import DataFrame, XGBStratifiedKFold
+from xgboost.compat import XGBStratifiedKFold
 
 import os
 import pickle
@@ -221,7 +216,7 @@ class XGBoostLSS:
         seed: int = 0,
         callbacks: Optional[Sequence[TrainingCallback]] = None,
         shuffle: bool = True,
-    ) -> Union[Dict[str, float], DataFrame]:
+    ):
         # pylint: disable = invalid-name
 
         """
