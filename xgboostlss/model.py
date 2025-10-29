@@ -326,6 +326,9 @@ class XGBoostLSS:
         """
         Function to tune hyperparameters using optuna.
 
+        Requires optuna and optuna-integration to be installed.
+        Install via pip install ``xgboostlss[all_extras]``.
+
         Arguments
         ----------
         hp_dict: dict
@@ -533,7 +536,10 @@ class XGBoostLSS:
         """
         XGBoostLSS SHap plotting function.
 
-        Arguments:
+        Requires ``shap`` to be installed.
+        Install via pip install ``xgboostlss[all_extras]``.
+
+        Arguments
         ---------
         X: pd.DataFrame
             Train/Test Data
@@ -589,6 +595,11 @@ class XGBoostLSS:
         """
         XGBoostLSS function for plotting expectile SHapley values.
 
+        Requires ``shap`` to be installed.
+        Install via pip install ``xgboostlss[all_extras]``.
+
+        Arguments
+        ---------
         X: pd.DataFrame
             Train/Test Data
         feature: str
