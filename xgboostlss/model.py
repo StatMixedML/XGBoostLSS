@@ -14,9 +14,6 @@ from xgboost.compat import XGBStratifiedKFold
 import os
 import pickle
 from xgboostlss.utils import *
-import optuna
-from optuna.samplers import TPESampler
-import shap
 from typing import Any, Dict, Optional, Sequence, Tuple, Union
 
 
@@ -102,17 +99,17 @@ class XGBoostLSS:
         dmatrix.set_base_margin(base_margin.flatten())
 
     def train(
-            self,
-            params: Dict[str, Any],
-            dtrain: DMatrix,
-            num_boost_round: int = 10,
-            *,
-            evals: Optional[Sequence[Tuple[DMatrix, str]]] = None,
-            early_stopping_rounds: Optional[int] = None,
-            evals_result: Optional[TrainingCallback.EvalsLog] = None,
-            verbose_eval: Optional[Union[bool, int]] = True,
-            xgb_model: Optional[Union[str, os.PathLike, Booster, bytearray]] = None,
-            callbacks: Optional[Sequence[TrainingCallback]] = None,
+        self,
+        params: Dict[str, Any],
+        dtrain: DMatrix,
+        num_boost_round: int = 10,
+        *,
+        evals: Optional[Sequence[Tuple[DMatrix, str]]] = None,
+        early_stopping_rounds: Optional[int] = None,
+        evals_result: Optional[TrainingCallback.EvalsLog] = None,
+        verbose_eval: Optional[Union[bool, int]] = True,
+        xgb_model: Optional[Union[str, os.PathLike, Booster, bytearray]] = None,
+        callbacks: Optional[Sequence[TrainingCallback]] = None,
     ) -> Booster:
             """
             Train a booster with given parameters.
@@ -187,18 +184,20 @@ class XGBoostLSS:
             if evals is not None:
                 evals = self.set_eval_margin(evals, self.start_values)
 
-            self.booster = xgb.train(params,
-                                     dtrain,
-                                     num_boost_round=num_boost_round,
-                                     evals=evals,
-                                     obj=self.dist.objective_fn,
-                                     custom_metric=self.dist.metric_fn,
-                                     xgb_model=xgb_model,
-                                     callbacks=callbacks,
-                                     verbose_eval=verbose_eval,
-                                     evals_result=evals_result,
-                                     maximize=False,
-                                     early_stopping_rounds=early_stopping_rounds)
+            self.booster = xgb.train(
+                params,
+                dtrain,
+                num_boost_round=num_boost_round,
+                evals=evals,
+                obj=self.dist.objective_fn,
+                custom_metric=self.dist.metric_fn,
+                xgb_model=xgb_model,
+                callbacks=callbacks,
+                verbose_eval=verbose_eval,
+                evals_result=evals_result,
+                maximize=False,
+                early_stopping_rounds=early_stopping_rounds,
+            )
 
     def cv(
         self,
@@ -288,23 +287,25 @@ class XGBoostLSS:
         self.adjust_labels(dtrain)
         self.set_base_margin(dtrain)
 
-        self.cv_booster = xgb.cv(params,
-                                 dtrain,
-                                 num_boost_round=num_boost_round,
-                                 nfold=nfold,
-                                 stratified=stratified,
-                                 folds=folds,
-                                 obj=self.dist.objective_fn,
-                                 custom_metric=self.dist.metric_fn,
-                                 maximize=False,
-                                 early_stopping_rounds=early_stopping_rounds,
-                                 fpreproc=fpreproc,
-                                 as_pandas=as_pandas,
-                                 verbose_eval=verbose_eval,
-                                 show_stdv=show_stdv,
-                                 seed=seed,
-                                 callbacks=callbacks,
-                                 shuffle=shuffle)
+        self.cv_booster = xgb.cv(
+            params,
+            dtrain,
+            num_boost_round=num_boost_round,
+            nfold=nfold,
+            stratified=stratified,
+            folds=folds,
+            obj=self.dist.objective_fn,
+            custom_metric=self.dist.metric_fn,
+            maximize=False,
+            early_stopping_rounds=early_stopping_rounds,
+            fpreproc=fpreproc,
+            as_pandas=as_pandas,
+            verbose_eval=verbose_eval,
+            show_stdv=show_stdv,
+            seed=seed,
+            callbacks=callbacks,
+            shuffle=shuffle,
+        )
 
         return self.cv_booster
 
@@ -320,10 +321,13 @@ class XGBoostLSS:
         study_name=None,
         silence=False,
         seed=None,
-        hp_seed=None
+        hp_seed=None,
     ):
         """
         Function to tune hyperparameters using optuna.
+
+        Requires optuna and optuna-integration to be installed.
+        Install via pip install ``xgboostlss[all_extras]``.
 
         Arguments
         ----------
@@ -360,6 +364,18 @@ class XGBoostLSS:
         opt_params : dict
             Optimal hyper-parameters.
         """
+        from skbase.utils.dependencies import _check_soft_dependencies
+
+        msg = (
+            "XGBoostLSS.hyper_opt requires 'optuna' and 'optuna-integration' "
+            "to be installed. Please install the package to use this feature. "
+            "Installing via pip install xgboostlss[all_extras] also installs "
+            "the required dependencies."
+        )
+        _check_soft_dependencies(["optuna"], msg=msg)
+
+        import optuna
+        from optuna.samplers import TPESampler
 
         def objective(trial):
 
@@ -370,50 +386,52 @@ class XGBoostLSS:
                 param_type = param_value[0]
 
                 if param_type == "categorical" or param_type == "none":
-                    hyper_params.update({param_name: trial.suggest_categorical(param_name, param_value[1])})
+                    hyper_params.update(
+                        {param_name: trial.suggest_categorical(param_name, param_value[1])}
+                    )
 
-                elif param_type == "float":
+                elif param_type in ["float", "int"]:
+                    if param_type == "float":
+                        suggester = trial.suggest_float
+                    else:  # param_type == "int"
+                        suggester = trial.suggest_int
+
                     param_constraints = param_value[1]
                     param_low = param_constraints["low"]
                     param_high = param_constraints["high"]
                     param_log = param_constraints["log"]
                     hyper_params.update(
-                        {param_name: trial.suggest_float(param_name,
-                                                         low=param_low,
-                                                         high=param_high,
-                                                         log=param_log
-                                                         )
-                         })
-
-                elif param_type == "int":
-                    param_constraints = param_value[1]
-                    param_low = param_constraints["low"]
-                    param_high = param_constraints["high"]
-                    param_log = param_constraints["log"]
-                    hyper_params.update(
-                        {param_name: trial.suggest_int(param_name,
-                                                       low=param_low,
-                                                       high=param_high,
-                                                       log=param_log
-                                                       )
-                         })
+                        {
+                            param_name: suggester(
+                                param_name,
+                                low=param_low,
+                                high=param_high,
+                                log=param_log,
+                            )
+                        }
+                    )
 
             # Add booster if not included in dictionary
             if "booster" not in hyper_params.keys():
-                hyper_params.update({"booster": trial.suggest_categorical("booster", ["gbtree"])})
+                hyper_params.update(
+                    {"booster": trial.suggest_categorical("booster", ["gbtree"])}
+                )
 
             # Add pruning
-            pruning_callback = optuna.integration.XGBoostPruningCallback(trial, f"test-{self.dist.loss_fn}")
+            pruning_callback = optuna.integration.XGBoostPruningCallback(
+                trial, f"test-{self.dist.loss_fn}"
+            )
 
-            xgblss_param_tuning = self.cv(params=hyper_params,
-                                          dtrain=dtrain,
-                                          num_boost_round=num_boost_round,
-                                          nfold=nfold,
-                                          early_stopping_rounds=early_stopping_rounds,
-                                          callbacks=[pruning_callback],
-                                          seed=seed,
-                                          verbose_eval=False
-                                          )
+            xgblss_param_tuning = self.cv(
+                params=hyper_params,
+                dtrain=dtrain,
+                num_boost_round=num_boost_round,
+                nfold=nfold,
+                early_stopping_rounds=early_stopping_rounds,
+                callbacks=[pruning_callback],
+                seed=seed,
+                verbose_eval=False
+            )
 
             # Add the optimal number of rounds
             opt_rounds = xgblss_param_tuning[f"test-{self.dist.loss_fn}-mean"].idxmin() + 1
@@ -458,12 +476,14 @@ class XGBoostLSS:
 
         return opt_param.params
 
-    def predict(self,
-                data: xgb.DMatrix,
-                pred_type: str = "parameters",
-                n_samples: int = 1000,
-                quantiles: list = [0.1, 0.5, 0.9],
-                seed: str = 123):
+    def predict(
+        self,
+        data: xgb.DMatrix,
+        pred_type: str = "parameters",
+        n_samples: int = 1000,
+        quantiles: list = [0.1, 0.5, 0.9],
+        seed: str = 123
+    ):
         """
         Function that predicts from the trained model.
 
@@ -473,16 +493,19 @@ class XGBoostLSS:
             Data to predict from.
         pred_type : str
             Type of prediction:
+
             - "samples" draws n_samples from the predicted distribution.
             - "quantiles" calculates the quantiles from the predicted distribution.
             - "parameters" returns the predicted distributional parameters.
             - "expectiles" returns the predicted expectiles.
+
         n_samples : int
             Number of samples to draw from the predicted distribution.
         quantiles : List[float]
             List of quantiles to calculate from the predicted distribution.
         seed : int
-            Seed for random number generator used to draw samples from the predicted distribution.
+            Seed for random number generator used to draw samples
+            from the predicted distribution.
 
         Returns
         -------
@@ -491,13 +514,15 @@ class XGBoostLSS:
         """
 
         # Predict
-        predt_df = self.dist.predict_dist(booster=self.booster,
-                                          start_values=self.start_values,
-                                          data=data,
-                                          pred_type=pred_type,
-                                          n_samples=n_samples,
-                                          quantiles=quantiles,
-                                          seed=seed)
+        predt_df = self.dist.predict_dist(
+            booster=self.booster,
+            start_values=self.start_values,
+            data=data,
+            pred_type=pred_type,
+            n_samples=n_samples,
+            quantiles=quantiles,
+            seed=seed,
+        )
 
         return predt_df
 
@@ -506,11 +531,15 @@ class XGBoostLSS:
              feature: str = "x",
              parameter: str = "loc",
              max_display: int = 15,
-             plot_type: str = "Partial_Dependence"):
+             plot_type: str = "Partial_Dependence",
+            ):
         """
         XGBoostLSS SHap plotting function.
 
-        Arguments:
+        Requires ``shap`` to be installed.
+        Install via pip install ``xgboostlss[all_extras]``.
+
+        Arguments
         ---------
         X: pd.DataFrame
             Train/Test Data
@@ -525,6 +554,18 @@ class XGBoostLSS:
                 "Partial_Dependence" plots the partial dependence of the parameter on the feature.
                 "Feature_Importance" plots the feature importance of the parameter.
         """
+        from skbase.utils.dependencies import _check_soft_dependencies
+
+        msg = (
+            "XGBoostLSS.plot requires 'shap' "
+            "to be installed. Please install the package to use this feature. "
+            "Installing via pip install xgboostlss[all_extras] also installs "
+            "the required dependencies."
+        )
+        _check_soft_dependencies(["shap"], msg=msg)
+
+        import shap
+
         shap.initjs()
         explainer = shap.TreeExplainer(self.booster)
         shap_values = explainer(X)
@@ -544,14 +585,21 @@ class XGBoostLSS:
                     shap_values[:, :, param_pos], max_display=max_display if X.shape[1] > max_display else X.shape[1]
                 )
 
-    def expectile_plot(self,
-                       X: pd.DataFrame,
-                       feature: str = "x",
-                       expectile: str = "0.05",
-                       plot_type: str = "Partial_Dependence"):
+    def expectile_plot(
+            self,
+            X: pd.DataFrame,
+            feature: str = "x",
+            expectile: str = "0.05",
+            plot_type: str = "Partial_Dependence",
+        ):
         """
         XGBoostLSS function for plotting expectile SHapley values.
 
+        Requires ``shap`` to be installed.
+        Install via pip install ``xgboostlss[all_extras]``.
+
+        Arguments
+        ---------
         X: pd.DataFrame
             Train/Test Data
         feature: str
@@ -562,6 +610,17 @@ class XGBoostLSS:
             Specifies which SHapley-plot to visualize. Currently, "Partial_Dependence" and "Feature_Importance"
             are supported.
         """
+        from skbase.utils.dependencies import _check_soft_dependencies
+
+        msg = (
+            "XGBoostLSS.expectile_plot requires 'shap' "
+            "to be installed. Please install the package to use this feature. "
+            "Installing via pip install xgboostlss[all_extras] also installs "
+            "the required dependencies."
+        )
+        _check_soft_dependencies(["shap"], msg=msg)
+
+        import shap
 
         shap.initjs()
         explainer = shap.TreeExplainer(self.booster)
@@ -574,11 +633,11 @@ class XGBoostLSS:
         elif plot_type == "Feature_Importance":
             shap.plots.bar(shap_values[:, :, expect_pos], max_display=15 if X.shape[1] > 15 else X.shape[1])
 
-    def set_eval_margin(self,
-                        eval_set: list,
-                        start_values: np.ndarray
-                        ) -> list:
-
+    def set_eval_margin(
+        self,
+        eval_set: list,
+        start_values: np.ndarray,
+    ) -> list:
         """
         Function that sets the base margin for the evaluation set.
 
@@ -615,9 +674,7 @@ class XGBoostLSS:
 
         return eval_set
 
-    def save_model(self,
-                   model_path: str
-                   ) -> None:
+    def save_model(self, model_path: str) -> None:
         """
         Save the model to a file.
 
