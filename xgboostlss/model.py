@@ -364,7 +364,7 @@ class XGBoostLSS:
         from skbase.utils.dependencies import _check_soft_dependencies
 
         msg = (
-            "XGBoostLSS.hyper_opt requires 'optuna' "
+            "XGBoostLSS.hyper_opt requires 'optuna' and 'optuna-integration' "
             "to be installed. Please install the package to use this feature. "
             "Installing via pip install xgboostlss[all_extras] also installs "
             "the required dependencies."
