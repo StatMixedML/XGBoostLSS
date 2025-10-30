@@ -1,11 +1,11 @@
 <h4 align="center">
 
-![Python Version](https://img.shields.io/badge/python-3.10%20|%20%203.11-lightblue.svg)
-![GitHub tag (with filter)](https://img.shields.io/github/v/tag/StatMixedML/XGBoostLSS?label=release&color=lightblue)
-<img src="https://github.com/StatMixedML/XGBoostLSS/actions/workflows/mkdocs.yaml/badge.svg" alt="Documentation status badge">
-<img src="https://github.com/StatMixedML/XGBoostLSS/workflows/unit-tests/badge.svg" alt="Unit test status badge">
-<img src="https://codecov.io/gh/StatMixedML/XGBoostLSS/branch/master/graph/badge.svg" alt="Code coverage status badge"> 
-![Pepy Total Downlods](https://img.shields.io/pepy/dt/xgboostlss?label=PyPI%20Downloads%2FMonth&color=green)
+|  | **[Documentation](https://statmixedml.github.io/XGBoostLSS/)** · **[Release Notes](https://github.com/StatMixedML/XGBoostLSS/releases)** |
+|---|---|
+| **Open&#160;Source** | [![Apache 2.0](https://img.shields.io/badge/license-Apache%202-blue)](https://github.com/StatMixedML/XGBoostLSS/blob/master/LICENSE.txt) |
+| **CI/CD** | [![github-actions](https://img.shields.io/github/actions/workflow/status/statmixedml/xgboostlss/unit-tests.yml?logo=github)](https://github.com/statmixedml/xgboostlss/actions/workflows/unit-tests.yml) <img src="https://github.com/StatMixedML/XGBoostLSS/actions/workflows/mkdocs.yaml/badge.svg" alt="Documentation status badge"> |
+| **Code** |  [![!pypi](https://img.shields.io/pypi/v/xgboostlss?color=orange)](https://pypi.org/project/xgboostlss/) [![!python-versions](https://img.shields.io/pypi/pyversions/xgboostlss)](https://www.python.org/) <img src="https://codecov.io/gh/StatMixedML/XGBoostLSS/branch/master/graph/badge.svg" alt="Code coverage status badge"> |
+| **Citation** | [![Arxiv link](https://img.shields.io/badge/arXiv-XGBoostLSS%3A%20An%20extension%20of%20XGBoost%20to%20probabilistic%20forecasting-color=brightgreen)](https://arxiv.org/abs/1907.03178) |
 
 <!---
 [![Github License](https://img.shields.io/badge/license-Apache%202.0-lightblue.svg)](https://opensource.org/licenses/Apache-2.0)
