@@ -16,7 +16,7 @@ dependencies = [
     "pandas>=2.0,<2.3",
     "scipy>=1.11,<1.17",
     "tqdm>=4.66,<4.68",
-    "scikit-base"
+    "scikit-base",
 ]
 
 [project.optional-dependencies]
@@ -40,6 +40,7 @@ test = [
     "flake8",
     "pytest",
     "pytest-coverage",
+    "pytest-timeout",
 ]
 
 [project.urls]
