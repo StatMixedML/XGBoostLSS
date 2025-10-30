@@ -51,7 +51,7 @@ jobs:
 
     - name: Test with pytest 
       run: |
-        pytest
+        pytest --timeout=150
 
   tests-all-extras:
     runs-on: ${{ matrix.os }}
@@ -90,7 +90,7 @@ jobs:
 
     - name: Test with pytest 
       run: |
-        pytest --cov
+        pytest --cov --timeout=150
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
