@@ -39,6 +39,7 @@ notebooks = [
 test = [
     "flake8",
     "pytest",
+    "pytest-coverage",
     "pytest-timeout",
 ]
 
