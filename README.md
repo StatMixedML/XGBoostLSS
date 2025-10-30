@@ -3,9 +3,8 @@
 |  | **[Documentation](https://statmixedml.github.io/XGBoostLSS/)** · **[Release Notes](https://github.com/StatMixedML/XGBoostLSS/releases)** |
 |---|---|
 | **Open&#160;Source** | [![Apache 2.0](https://img.shields.io/badge/license-Apache%202-blue)](https://github.com/StatMixedML/XGBoostLSS/blob/master/LICENSE.txt) |
-| **CI/CD** | [![github-actions](https://img.shields.io/github/actions/workflow/status/statmixedml/xgboostlss/unit-tests.yml?logo=github)](https://github.com/sktime/sktime/actions/workflows/wheels.yml) <img src="https://github.com/StatMixedML/XGBoostLSS/actions/workflows/mkdocs.yaml/badge.svg" alt="Documentation status badge"> |
+| **CI/CD** | [![github-actions](https://img.shields.io/github/actions/workflow/status/statmixedml/xgboostlss/unit-tests.yml?logo=github)](https://github.com/statmixedml/xgboostlss/actions/workflows/unit-tests.yml) <img src="https://github.com/StatMixedML/XGBoostLSS/actions/workflows/mkdocs.yaml/badge.svg" alt="Documentation status badge"> |
 | **Code** |  [![!pypi](https://img.shields.io/pypi/v/xgboostlss?color=orange)](https://pypi.org/project/xgboostlss/) [![!python-versions](https://img.shields.io/pypi/pyversions/xgboostlss)](https://www.python.org/) <img src="https://codecov.io/gh/StatMixedML/XGBoostLSS/branch/master/graph/badge.svg" alt="Code coverage status badge"> |
-| **Downloads** | ![PyPI - Downloads](https://img.shields.io/pypi/dw/xgboostlss) ![PyPI - Downloads](https://img.shields.io/pypi/dm/xgboostlss) [![Downloads](https://static.pepy.tech/personalized-badge/xgboostlss?period=total&units=international_system&left_color=grey&right_color=blue&left_text=cumulative%20(pypi))](https://pepy.tech/project/xgboostlss) |
 | **Citation** | [![Arxiv link](https://img.shields.io/badge/arXiv-XGBoostLSS%3A%20An%20extension%20of%20XGBoost%20to%20probabilistic%20forecasting-color=brightgreen)](https://arxiv.org/abs/1907.03178) |
 
 <!---
