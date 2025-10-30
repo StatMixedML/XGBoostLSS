@@ -75,7 +75,7 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-      
+
     - name: Set execute permission for OSX install script
       if: runner.os == 'macOS'
       run: chmod +x .github/scripts/install_osx_dependencies.sh
