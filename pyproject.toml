@@ -38,8 +38,8 @@ notebooks = [
 ]
 test = [
     "flake8",
-    "pytest"
-    "pytest-coverage"
+    "pytest",
+    "pytest-coverage",
 ]
 
 [project.urls]
