@@ -8,33 +8,59 @@ authors = [
 ]
 license = { text = "Apache License 2.0" }
 requires-python = ">=3.10"
+classifiers = [
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX",
+  "Operating System :: Unix",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Software Development",
+]
+# core dependencies of xgboostlss
+# this set should be kept minimal!
 dependencies = [
-    "xgboost~=2.0.3",
-    "torch~=2.1.2",
-    "pyro-ppl~=1.8.6",
-    "optuna~=3.5.0",
-    "properscoring~=0.1",
-    "scikit-learn~=1.4.0",
-    "numpy~=1.26.3",
-    "pandas~=2.1.4",
-    "plotnine~=0.12.4",
-    "scipy~=1.11.4",
-    "shap~=0.44.0",
-    "seaborn~=0.13.1",
-    "tqdm~=4.66.1",
-    "matplotlib~=3.8.2",
-    "ipython~=8.20.0"
+    "xgboost>=2.0,<4.0",
+    "torch>=2.1,<2.10",
+    "pyro-ppl>=1.8,<1.10",
+    "numpy>=1.26.0,<2.4",
+    "pandas>=2.0,<2.3",
+    "scipy>=1.11,<1.17",
+    "tqdm>=4.66,<4.68",
+    "scikit-base",
 ]
 
 [project.optional-dependencies]
+all_extras = [
+    "matplotlib>=3.8,<3.11",
+    "optuna>=3.5.0,<4.4",
+    "optuna-integration",
+    "seaborn>=0.13.0,<0.14.0",
+    "shap>=0.44,<0.49.1",
+]
 docs = [
     "mkdocs",
     "mkdocstrings[python]",
     "mkdocs-jupyter"
 ]
+notebooks = [
+    "scikit-learn>=1.4.0,<1.8.0",
+    "plotnine>=0.12.0,<0.16.0",
+]
 test = [
     "flake8",
-    "pytest"
+    "pytest",
+    "pytest-coverage",
+    "pytest-timeout",
 ]
 
 [project.urls]
