@@ -10,7 +10,7 @@ import numpy as np
 import xgboost as xgb
 
 
-def gen_test_data(dist_class, weights: bool = False):
+def gen_test_data(dist_class, weights: bool = False, censored: bool = False):
     """
     Function that generates test data for a given distribution class.
 
@@ -20,6 +20,8 @@ def gen_test_data(dist_class, weights: bool = False):
         Distribution class.
     weights (bool):
         Whether to generate weights.
+    censored (bool):
+        Whether to generate censored data.
 
     Returns:
     --------
@@ -36,6 +38,28 @@ def gen_test_data(dist_class, weights: bool = False):
         np.random.seed(123)
         predt = np.random.rand(dist_class.dist.n_dist_param * 4).reshape(-1, dist_class.dist.n_dist_param)
         labels = np.array([0.2, 0.4, 0.6, 0.8]).reshape(-1, 1)
+        # Handle censored interval data
+        if censored:
+            # base values and censoring bounds
+            labels = labels.flatten()
+            lower = labels - 0.1
+            upper = labels + 0.1
+            if weights:
+                weights_arr = np.ones_like(lower, dtype=lower.dtype)
+                dmatrix = xgb.DMatrix(predt,
+                                      label_lower_bound=lower,
+                                      label_upper_bound=upper,
+                                      weight=weights_arr)
+                dist_class.set_base_margin(dmatrix)
+                return predt, lower, upper, weights_arr, dmatrix
+            else:
+                dmatrix = xgb.DMatrix(predt,
+                                      label_lower_bound=lower,
+                                      label_upper_bound=upper)
+                dist_class.set_base_margin(dmatrix)
+                return predt, lower, upper, dmatrix
+        # uncensored data
+
         if weights:
             weights = np.ones_like(labels)
             dmatrix = xgb.DMatrix(predt, label=labels, weight=weights)
@@ -48,6 +72,7 @@ def gen_test_data(dist_class, weights: bool = False):
 
             return predt, labels, dmatrix
     else:
+        # multivariate (censored not supported)
         np.random.seed(123)
         predt = np.random.rand(dist_class.dist.n_dist_param * 4).reshape(-1, dist_class.dist.n_dist_param)
         labels = np.arange(0.1, 0.9, 0.1)
@@ -56,7 +81,7 @@ def gen_test_data(dist_class, weights: bool = False):
             dist_class.dist.n_targets,
             dist_class.dist.n_dist_param
         )
-        if weights:
+        if weights and not censored:
             weights = np.ones_like(labels[:, 0], dtype=labels.dtype).reshape(-1, 1)
             dmatrix = xgb.DMatrix(predt, label=labels, weight=weights)
             dist_class.set_base_margin(dmatrix)
