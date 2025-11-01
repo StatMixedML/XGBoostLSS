@@ -71,6 +71,25 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Set execute permission for OSX install script
+        if: runner.os == 'macOS'
+        run: chmod +x .github/scripts/install_osx_dependencies.sh
+
+      - name: Install OSX packages
+        if: runner.os == 'macOS'
+        shell: bash
+        run: ./.github/scripts/install_osx_dependencies.sh
+
+      - name: Force non-GUI Matplotlib backend (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        shell: pwsh
+        run: echo "MPLBACKEND=Agg" >> $env:GITHUB_ENV
+
+      - name: Force non-GUI Matplotlib backend (macOS)
+        if: ${{ matrix.os == 'macos-latest' }}
+        shell: bash
+        run: echo "MPLBACKEND=Agg" >> $GITHUB_ENV
+
       - uses: actions/download-artifact@v5
         with:
           name: wheels
