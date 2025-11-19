@@ -46,7 +46,7 @@ all_extras = [
     "optuna>=3.5.0,<4.4",
     "optuna-integration",
     "seaborn>=0.13.0,<0.14.0",
-    "shap>=0.44,<0.49.1",
+    'shap>=0.44,<0.49.1; python_version < "3.14"',
 ]
 docs = [
     "mkdocs",
