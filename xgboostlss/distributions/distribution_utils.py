@@ -387,18 +387,15 @@ class DistributionClass:
         dist_params_predt = pd.DataFrame(dist_params_predt)
         dist_params_predt.columns = self.param_dict.keys()
 
+        if pred_type == "parameters" or pred_type == "expectiles":
+            return dist_params_predt
+
         # Draw samples from predicted response distribution
         pred_samples_df = self.draw_samples(predt_params=dist_params_predt,
                                             n_samples=n_samples,
                                             seed=seed)
-
-        if pred_type == "parameters":
-            return dist_params_predt
-
-        elif pred_type == "expectiles":
-            return dist_params_predt
-
-        elif pred_type == "samples":
+        
+        if pred_type == "samples":
             return pred_samples_df
 
         elif pred_type == "quantiles":
