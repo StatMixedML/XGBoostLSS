@@ -4,7 +4,7 @@ version = "0.5.0"
 description = "XGBoostLSS - An extension of XGBoost to probabilistic modelling"
 readme = { file = "README.md", content-type = "text/markdown" }
 authors = [
-    { name = "Alexander März", email = "alex.maerz@gmx.net" }
+    { name = "Alexander März", email = "statmixedmlgit@gmail.com" }
 ]
 license = { text = "Apache License 2.0" }
 requires-python = ">=3.10"
