@@ -7,7 +7,7 @@ authors = [
     { name = "Alexander März", email = "statmixedmlgit@gmail.com" }
 ]
 license = { text = "Apache License 2.0" }
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 classifiers = [
   "Intended Audience :: Developers",
   "Intended Audience :: Science/Research",
@@ -18,7 +18,6 @@ classifiers = [
   "Operating System :: Unix",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
