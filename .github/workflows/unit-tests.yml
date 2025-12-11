@@ -44,6 +44,11 @@ jobs:
       shell: bash
       run: ./.github/scripts/install_osx_dependencies.sh
 
+    - name: Install CPU-only torch
+      run: uv pip install torch --index-url https://download.pytorch.org/whl/cpu
+      env:
+        UV_SYSTEM_PYTHON: 1
+
     - name: Install dependencies
       run: uv pip install .[test]
       env:
@@ -52,7 +57,7 @@ jobs:
     - name: Show dependencies
       run: uv pip list
 
-    - name: Test with pytest 
+    - name: Test with pytest
       run: pytest --timeout=150
 
   tests-all-extras:
@@ -95,6 +100,11 @@ jobs:
       shell: bash
       run: echo "MPLBACKEND=Agg" >> $GITHUB_ENV
 
+    - name: Install CPU-only torch
+      run: uv pip install torch --index-url https://download.pytorch.org/whl/cpu
+      env:
+        UV_SYSTEM_PYTHON: 1
+
     - name: Install dependencies
       run: uv pip install .[all_extras,test]
       env:
@@ -103,7 +113,7 @@ jobs:
     - name: Show dependencies
       run: uv pip list
 
-    - name: Test with pytest 
+    - name: Test with pytest
       run: pytest --cov --timeout=150
 
     - name: Upload coverage reports to Codecov
