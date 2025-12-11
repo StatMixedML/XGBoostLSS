@@ -42,6 +42,10 @@ class Multivariate_DistributionClass:
         Stabilization method.
     loss_fn: str
         Loss function. Options are "nll" (negative log-likelihood).
+    initialize: bool
+        Whether to initialize the distributional parameters with unconditional start values. Initialization can help
+        to improve speed of convergence in some cases. However, it may also lead to early stopping or suboptimal
+        solutions if the unconditional start values are far from the optimal values.
     """
     def __init__(self,
                  distribution: torch.distributions.Distribution = None,
@@ -56,6 +60,7 @@ class Multivariate_DistributionClass:
                  discrete: bool = False,
                  stabilization: str = "None",
                  loss_fn: str = "nll",
+                 initialize: bool = False,
                  ):
 
         self.distribution = distribution
@@ -70,6 +75,7 @@ class Multivariate_DistributionClass:
         self.discrete = discrete
         self.stabilization = stabilization
         self.loss_fn = loss_fn
+        self.initialize = initialize
 
     def objective_fn(self, predt: np.ndarray, data: xgb.DMatrix) -> Tuple[np.ndarray, np.ndarray]:
 
@@ -450,10 +456,6 @@ class Multivariate_DistributionClass:
         # Weighting
         grad *= weights
         hess *= weights
-
-        # Flatten
-        grad = grad.flatten()
-        hess = hess.flatten()
 
         return grad, hess
 

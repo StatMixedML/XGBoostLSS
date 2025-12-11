@@ -25,11 +25,16 @@ class Poisson(DistributionClass):
         "exp" (exponential), "softplus" (softplus) or "relu" (rectified linear unit).
     loss_fn: str
         Loss function. Options are "nll" (negative log-likelihood).
+    initialize: bool
+        Whether to initialize the distributional parameters with unconditional start values. Initialization can help
+        to improve speed of convergence in some cases. However, it may also lead to early stopping or suboptimal
+        solutions if the unconditional start values are far from the optimal values.
     """
     def __init__(self,
                  stabilization: str = "None",
                  response_fn: str = "relu",
-                 loss_fn: str = "nll"
+                 loss_fn: str = "nll",
+                 initialize: bool = False,
                  ):
 
         # Input Checks
@@ -37,6 +42,8 @@ class Poisson(DistributionClass):
             raise ValueError("Invalid stabilization method. Please choose from 'None', 'MAD' or 'L2'.")
         if loss_fn not in ["nll"]:
             raise ValueError("Invalid loss function. Please select 'nll'.")
+        if not isinstance(initialize, bool):
+            raise ValueError("Invalid initialize. Please choose from True or False.")
 
         # Specify Response Functions
         response_functions = {"exp": exp_fn, "softplus": softplus_fn, "relu": relu_fn}
@@ -59,5 +66,6 @@ class Poisson(DistributionClass):
                          stabilization=stabilization,
                          param_dict=param_dict,
                          distribution_arg_names=list(param_dict.keys()),
-                         loss_fn=loss_fn
+                         loss_fn=loss_fn,
+                         initialize=initialize,
                          )

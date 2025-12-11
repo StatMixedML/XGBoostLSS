@@ -23,6 +23,13 @@ class TestClass(BaseTestClass):
         with pytest.raises(ValueError, match="Invalid loss function."):
             univariate_discrete_dist(loss_fn="invalid_loss_fn")
 
+        # Initialize parameter tests
+        assert isinstance(univariate_discrete_dist().initialize, bool)
+        assert univariate_discrete_dist().initialize is False
+
+        with pytest.raises(ValueError, match="Invalid initialize"):
+            univariate_discrete_dist(initialize=1)
+
     def test_distribution_parameters(self, univariate_discrete_dist):
         assert isinstance(univariate_discrete_dist().param_dict, dict)
         assert set(univariate_discrete_dist().param_dict.keys()) == set(univariate_discrete_dist().distribution_arg_names)

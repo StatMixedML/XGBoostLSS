@@ -42,6 +42,18 @@ class TestClass(BaseTestClass):
         with pytest.raises(ValueError, match="tau must be greater than 0."):
             mixture_dist(example_component, tau=0.0)
 
+        # Initialize parameter tests
+        assert isinstance(mixture_dist(example_component).initialize, bool)
+        assert mixture_dist(example_component).initialize is False
+
+        # Test with True
+        dist_with_init = mixture_dist(example_component, initialize=True)
+        assert dist_with_init.initialize is True
+
+        # Test invalid type
+        with pytest.raises(ValueError, match="Invalid initialize"):
+            mixture_dist(example_component, initialize=1)
+
     def test_distribution_parameters(self, mixture_dist, example_component):
         assert isinstance(mixture_dist(example_component).param_dict, dict)
         assert all(callable(func) for func in mixture_dist(example_component).param_dict.values())

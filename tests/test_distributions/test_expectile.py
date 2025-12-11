@@ -23,6 +23,13 @@ class TestClass(BaseTestClass):
         assert isinstance(expectile_dist().loss_fn, str)
         assert expectile_dist().loss_fn is not None
 
+        # Initialize parameter tests
+        assert isinstance(expectile_dist().initialize, bool)
+        assert expectile_dist().initialize is False
+
+        with pytest.raises(ValueError, match="Invalid initialize"):
+            expectile_dist(initialize="True")
+
     def test_expectile_distribution_parameters(self, expectile_dist):
         assert isinstance(expectile_dist().param_dict, dict)
         assert set(expectile_dist().param_dict.keys()) == set(expectile_dist().distribution_arg_names)

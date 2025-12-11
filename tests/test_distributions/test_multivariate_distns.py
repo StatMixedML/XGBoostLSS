@@ -27,6 +27,13 @@ class TestClass(BaseTestClass):
         with pytest.raises(ValueError, match="Invalid loss function."):
             multivariate_dist(loss_fn="invalid_loss_fn")
 
+        # Initialize parameter tests
+        assert isinstance(multivariate_dist().initialize, bool)
+        assert multivariate_dist().initialize is False
+
+        with pytest.raises(ValueError, match="Invalid initialize"):
+            multivariate_dist(initialize="invalid")
+
     def test_distribution_parameters(self, multivariate_dist):
         assert isinstance(multivariate_dist().param_dict, dict)
         assert all(callable(func) for func in multivariate_dist().param_dict.values())

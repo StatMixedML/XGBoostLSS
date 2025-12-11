@@ -19,8 +19,8 @@ class TestClass(BaseTestClass):
         # Assertions
         assert isinstance(grad, np.ndarray)
         assert isinstance(hess, np.ndarray)
-        assert grad.shape == predt.flatten().shape
-        assert hess.shape == predt.flatten().shape
+        assert grad.shape == predt.shape
+        assert hess.shape == predt.shape
         assert not np.isnan(grad).any()
         assert not np.isnan(hess).any()
         assert not np.isinf(grad).any()
@@ -42,8 +42,8 @@ class TestClass(BaseTestClass):
         # Assertions
         assert isinstance(grad, np.ndarray)
         assert isinstance(hess, np.ndarray)
-        assert grad.shape == predt.flatten().shape
-        assert hess.shape == predt.flatten().shape
+        assert grad.shape == predt.shape
+        assert hess.shape == predt.shape
         assert not np.isnan(grad).any()
         assert not np.isnan(hess).any()
         assert not np.isinf(grad).any()
@@ -66,8 +66,8 @@ class TestClass(BaseTestClass):
         # Assertions
         assert isinstance(grad, np.ndarray)
         assert isinstance(hess, np.ndarray)
-        assert grad.shape == predt.flatten().shape
-        assert hess.shape == predt.flatten().shape
+        assert grad.shape == predt.shape
+        assert hess.shape == predt.shape
         assert not np.isnan(grad).any()
         assert not np.isnan(hess).any()
         assert not np.isinf(grad).any()
@@ -89,8 +89,8 @@ class TestClass(BaseTestClass):
         # Assertions
         assert isinstance(grad, np.ndarray)
         assert isinstance(hess, np.ndarray)
-        assert grad.shape == predt.flatten().shape
-        assert hess.shape == predt.flatten().shape
+        assert grad.shape == predt.shape
+        assert hess.shape == predt.shape
         assert not np.isnan(grad).any()
         assert not np.isnan(hess).any()
         assert not np.isinf(grad).any()
@@ -112,8 +112,8 @@ class TestClass(BaseTestClass):
         # Assertions
         assert isinstance(grad, np.ndarray)
         assert isinstance(hess, np.ndarray)
-        assert grad.shape == predt.flatten().shape
-        assert hess.shape == predt.flatten().shape
+        assert grad.shape == predt.shape
+        assert hess.shape == predt.shape
         assert not np.isnan(grad).any()
         assert not np.isnan(hess).any()
         assert not np.isinf(grad).any()
@@ -135,8 +135,8 @@ class TestClass(BaseTestClass):
         # Assertions
         assert isinstance(grad, np.ndarray)
         assert isinstance(hess, np.ndarray)
-        assert grad.shape == predt.flatten().shape
-        assert hess.shape == predt.flatten().shape
+        assert grad.shape == predt.shape
+        assert hess.shape == predt.shape
         assert not np.isnan(grad).any()
         assert not np.isnan(hess).any()
         assert not np.isinf(grad).any()
@@ -159,8 +159,8 @@ class TestClass(BaseTestClass):
         # Assertions
         assert isinstance(grad, np.ndarray)
         assert isinstance(hess, np.ndarray)
-        assert grad.shape == predt.flatten().shape
-        assert hess.shape == predt.flatten().shape
+        assert grad.shape == predt.shape
+        assert hess.shape == predt.shape
         assert not np.isnan(grad).any()
         assert not np.isnan(hess).any()
         assert not np.isinf(grad).any()

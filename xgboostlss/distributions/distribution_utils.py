@@ -36,6 +36,10 @@ class DistributionClass:
         Loss function. Options are "nll" (negative log-likelihood) or "crps" (continuous ranked probability score).
         Note that if "crps" is used, the Hessian is set to 1, as the current CRPS version is not twice differentiable.
         Hence, using the CRPS disregards any variation in the curvature of the loss function.
+    initialize: bool
+        Whether to initialize the distributional parameters with unconditional start values. Initialization can help
+        to improve speed of convergence in some cases. However, it may also lead to early stopping or suboptimal
+        solutions if the unconditional start values are far from the optimal values.
     tau: List
         List of expectiles. Only used for Expectile distributon.
     penalize_crossing: bool
@@ -50,6 +54,7 @@ class DistributionClass:
                  param_dict: Dict[str, Any] = None,
                  distribution_arg_names: List = None,
                  loss_fn: str = "nll",
+                 initialize: bool = False,
                  tau: Optional[List[torch.Tensor]] = None,
                  penalize_crossing: bool = False,
                  ):
@@ -62,6 +67,7 @@ class DistributionClass:
         self.param_dict = param_dict
         self.distribution_arg_names = distribution_arg_names
         self.loss_fn = loss_fn
+        self.initialize = initialize
         self.tau = tau
         self.penalize_crossing = penalize_crossing
 
@@ -453,10 +459,6 @@ class DistributionClass:
         # Weighting
         grad *= weights
         hess *= weights
-
-        # Flatten
-        grad = grad.flatten()
-        hess = hess.flatten()
 
         return grad, hess
 

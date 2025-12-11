@@ -36,8 +36,8 @@ class TestClass(BaseTestClass):
 
         assert isinstance(grad, np.ndarray)
         assert isinstance(hess, np.ndarray)
-        assert grad.shape == params.flatten().shape
-        assert hess.shape == params.flatten().shape
+        assert grad.shape == params.shape
+        assert hess.shape == params.shape
         assert not np.isnan(grad).any()
         assert not np.isnan(hess).any()
 
@@ -72,8 +72,8 @@ class TestClass(BaseTestClass):
 
         assert isinstance(grad, np.ndarray)
         assert isinstance(hess, np.ndarray)
-        assert grad.shape == params.flatten().shape
-        assert hess.shape == params.flatten().shape
+        assert grad.shape == params.shape
+        assert hess.shape == params.shape
         assert not np.isnan(grad).any()
         assert not np.isnan(hess).any()
 
@@ -108,8 +108,8 @@ class TestClass(BaseTestClass):
 
         assert isinstance(grad, np.ndarray)
         assert isinstance(hess, np.ndarray)
-        assert grad.shape == params.flatten().shape
-        assert hess.shape == params.flatten().shape
+        assert grad.shape == params.shape
+        assert hess.shape == params.shape
         assert not np.isnan(grad).any()
         assert not np.isnan(hess).any()
 
@@ -145,8 +145,8 @@ class TestClass(BaseTestClass):
 
         assert isinstance(grad, np.ndarray)
         assert isinstance(hess, np.ndarray)
-        assert grad.shape == params.flatten().shape
-        assert hess.shape == params.flatten().shape
+        assert grad.shape == params.shape
+        assert hess.shape == params.shape
         assert not np.isnan(grad).any()
         assert not np.isnan(hess).any()
 
@@ -182,7 +182,7 @@ class TestClass(BaseTestClass):
 
         assert isinstance(grad, np.ndarray)
         assert isinstance(hess, np.ndarray)
-        assert grad.shape == params.flatten().shape
-        assert hess.shape == params.flatten().shape
+        assert grad.shape == params.shape
+        assert hess.shape == params.shape
         assert not np.isnan(grad).any()
         assert not np.isnan(hess).any()

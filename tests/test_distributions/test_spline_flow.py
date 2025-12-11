@@ -40,6 +40,13 @@ class TestClass(BaseTestClass):
         with pytest.raises(ValueError, match="Invalid loss_fn."):
             flow_dist(loss_fn="invalid_loss_fn")
 
+        # Initialize parameter tests
+        assert isinstance(flow_dist().initialize, bool)
+        assert flow_dist().initialize is False
+
+        with pytest.raises(ValueError, match="Invalid initialize"):
+            flow_dist(initialize="invalid")
+
     def test_distribution_parameters(self, flow_dist):
         assert isinstance(flow_dist().param_dict, dict)
         assert all(callable(func) for func in flow_dist().param_dict.values())

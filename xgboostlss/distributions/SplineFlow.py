@@ -49,6 +49,10 @@ class SplineFlow(NormalizingFlowClass):
         Loss function. Options are "nll" (negative log-likelihood) or "crps" (continuous ranked probability score).
         Note that if "crps" is used, the Hessian is set to 1, as the current CRPS version is not twice differentiable.
         Hence, using the CRPS disregards any variation in the curvature of the loss function.
+    initialize: bool
+        Whether to initialize the distributional parameters with unconditional start values. Initialization can help
+        to improve speed of convergence in some cases. However, it may also lead to early stopping or suboptimal
+        solutions if the unconditional start values are far from the optimal values.
     """
     def __init__(self,
                  target_support: str = "real",
@@ -56,7 +60,8 @@ class SplineFlow(NormalizingFlowClass):
                  bound: float = 3.0,
                  order: str = "linear",
                  stabilization: str = "None",
-                 loss_fn: str = "nll"
+                 loss_fn: str = "nll",
+                 initialize: bool = False,
                  ):
 
         # Specify Target Transform
@@ -112,6 +117,10 @@ class SplineFlow(NormalizingFlowClass):
         if loss_fn not in ["nll", "crps"]:
             raise ValueError("Invalid loss_fn. Options are 'nll' or 'crps'.")
 
+        # Check if initialize is valid.
+        if not isinstance(initialize, bool):
+            raise ValueError("Invalid initialize. Please choose from True or False.")
+
         # Specify parameter dictionary
         param_dict = {f"param_{i + 1}": identity_fn for i in range(n_params)}
         torch.distributions.Distribution.set_default_validate_args(False)
@@ -129,5 +138,6 @@ class SplineFlow(NormalizingFlowClass):
                          discrete=discrete,
                          univariate=True,
                          stabilization=stabilization,
-                         loss_fn=loss_fn
+                         loss_fn=loss_fn,
+                         initialize=initialize,
                          )

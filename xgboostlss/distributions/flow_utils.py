@@ -52,6 +52,10 @@ class NormalizingFlowClass:
         Loss function. Options are "nll" (negative log-likelihood) or "crps" (continuous ranked probability score).
         Note that if "crps" is used, the Hessian is set to 1, as the current CRPS version is not twice differentiable.
         Hence, using the CRPS disregards any variation in the curvature of the loss function.
+    initialize: bool
+        Whether to initialize the distributional parameters with unconditional start values. Initialization can help
+        to improve speed of convergence in some cases. However, it may also lead to early stopping or suboptimal
+        solutions if the unconditional start values are far from the optimal values.
     """
     def __init__(self,
                  base_dist: torch.distributions.Distribution = None,
@@ -67,6 +71,7 @@ class NormalizingFlowClass:
                  univariate: bool = True,
                  stabilization: str = "None",
                  loss_fn: str = "nll",
+                 initialize: bool = False,
                  ):
 
         self.base_dist = base_dist
@@ -82,6 +87,7 @@ class NormalizingFlowClass:
         self.univariate = univariate
         self.stabilization = stabilization
         self.loss_fn = loss_fn
+        self.initialize = initialize
 
     def objective_fn(self, predt: np.ndarray, data: xgb.DMatrix) -> Tuple[np.ndarray, np.ndarray]:
 
@@ -515,10 +521,6 @@ class NormalizingFlowClass:
         # Weighting
         grad *= weights
         hess *= weights
-
-        # Flatten
-        grad = grad.flatten()
-        hess = hess.flatten()
 
         return grad, hess
 

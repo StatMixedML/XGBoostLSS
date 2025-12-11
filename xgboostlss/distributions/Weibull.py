@@ -29,11 +29,16 @@ class Weibull(DistributionClass):
         Loss function. Options are "nll" (negative log-likelihood) or "crps" (continuous ranked probability score).
         Note that if "crps" is used, the Hessian is set to 1, as the current CRPS version is not twice differentiable.
         Hence, using the CRPS disregards any variation in the curvature of the loss function.
+    initialize: bool
+        Whether to initialize the distributional parameters with unconditional start values. Initialization can help
+        to improve speed of convergence in some cases. However, it may also lead to early stopping or suboptimal
+        solutions if the unconditional start values are far from the optimal values.
     """
     def __init__(self,
                  stabilization: str = "None",
                  response_fn: str = "exp",
-                 loss_fn: str = "nll"
+                 loss_fn: str = "nll",
+                 initialize: bool = False,
                  ):
 
         # Input Checks
@@ -41,6 +46,8 @@ class Weibull(DistributionClass):
             raise ValueError("Invalid stabilization method. Please choose from 'None', 'MAD' or 'L2'.")
         if loss_fn not in ["nll", "crps"]:
             raise ValueError("Invalid loss function. Please choose from 'nll' or 'crps'.")
+        if not isinstance(initialize, bool):
+            raise ValueError("Invalid initialize. Please choose from True or False.")
 
         # Specify Response Functions
         response_functions = {"exp": exp_fn, "softplus": softplus_fn}
@@ -63,5 +70,6 @@ class Weibull(DistributionClass):
                          stabilization=stabilization,
                          param_dict=param_dict,
                          distribution_arg_names=list(param_dict.keys()),
-                         loss_fn=loss_fn
+                         loss_fn=loss_fn,
+                         initialize=initialize,
                          )

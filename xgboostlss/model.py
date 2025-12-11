@@ -94,7 +94,10 @@ class XGBoostLSS:
         None
         """
         if self.start_values is None:
-            _, self.start_values = self.dist.calculate_start_values(dmatrix.get_label())
+            if self.dist.initialize:
+                _, self.start_values = self.dist.calculate_start_values(dmatrix.get_label())
+            else:
+                self.start_values = [0.5] * self.dist.n_dist_param
         base_margin = np.ones(shape=(dmatrix.num_row(), 1)) * self.start_values
         dmatrix.set_base_margin(base_margin.flatten())
 

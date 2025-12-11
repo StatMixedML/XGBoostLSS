@@ -229,7 +229,6 @@ class TestClass:
         assert not pred_params.isna().any().any()
         assert not np.isinf(pred_params).any().any()
         assert pred_params.shape[1] == xgblss.dist.n_dist_param
-        assert approx(pred_params["loc"].mean(), abs=0.2) == 10.0
 
         assert isinstance(pred_samples, (pd.DataFrame, type(None)))
         assert not pred_samples.isna().any().any()

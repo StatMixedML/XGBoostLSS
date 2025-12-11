@@ -25,11 +25,16 @@ class Expectile(DistributionClass):
         List of expectiles in increasing order.
     penalize_crossing: bool
         Whether to include a penalty term to discourage crossing of expectiles.
+    initialize: bool
+        Whether to initialize the distributional parameters with unconditional start values. Initialization can help
+        to improve speed of convergence in some cases. However, it may also lead to early stopping or suboptimal
+        solutions if the unconditional start values are far from the optimal values.
     """
     def __init__(self,
                  stabilization: str = "None",
                  expectiles: List = [0.1, 0.5, 0.9],
                  penalize_crossing: bool = False,
+                 initialize: bool = False,
                  ):
 
         # Input Checks
@@ -41,6 +46,8 @@ class Expectile(DistributionClass):
             raise ValueError("Expectiles must be between 0 and 1.")
         if not isinstance(penalize_crossing, bool):
             raise ValueError("penalize_crossing must be a boolean. Please choose from True or False.")
+        if not isinstance(initialize, bool):
+            raise ValueError("Invalid initialize. Please choose from True or False.")
 
         # Set the parameters specific to the distribution
         distribution = Expectile_Torch
@@ -61,7 +68,8 @@ class Expectile(DistributionClass):
                          distribution_arg_names=list(param_dict.keys()),
                          loss_fn="nll",
                          tau=torch.tensor(expectiles),
-                         penalize_crossing=penalize_crossing
+                         penalize_crossing=penalize_crossing,
+                         initialize=initialize,
                          )
 
 

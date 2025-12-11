@@ -23,6 +23,9 @@ from xgboostlss.distributions.multivariate_distribution_utils import Multivariat
 from xgboostlss.distributions.flow_utils import NormalizingFlowClass as flow_dist_class
 from xgboostlss.distributions.mixture_distribution_utils import MixtureDistributionClass as mixture_dist_class
 
+import matplotlib
+matplotlib.use('Agg')
+
 
 class TestClass(BaseTestClass):
     ####################################################################################################################

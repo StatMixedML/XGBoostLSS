@@ -60,12 +60,18 @@ class Mixture(MixtureDistributionClass):
         approaches infty, the mixing probabilities become more uniform. For more information we refer to
 
             Jang, E., Gu, Shixiang and Poole, B. "Categorical Reparameterization with Gumbel-Softmax", ICLR, 2017.
+
+    initialize: bool
+        Whether to initialize the distributional parameters with unconditional start values. Initialization can help
+        to improve speed of convergence in some cases. However, it may also lead to early stopping or suboptimal
+        solutions if the unconditional start values are far from the optimal values.
     """
     def __init__(self,
                  component_distribution: torch.distributions.Distribution,
                  M: int = 2,
                  hessian_mode: str = "individual",
-                 tau: float = 1.0
+                 tau: float = 1.0,
+                 initialize: bool = False,
                  ):
 
         # Input Checks
@@ -86,6 +92,8 @@ class Mixture(MixtureDistributionClass):
             raise ValueError("tau must be a float.")
         if tau <= 0:
             raise ValueError("tau must be greater than 0.")
+        if not isinstance(initialize, bool):
+            raise ValueError("Invalid initialize. Please choose from True or False.")
 
         # Set the parameters specific to the distribution
         param_dict = component_distribution.param_dict
@@ -105,5 +113,6 @@ class Mixture(MixtureDistributionClass):
                          stabilization=component_distribution.stabilization,
                          param_dict=param_dict,
                          distribution_arg_names=distribution_arg_names,
-                         loss_fn=component_distribution.loss_fn
+                         loss_fn=component_distribution.loss_fn,
+                         initialize=initialize,
                          )

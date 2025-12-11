@@ -87,6 +87,10 @@ class MixtureDistributionClass:
         List of distributional parameter names.
     loss_fn: str
         Loss function. Options are "nll" (negative log-likelihood).
+    initialize: bool
+        Whether to initialize the distributional parameters with unconditional start values. Initialization can help
+        to improve speed of convergence in some cases. However, it may also lead to early stopping or suboptimal
+        solutions if the unconditional start values are far from the optimal values.
     """
     def __init__(self,
                  distribution: torch.distributions.Distribution = None,
@@ -100,6 +104,7 @@ class MixtureDistributionClass:
                  param_dict: Dict[str, Any] = None,
                  distribution_arg_names: List = None,
                  loss_fn: str = "nll",
+                 initialize: bool = False,
                  ):
 
         self.distribution = distribution
@@ -113,6 +118,7 @@ class MixtureDistributionClass:
         self.param_dict = param_dict
         self.distribution_arg_names = distribution_arg_names
         self.loss_fn = loss_fn
+        self.initialize = initialize
 
     def objective_fn(self, predt: np.ndarray, data: xgb.DMatrix) -> Tuple[np.ndarray, np.ndarray]:
 
@@ -527,10 +533,6 @@ class MixtureDistributionClass:
         # Weighting
         grad *= weights
         hess *= weights
-
-        # Flatten
-        grad = grad.flatten()
-        hess = hess.flatten()
 
         return grad, hess
 
