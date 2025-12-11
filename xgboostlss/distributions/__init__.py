@@ -28,4 +28,5 @@ from . import MVT
 from . import Dirichlet
 from . import SplineFlow
 from . import Mixture
+from . import Logistic
 
