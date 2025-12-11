@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="None" /><link rel="canonical" href="https://github.com/StatMixedML/XGBoostLSS/" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>XGBoostLSS</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Home";
+        var mkdocs_page_input_path = "index.md";
+        var mkdocs_page_url = "/StatMixedML/XGBoostLSS/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="." class="icon icon-home"> XGBoostLSS
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Home</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#features">Features</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#some-notes">Some Notes</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#stabilization">Stabilization</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#runtime">Runtime</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#reference-paper">Reference Paper</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="dgbm/">Distributional Modelling</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="distributions/">Available Distributions</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Examples</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="examples/Gaussian_Regression/">Basic Walkthrough - Gaussian Regression</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="examples/Dirichlet_Regression/">Dirichlet Regression</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="examples/Expectile_Regression/">Expectile Regression</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="examples/Gamma_Regression_CaliforniaHousing/">Gamma Regression (California Housing Data)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="examples/GaussianMixture_Regression_CaliforniaHousing/">Gausssian-Mixture Regression (California Housing Data)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="examples/How_To_Select_A_Univariate_Distribution/">How to Select a Univariate Distribution</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="examples/How_To_Select_A_Multivariate_Distribution/">How to Select a Multivariate Distribution</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="examples/MVN_Cholesky/">Multivariate Gaussian Regression (Cholesky Decomposition)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="examples/MVN_LowRank/">Multivariate Gaussian Regression (Low-Rank Approximation)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="examples/MVT_Cholesky/">Multivariate Student-T Regression (Cholesky Decomposition)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="examples/SplineFlow_Regression/">Spline Flow Regression</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="examples/ZAGamma_Regression/">Zero-Adjusted Gamma Regression</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API Docs</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="api/">API references</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href=".">XGBoostLSS</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Home</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/StatMixedML/XGBoostLSS/edit/master/docs/index.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <p><img align="right" width="156.5223" height="181.3" src="XGBoostLSS_inv.png"></p>
+<h1 id="xgboostlss-an-extension-of-xgboost-to-probabilistic-modelling-and-prediction">XGBoostLSS - An extension of XGBoost to probabilistic modelling and prediction</h1>
+<p>We introduce a comprehensive framework that models and predicts the full conditional distribution of univariate and multivariate targets as a function of covariates. Choosing from a wide range of continuous, discrete, and mixed discrete-continuous distributions, modelling and predicting the entire conditional distribution greatly enhances the flexibility of XGBoost, as it allows to create probabilistic forecasts from which prediction intervals and quantiles of interest can be derived.</p>
+<h2 id="features">Features</h2>
+<ul>
+<li>Estimation of all distributional parameters. <br/></li>
+<li>Normalizing Flows allow modelling of complex and multi-modal distributions. <br/></li>
+<li>Mixture-Densities can model a diverse range of data characteristics. <br/></li>
+<li>Multi-target regression allows modelling of multivariate responses and their dependencies. <br/></li>
+<li>Zero-Adjusted and Zero-Inflated Distributions for modelling excess of zeros in the data. <br/></li>
+<li>Automatic derivation of Gradients and Hessian of all distributional parameters using <a href="https://pytorch.org/docs/stable/autograd.html">PyTorch</a>. <br/></li>
+<li>Automated hyper-parameter search, including pruning, is done via <a href="https://optuna.org/">Optuna</a>. <br/></li>
+<li>The output of XGBoostLSS is explained using <a href="https://github.com/dsgibbons/shap">SHapley Additive exPlanations</a>. <br/></li>
+<li>XGBoostLSS provides full compatibility with all the features and functionality of XGBoost. <br/></li>
+<li>XGBoostLSS is available in Python. <br/></li>
+</ul>
+<h2 id="installation">Installation</h2>
+<p>To install XGBoostLSS, please first run</p>
+<pre><code class="language-python">pip install git+https://github.com/StatMixedML/XGBoostLSS.git
+</code></pre>
+<p>Then, to install the shap-dependency, run</p>
+<pre><code class="language-python">pip install git+https://github.com/dsgibbons/shap.git
+</code></pre>
+<h2 id="some-notes">Some Notes</h2>
+<h3 id="stabilization">Stabilization</h3>
+<p>Since XGBoostLSS updates the parameter estimates by optimizing Gradients and Hessians, it is important that these are comparable in magnitude for all distributional parameters. Due to variability regarding the ranges, the estimation of Gradients and Hessians might become unstable so that XGBoostLSS might not converge or might converge very slowly. To mitigate these effects, we have implemented a stabilization of Gradients and Hessians. </p>
+<p>For improved convergence, an alternative approach is to standardize the (continuous) response variable, such as dividing it by 100 (e.g., y/100). This approach proves especially valuable when the response range significantly differs from that of Gradients and Hessians. Nevertheless, it is essential to carefully evaluate and apply both the built-in stabilization and response standardization techniques in consideration of the specific dataset at hand.</p>
+<h3 id="runtime">Runtime</h3>
+<p>Since XGBoostLSS is based on a <em>one vs. all estimation strategy</em>, where a separate tree is grown for each distributional parameter, it requires training <code>[number of iterations] * [number of distributional parameters]</code> trees. Hence, the runtime of XGBoostLSS is generally slightly higher for univariate distributions as compared to XGBoost, which requires training <code>[number of iterations]</code> trees only. Moreover, for a dataset with multivariate targets, estimation can become computationally expensive.</p>
+<h2 id="reference-paper">Reference Paper</h2>
+<p>März, Alexander (2022): <a href="https://arxiv.org/abs/2210.06831"><em>Multi-Target XGBoostLSS Regression</em></a>. <br/>
+März, A. and Kneib, T.: (2022) <a href="https://arxiv.org/abs/2204.00778"><em>Distributional Gradient Boosting Machines</em></a>. <br/>
+März, Alexander (2019): <a href="https://arxiv.org/abs/1907.03178"><em>XGBoostLSS - An extension of XGBoost to probabilistic forecasting</em></a>.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="dgbm/" class="btn btn-neutral float-right" title="Distributional Modelling">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/StatMixedML/XGBoostLSS" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+      <span><a href="dgbm/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = ".";</script>
+    <script src="js/theme_extra.js"></script>
+    <script src="js/theme.js"></script>
+      <script src="javascripts/mathjax.js"></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 1.6.1
+Build Date UTC : 2025-12-11 13:54:58.843042+00:00
+-->

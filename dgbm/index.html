@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://github.com/StatMixedML/XGBoostLSS/dgbm/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Distributional Modelling - XGBoostLSS</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Distributional Modelling";
+        var mkdocs_page_input_path = "dgbm.md";
+        var mkdocs_page_url = "/StatMixedML/XGBoostLSS/dgbm/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> XGBoostLSS
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Distributional Modelling</a>
+    <ul class="current">
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../distributions/">Available Distributions</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Examples</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/Gaussian_Regression/">Basic Walkthrough - Gaussian Regression</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/Dirichlet_Regression/">Dirichlet Regression</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/Expectile_Regression/">Expectile Regression</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/Gamma_Regression_CaliforniaHousing/">Gamma Regression (California Housing Data)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/GaussianMixture_Regression_CaliforniaHousing/">Gausssian-Mixture Regression (California Housing Data)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/How_To_Select_A_Univariate_Distribution/">How to Select a Univariate Distribution</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/How_To_Select_A_Multivariate_Distribution/">How to Select a Multivariate Distribution</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/MVN_Cholesky/">Multivariate Gaussian Regression (Cholesky Decomposition)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/MVN_LowRank/">Multivariate Gaussian Regression (Low-Rank Approximation)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/MVT_Cholesky/">Multivariate Student-T Regression (Cholesky Decomposition)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/SplineFlow_Regression/">Spline Flow Regression</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/ZAGamma_Regression/">Zero-Adjusted Gamma Regression</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API Docs</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../api/">API references</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">XGBoostLSS</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Distributional Modelling</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/StatMixedML/XGBoostLSS/edit/master/docs/dgbm.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="introduction">Introduction</h1>
+<p>The development of modelling approaches that approximate and describe the data generating processes underlying the observed data in as much detail as possible is a guiding principle in both statistics and machine learning. We therefore strongly agree with the statement of Hothorn et al. (2014) that <strong>''the ultimate goal of any regression analysis is to obtain information about the entire conditional distribution <span class="arithmatex">\(F_{Y}(y|\mathbf{x})\)</span> of a response given a set of explanatory variables''</strong>. </p>
+<blockquote style="font-size: 12px">
+<em>''Practitioners expect forecasting to reduce future uncertainty by providing accurate predictions like those in hard sciences. However, this is a great misconception. A major purpose of forecasting is not to reduce uncertainty but reveal its full extent and implications by estimating it as precisely as possible. [...] The challenge for the forecasting field is how to persuade practitioners of the reality that all forecasts are uncertain and that this uncertainty cannot be ignored, as doing so could lead to catastrophic consequences.''</em> Makridakis (2022b)
+</blockquote>
+
+<p>It has not been too long, though, that most regression models focused on estimating the conditional mean <span class="arithmatex">\(\mathbb{E}(Y|\mathbf{X} = \mathbf{x})\)</span> only, implicitly treating higher moments of the conditional distribution <span class="arithmatex">\(F_{Y}(y|\mathbf{x})\)</span> as fixed nuisance parameters. As such, models that minimize an <span class="arithmatex">\(\ell_{2}\)</span>-type loss for the conditional mean are not able to fully exploit the information contained in the data, since this is equivalent to assuming a Normal distribution with constant variance. In real world situations, however, the data generating process is usually less well behaved, exhibiting characteristics such as heteroskedasticity, varying degrees of skewness and kurtosis or intermittent and sporadic behaviour. In recent years, however, there has been a clear shift in both academic and corporate research toward modelling the entire conditional distribution. This change in attention is most evident in the recent M5 forecasting competition  (Makridakis et al., 2022a,b), which differed from previous ones in that it consisted of two parallel competitions: in addition to providing accurate point forecasts, participants were also asked to forecast nine different quantiles to approximate the distribution of future sales.</p>
+<h1 id="distributional-gradient-boosting-machines">Distributional Gradient Boosting Machines</h1>
+<p>This section introduces the general idea of distributional modelling. For a more thorough introduction, we refer the interested reader to Rigby and Stasinopoulos (2005); Klein et al. (2015a,b); Stasinopoulos et al. (2017).</p>
+<h2 id="gamlss">GAMLSS</h2>
+<p>Probabilistic forecasts are predictions in the form of a probability distribution, rather than a single point estimate only. In this context, the introduction of Generalized Additive Models for Location Scale and Shape (GAMLSS) by Rigby and Stasinopoulos (2005) has stimulated a lot of research and culminated in a new research branch that focuses on modelling the entire conditional distribution in dependence of covariates. </p>
+<h3 id="univariate-targets">Univariate Targets</h3>
+<p>In its original formulation, GAMLSS assume a univariate response <span class="arithmatex">\(y\)</span> to follow a distribution <span class="arithmatex">\(\mathcal{D}\bigl(\boldsymbol{\theta}(x)\bigr)\)</span> that depends on up to four parameters, i.e., <span class="arithmatex">\(y_{i} \stackrel{ind}{\sim} \mathcal{D}\bigl(\boldsymbol{\theta}_{i}(x_{i})\bigr)\)</span> with <span class="arithmatex">\(\boldsymbol{\theta}_{i}(x_{i}) = \bigl(\mu_{i}(x_{i}), \sigma^{2}_{i}(x_{i}), \nu_{i}(x_{i}), \tau_{i}(x_{i})\bigr), i=1,\ldots, N\)</span>, where <span class="arithmatex">\(\mu_{i}(\cdot)\)</span> and <span class="arithmatex">\(\sigma^{2}_{i}(\cdot)\)</span> are often location and scale parameters, respectively, while <span class="arithmatex">\(\nu_{i}(\cdot)\)</span> and <span class="arithmatex">\(\tau_{i}(\cdot)\)</span> correspond to shape parameters such as skewness and kurtosis. Hence, the framework allows to model not only the mean (or location) but all parameters as functions of explanatory variables. It is important to note that distributional modelling implies that observations are independent, but not necessarily identical realizations <span class="arithmatex">\(y \stackrel{ind}{\sim} \mathcal{D}\big(\boldsymbol{\theta}(x)\big)\)</span>, since all distributional parameters <span class="arithmatex">\(\boldsymbol{\theta}(x)\)</span> are related to and allowed to change with covariates. In contrast to Generalized Linear (GLM) and Generalized Additive Models (GAM), the assumption of the response distribution belonging to an exponential family is relaxed in GAMLSS and replaced by a more general class of distributions, including highly skewed and/or kurtotic continuous, discrete and mixed discrete, as well as zero-inflated distributions. While the original formulation of GAMLSS in Rigby and Stasinopoulos (2005) suggests that any distribution can be described by location, scale and shape parameters, it is not necessarily true that the observed data distribution can actually be characterized by all of these parameters. Hence, we follow Klein et al. (2015b) and use the term distributional modelling and GAMLSS interchangeably.</p>
+<p>From a frequentist point of view, distributional modelling can be formulated as follows</p>
+<div class="arithmatex">\[\begin{equation}
+y_{i} \stackrel{ind}{\sim} \mathcal{D}
+  \begin{pmatrix}
+    h_{1}\bigl(\theta_{i1}(x_{i})\bigr) = \eta_{i1} \\
+    h_{2}\bigl(\theta_{i2}(x_{i})\bigr) = \eta_{i2}  \\ 
+    \vdots \\                        
+    h_{K}\bigl(\theta_{iK}(x_{i})\bigr) = \eta_{iK} 
+\end{pmatrix}
+\end{equation}\]</div>
+<p>for <span class="arithmatex">\(i = 1, \ldots, N\)</span>, where <span class="arithmatex">\(\mathcal{D}\)</span> denotes a parametric distribution for the response <span class="arithmatex">\(\textbf{y} = (y_{1}, \ldots, y_{N})^{\prime}\)</span> that depends on <span class="arithmatex">\(K\)</span> distributional parameters <span class="arithmatex">\(\theta_{k}\)</span>, <span class="arithmatex">\(k = 1, \ldots, K\)</span>, and with <span class="arithmatex">\(h_{k}(\cdot)\)</span> denoting a known function relating distributional parameters to predictors <span class="arithmatex">\(\eta_{k}\)</span>. In its most generic form, the predictor <span class="arithmatex">\(\eta_{k}\)</span> is given by</p>
+<div class="arithmatex">\[\begin{equation}
+\eta_{k} = f_{k}(\mathbf{x}), \qquad k = 1, \ldots, K 
+\end{equation}\]</div>
+<p>Within the original distributional regression framework, the functions <span class="arithmatex">\(f_{k}(\cdot)\)</span> usually represent a combination of linear and GAM-type predictors, which allows to estimate linear effects or categorical variables, as well as highly non-linear and spatial effects using a Spline-based basis function approach. The predictor specification <span class="arithmatex">\(\eta_{k}\)</span> is generic enough to use tree-based models as well, which allows us to extend XGBoost to a probabilistic framework.</p>
+<h2 id="mixture-distributions">Mixture Distributions</h2>
+<p>Mixture densities, or mixture distributions, offer an extension to the notion of traditional univariate distributions by allowing the observed data to be thought of as arising from multiple underlying processes. In its essence, a mixture distribution is a weighted combination of several component distributions, where each component contributes to the overall mixture distribution, with the weights indicating the importance of each component. For instance, if you imagine the observed data distribution having multiple modes, a mixture of Gaussians could be employed to capture each mode with a separate Gaussian distribution. </p>
+<center>
+<img src="https://raw.githubusercontent.com/StatMixedML/XGBoostLSS/master/docs/mixture.png" width=400/>
+</center>
+
+<p>For each component of the mixture, there would be a set of parameters that depend on covariates, and additional mixing coefficients which are also modeled as a function of covariates. This is particularly useful when a single parametric distribution cannot adequately capture the underlying data generating process. A mixture distribution can be represented as follows:</p>
+<div class="arithmatex">\[\begin{equation}
+f\bigl(y_{i} | \boldsymbol{\theta}_{i}(x_{i})\bigr) = \sum_{m=1}^{M} w_{i,m}(x_{i}) \cdot f_{m}\bigl(y_{i} | \boldsymbol{\theta}_{i,m}(x_{i})\bigr)
+\end{equation}\]</div>
+<p>where <span class="arithmatex">\(f(\cdot)\)</span> represents the mixture density for the <span class="arithmatex">\(i\)</span>-th observation, <span class="arithmatex">\(f_{m}(\cdot)\)</span> is the <span class="arithmatex">\(m\)</span>-th component density, each with its own set of parameters <span class="arithmatex">\(\boldsymbol{\theta}_{i,m}(\cdot)\)</span>, and <span class="arithmatex">\(w_{i,m}(\cdot)\)</span> represent the weights of the <span class="arithmatex">\(m\)</span>-th component in the mixture, subject to <span class="arithmatex">\(\sum_{j=1}^{M} w_{i,m} = 1\)</span>. The components can either be a combination of different parametric univariate distributions, such as a combination of a Normal and a StudentT, or, as in our implementation, a combination of the same distribution-type with different parameterizations, e.g., Gaussian-Mixture or StudentT-Mixture. The choice of the component distributions depends on the characteristics of the data and the underlying assumptions. Due to their high flexibility, mixture densities can portray a diverse range of shapes, making them adaptable to a plethora of datasets. By incorporating mixture densities within our framework, users can gain a more comprehensive understanding of the conditional distribution of the response variable, providing a more accurate representation of the data generating process. Hence, mixture densities greatly expand the expressive power of distributional modeling frameworks like GAMLSS, allowing one to capture a wider array of data distributions with enhanced flexibility by combining multiple members of this set.</p>
+<h2 id="normalizing-flows">Normalizing Flows</h2>
+<p>Although the GAMLSS framework offers considerable flexibility, parametric distributions may prove not flexible enough to provide a reasonable approximation for certain dataset, e.g., for multi-modal distributions. For such cases, it is preferable to relax the assumption of a parametric distribution and approximate the data non-parametrically. While there are several alternatives for learning conditional distributions, we propose to use Normalizing Flows for their ability to fit complex distributions with only a few parameters.</p>
+<p>The principle that underlies Normalizing Flows is to turn a simple base distribution, e.g., <span class="arithmatex">\(F_{Z}(\mathbf{z}) = N(0,1)\)</span>, into a more complex and realistic distribution of the target variable <span class="arithmatex">\(F_{Y}(\mathbf{y})\)</span> by applying several bijective transformations <span class="arithmatex">\(h_{j}\)</span>, <span class="arithmatex">\(j = 1, \ldots, J\)</span> to the variable of the base distribution</p>
+<div class="arithmatex">\[\begin{equation}
+\mathbf{y} = h_{J} \circ h_{J-1} \circ \cdots \circ h_{1}(\mathbf{z})
+\end{equation}\]</div>
+<p>Based on the complete transformation function <span class="arithmatex">\(h=h_{J}\circ\ldots\circ h_{1}\)</span>, the density of <span class="arithmatex">\(\mathbf{y}\)</span> is then given by the change of variables theorem</p>
+<div class="arithmatex">\[\begin{equation}
+f_{Y}(\mathbf{y}) = f_{Z}\big(h(\mathbf{y})\big) \cdot \Bigg|\frac{\partial h(\mathbf{y})}{\partial \mathbf{y}}\Bigg| \end{equation}\]</div>
+<p>where scaling with the Jacobian determinant <span class="arithmatex">\(|h^{\prime}(\mathbf{y})| = |\partial h(\mathbf{y}) / \partial \mathbf{y}|\)</span> ensures <span class="arithmatex">\(f_{Y}(\mathbf{y})\)</span> to be a proper density integrating to one. The composition of these transformations is invertible, allowing one to sample from the complex distribution by transforming samples from the base distribution.</p>
+<center>
+<img src="https://tikz.net/janosh/normalizing-flow.png" width=400 height=120/>
+</center>
+
+<p><span style="text-align: right;"></p>
+<h6 style="font-size: 6px;">Image source: https://tikz.net/janosh/normalizing-flow.png</h6>
+<p></span></p>
+<p>Our Normalizing Flow approach is based on element-wise rational splines of linear or quadratic order as introduced by Durkan (2019) and Dolatabadi (2020) and implemented in Pyro, since they offer a combination of functional flexibility and numerical stability. Despite this specific choice, our framework is generic enough to accommodate the use of other parametrizable Normalizing Flows.</p>
+<h3 id="multivariate-targets">Multivariate Targets</h3>
+<p>To allow for a more flexible framework that explicitly models the dependencies of a <span class="arithmatex">\(D\)</span>-dimensional response <span class="arithmatex">\(\mathbf{y} = (y_{i1}, \ldots, y_{iD})^{T}, i=1, \ldots, N\)</span>, Klein et al. (2015a) introduce a multivariate version of distributional regression. Similar to the univariate case, multivariate distributional regression relates all <span class="arithmatex">\(\theta_{k}\)</span>, <span class="arithmatex">\(k = 1, \ldots, K\)</span> parameters of a multivariate density <span class="arithmatex">\(f_{i}\big(y_{i1}, \ldots, y_{iD} | \theta_{i1}(\mathbf{x}\big), \ldots, \theta_{iK}(\mathbf{x})\big)\)</span> to a set of covariates <span class="arithmatex">\(\mathbf{x}\)</span>. A common choice for multivariate probabilistic regression is to assume a multivariate Gaussian distribution, with the density given </p>
+<div class="arithmatex">\[\begin{equation}
+    f\big(\mathbf{y}|\theta_{\mathbf{x}}\big) = \frac{1}{\sqrt{(2\pi)^{D}|\Sigma_{\mathbf{x}}|}}\exp\left(-\frac{1}{2}(\mathbf{y} - \mu_{\mathbf{x}})^{T} \Sigma^{-1}_{\mathbf{x}} (\mathbf{y} - \mu_{\mathbf{x}})\right)
+\end{equation}\]</div>
+<p>where <span class="arithmatex">\(\mu_{\mathbf{x}} \in \mathbb{R}^{D}\)</span> represents a vector of conditional means, <span class="arithmatex">\(\Sigma_{\mathbf{x}}\)</span> is a positive definite symmetric <span class="arithmatex">\(D \times D\)</span> covariance matrix and <span class="arithmatex">\(|\cdot|\)</span> denotes the determinant. For the bivariate case <span class="arithmatex">\(D=2\)</span>, <span class="arithmatex">\(\Sigma_{\mathbf{x}}\)</span> can be expressed as </p>
+<div class="arithmatex">\[\begin{equation}
+    \Sigma_{i\mathbf{x}} = \begin{bmatrix}
+        \sigma^{2}_{i,1}(\mathbf{x}) &amp; \rho_{i}(\mathbf{x})\sigma_{i,1}(\mathbf{x})\sigma_{i,2}(\mathbf{x})  \\
+        \rho_{i}(\mathbf{x})\sigma_{i,2}(\mathbf{x})\sigma_{i,1}(\mathbf{x}) &amp; \sigma^{2}_{i,2}(\mathbf{x})  \\
+    \end{bmatrix}
+\end{equation}\]</div>
+<p>with the variances on the diagonal and the covariances on the off-diagonal, for $ i=1, \ldots, N $. Other examples include the Cholesky Decomposition or a Low-Rank Covariance approximation of the covariance matrix. For additional details and available distributions, see März (2022a).</p>
+<h2 id="gradient-boosting-machines-for-location-scale-and-shape">Gradient Boosting Machines for Location, Scale and Shape</h2>
+<p>We draw inspiration from GAMLSS and label our model as XGBoost for Location, Scale and Shape (XGBoostLSS). Despite its nominal reference to GAMLSS, our framework is designed in such a way to accommodate the modeling of a wide range of parametrizable distributions that go beyond location, scale and shape. XGBoostLSS requires the specification of a suitable distribution from which Gradients and Hessians are derived. These represent the partial first and second order derivatives of the log-likelihood with respect to the parameter of interest. GBMLSS are based on multi-parameter optimization, where a separate tree is grown for each parameter. Estimation of Gradients and Hessians, as well as the evaluation of the loss function is done simultaneously for all parameters. Gradients and Hessians are derived using PyTorch's automatic differentiation capabilities. The flexibility offered by automatic differentiation allows users to easily implement novel or customized parametric distributions for which Gradients and Hessians are difficult to derive analytically. It also facilitates the usage of Normalizing Flows, or to add additional constraints to the loss function. To improve the convergence and stability of GBMLSS estimation, unconditional Maximum Likelihood estimates of the parameters are used as offset values. To enable a deeper understanding of the data generating process, GBMLSS also provide attribute importance and partial dependence plots using the Shapley-Value approach.</p>
+<h1 id="references">References</h1>
+<ul>
+<li>C. M. Bishop. Mixture density networks. Technical Report NCRG/4288, Aston University, Birmingham, UK, 1994.</li>
+<li>Hadi Mohaghegh Dolatabadi, Sarah Erfani, and Christopher Leckie. Invertible Generative Modeling using Linear Rational Splines. In The 23rd International Conference on Artificial Intelligence and Statistics (AISTATS), 4236–4246, 2020.</li>
+<li>Conor Durkan, Artur Bekasov, Iain Murray, and George Papamakarios. Neural Spline Flows. In Proceedings of the 33rd International Conference on Neural Information Processing Systems. 2019.</li>
+<li>Nadja Klein, Thomas Kneib, Stephan Klasen, and Stefan Lang. Bayesian structured additive distributional regression for multivariate responses. Journal of the Royal Statistical Society: Series C (Applied Statistics), 64(4):569–591, 2015a. </li>
+<li>Nadja Klein, Thomas Kneib, and Stefan Lang. Bayesian Generalized Additive Models for Location, Scale, and Shape for Zero-Inflated and Overdispersed Count Data. Journal of the American Statistical Association, 110(509):405–419, 2015b.</li>
+<li>Alexander März. Multi-Target XGBoostLSS Regression. arXiv pre-print, 2022a.</li>
+<li>Alexander März, and Thomas Kneib. Distributional Gradient Boosting Machines, 2022b.</li>
+<li>Alexander März. XGBoostLSS - An extension of XGBoost to probabilistic forecasting, 2019.</li>
+<li>Spyros Makridakis, Evangelos Spiliotis, and Vassilios Assimakopoulos. The M5 competition: Background, organization, and implementation. International Journal of Forecasting, 38(4):1325–1336, 2022a.</li>
+<li>Spyros Makridakis, Evangelos Spiliotis, Vassilios Assimakopoulos, Zhi Chen, Anil Gaba, Ilia Tsetlin, and Robert L. Winkler. The M5 uncertainty competition: Results, findings and conclusions. International Journal of Forecasting, 38(4):1365–1385, 2022b.</li>
+<li>R. A. Rigby and D. M. Stasinopoulos. Generalized additive models for location, scale and shape. Journal of the Royal Statistical Society: Series C (Applied Statistics), 54(3):507–554, 2005.</li>
+<li>Mikis D. Stasinopoulos, Robert A. Rigby, Gillian Z. Heller, Vlasios Voudouris, and Fernanda de Bastiani. Flexible Regression and Smoothing: Using GAMLSS in R. Chapman &amp; Hall / CRC The R Series. CRC Press, London, 2017.</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href=".." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../distributions/" class="btn btn-neutral float-right" title="Available Distributions">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/StatMixedML/XGBoostLSS" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../distributions/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../javascripts/mathjax.js"></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
