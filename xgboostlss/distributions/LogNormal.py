@@ -1,5 +1,6 @@
 from torch.distributions import LogNormal as LogNormal_Torch
 from .distribution_utils import DistributionClass
+from .censored_utils import CensoredMixin
 from ..utils import *
 
 
@@ -73,3 +74,8 @@ class LogNormal(DistributionClass):
                          loss_fn=loss_fn,
                          initialize=initialize,
                          )
+
+
+class CensoredLogNormal(CensoredMixin, LogNormal):
+    """LogNormal distribution with interval-censoring support."""
+    pass
