@@ -93,3 +93,20 @@ def load_articlake_data():
     data_df = pd.read_csv(data_path)
 
     return data_df
+
+def load_simulated_ZOIB_data():
+    """
+    Returns train/test dataframe of a simulated example.
+
+    Contains the following columns:
+        y              int64: response
+        x              int64: x-feature
+
+    """
+    train_path = pkg_resources.resource_stream(__name__, "ZOIB_train_sim.csv")
+    train_df = pd.read_csv(train_path)
+
+    test_path = pkg_resources.resource_stream(__name__, "ZOIB_test_sim.csv")
+    test_df = pd.read_csv(test_path)
+
+    return train_df, test_df
