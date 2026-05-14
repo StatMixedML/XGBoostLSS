@@ -367,7 +367,7 @@ class XGBoostLSS:
         opt_params : dict
             Optimal hyper-parameters.
         """
-        # from skbase.utils.dependencies import _check_soft_dependencies
+        from skbase.utils.dependencies import _check_soft_dependencies
 
         msg = (
             "XGBoostLSS.hyper_opt requires 'optuna' and 'optuna-integration' "
@@ -375,7 +375,7 @@ class XGBoostLSS:
             "Installing via pip install xgboostlss[all_extras] also installs "
             "the required dependencies."
         )
-        # _check_soft_dependencies(["optuna"], msg=msg)
+        _check_soft_dependencies(["optuna"], msg=msg)
 
         import optuna
         from optuna.samplers import TPESampler
@@ -557,7 +557,7 @@ class XGBoostLSS:
                 "Partial_Dependence" plots the partial dependence of the parameter on the feature.
                 "Feature_Importance" plots the feature importance of the parameter.
         """
-        #from skbase.utils.dependencies import _check_soft_dependencies
+        from skbase.utils.dependencies import _check_soft_dependencies
 
         msg = (
             "XGBoostLSS.plot requires 'shap' "
@@ -565,7 +565,7 @@ class XGBoostLSS:
             "Installing via pip install xgboostlss[all_extras] also installs "
             "the required dependencies."
         )
-        #_check_soft_dependencies(["shap"], msg=msg)
+        _check_soft_dependencies(["shap"], msg=msg)
 
         import shap
 
