@@ -425,7 +425,7 @@ class MixtureDistributionClass:
                      pred_type: str = "parameters",
                      n_samples: int = 1000,
                      quantiles: list = [0.1, 0.5, 0.9],
-                     seed: str = 123
+                     seed: int = 123
                      ) -> pd.DataFrame:
         """
         Function that predicts from the trained model.
