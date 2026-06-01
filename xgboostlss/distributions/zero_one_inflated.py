@@ -4,7 +4,7 @@
 import torch
 from torch.distributions import constraints
 from torch.distributions.utils import broadcast_all, lazy_property
-from torch.distributions import Beta, Kumaraswamy
+from torch.distributions import Beta
 from pyro.distributions import TorchDistribution
 from pyro.distributions.util import broadcast_shape
 
@@ -29,6 +29,11 @@ class ZeroOneInflatedDistribution(TorchDistribution):
     }
 
     def __init__(self, base_dist, gate_zo, gate_one, validate_args=None):
+        if gate_zo is None or gate_one is None:
+            raise ValueError(
+                "ZeroOneInflatedDistribution requires both gate_zo and gate_one; got "
+                f"gate_zo={gate_zo}, gate_one={gate_one}."
+            )
         batch_shape = broadcast_shape(gate_zo.shape, gate_one.shape, base_dist.batch_shape)
         self.gate_zo = gate_zo.expand(batch_shape)
         self.gate_one = gate_one.expand(batch_shape)
@@ -46,7 +51,7 @@ class ZeroOneInflatedDistribution(TorchDistribution):
 
     @constraints.dependent_property
     def support(self):
-        return self.base_dist.support
+        return constraints.unit_interval
 
     def log_prob(self, value):
         if self._validate_args:
@@ -111,11 +116,11 @@ class ZeroOneInflatedBeta(ZeroOneInflatedDistribution):
     phi : torch.Tensor
         The precision parameter of the continuous Beta distribution component. 
         Must be strictly positive. Higher values indicate lower variance.
-    gate_zo : torch.Tensor, optional
-        The probability that the observation is discrete (exactly 0 or exactly 1). 
+    gate_zo : torch.Tensor
+        The probability that the observation is discrete (exactly 0 or exactly 1).
         Must be in the closed interval [0, 1].
-    gate_one : torch.Tensor, optional
-        The conditional probability that the observation is exactly 1, given that 
+    gate_one : torch.Tensor
+        The conditional probability that the observation is exactly 1, given that
         it is a discrete observation. Must be in the closed interval [0, 1].
     validate_args : bool, optional
         Whether to validate input with constraints. Default is None.
@@ -141,7 +146,7 @@ class ZeroOneInflatedBeta(ZeroOneInflatedDistribution):
     }
     support = constraints.unit_interval
 
-    def __init__(self, mu, phi, gate_zo=None, gate_one=None, validate_args=None):
+    def __init__(self, mu, phi, gate_zo, gate_one, validate_args=None):
         self.mu_param = mu
         self.phi_param = phi
         
