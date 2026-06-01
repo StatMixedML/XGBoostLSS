@@ -29,4 +29,6 @@ from . import Dirichlet
 from . import SplineFlow
 from . import Mixture
 from . import Logistic
+from . import zero_one_inflated
+from . import ZOIB
 
