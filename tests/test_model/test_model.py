@@ -80,10 +80,13 @@ def multivariate_data():
     data_sim = load_simulated_multivariate_gaussian_data()
 
     # Create 60%, 20%, 20% split for train, validation and test
-    train, validate, test = np.split(
-        data_sim.sample(frac=1, random_state=123),
-        [int(0.6 * len(data_sim)), int(0.8 * len(data_sim))],
-    )
+    data_sim_shuffled = data_sim.sample(frac=1, random_state=123)
+    split1 = int(0.6 * len(data_sim_shuffled))
+    split2 = int(0.8 * len(data_sim_shuffled))
+
+    train = data_sim_shuffled.iloc[:split1]
+    validate = data_sim_shuffled.iloc[split1:split2]
+    test = data_sim_shuffled.iloc[split2:]
 
     # Train
     x_train = train.filter(regex="x")
