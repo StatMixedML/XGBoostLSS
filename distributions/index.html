@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://github.com/StatMixedML/XGBoostLSS/distributions/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Available Distributions - XGBoostLSS</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Available Distributions";
+        var mkdocs_page_input_path = "distributions.md";
+        var mkdocs_page_url = "/StatMixedML/XGBoostLSS/distributions/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> XGBoostLSS
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../dgbm/">Distributional Modelling</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Available Distributions</a>
+    <ul class="current">
+    </ul>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Examples</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/Gaussian_Regression/">Basic Walkthrough - Gaussian Regression</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/Dirichlet_Regression/">Dirichlet Regression</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/Expectile_Regression/">Expectile Regression</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/Gamma_Regression_CaliforniaHousing/">Gamma Regression (California Housing Data)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/GaussianMixture_Regression_CaliforniaHousing/">Gausssian-Mixture Regression (California Housing Data)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/How_To_Select_A_Univariate_Distribution/">How to Select a Univariate Distribution</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/How_To_Select_A_Multivariate_Distribution/">How to Select a Multivariate Distribution</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/MVN_Cholesky/">Multivariate Gaussian Regression (Cholesky Decomposition)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/MVN_LowRank/">Multivariate Gaussian Regression (Low-Rank Approximation)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/MVT_Cholesky/">Multivariate Student-T Regression (Cholesky Decomposition)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/SplineFlow_Regression/">Spline Flow Regression</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/ZAGamma_Regression/">Zero-Adjusted Gamma Regression</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API Docs</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../api/">API references</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">XGBoostLSS</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Available Distributions</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/StatMixedML/XGBoostLSS/edit/master/docs/distributions.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="available-distributions">Available Distributions</h1>
+<p>XGBoostLSS is built upon PyTorch and Pyro, enabling users to harness a diverse set of distributional families and to leverage automatic differentiation capabilities. This greatly expands the options for probabilistic modeling and uncertainty estimation and allows users to tackle complex regression tasks.</p>
+<p>XGBoostLSS currently supports the following distributions.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Distribution</th>
+<th style="text-align: center;">Usage</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Support</th>
+<th style="text-align: center;">Number of Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><a href="https://pytorch.org/docs/stable/distributions.html#beta">Beta</a></td>
+<td style="text-align: center;"><code>Beta()</code></td>
+<td style="text-align: center;">Continuous <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in (0, 1)\)</span></td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://pytorch.org/docs/stable/distributions.html#cauchy">Cauchy</a></td>
+<td style="text-align: center;"><code>Cauchy()</code></td>
+<td style="text-align: center;">Continuous <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in (-\infty,\infty)\)</span></td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://pytorch.org/docs/stable/distributions.html#dirichlet">Dirichlet</a></td>
+<td style="text-align: center;"><code>Dirichlet(D)</code></td>
+<td style="text-align: center;">Continuous <br /> (Multivariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y_{D} \in (0, 1)\)</span></td>
+<td style="text-align: center;">D</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://epub.ub.uni-muenchen.de/31542/1/1471082x14561155.pdf">Expectile</a></td>
+<td style="text-align: center;"><code>Expectile()</code></td>
+<td style="text-align: center;">Continuous <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in (-\infty,\infty)\)</span></td>
+<td style="text-align: center;">Number of expectiles</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://pytorch.org/docs/stable/distributions.html#gamma">Gamma</a></td>
+<td style="text-align: center;"><code>Gamma()</code></td>
+<td style="text-align: center;">Continuous <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in (0, \infty)\)</span></td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://pytorch.org/docs/stable/distributions.html#normal">Gaussian</a></td>
+<td style="text-align: center;"><code>Gaussian()</code></td>
+<td style="text-align: center;">Continuous <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in (-\infty,\infty)\)</span></td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://pytorch.org/docs/stable/distributions.html#gumbel">Gumbel</a></td>
+<td style="text-align: center;"><code>Gumbel()</code></td>
+<td style="text-align: center;">Continuous <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in (-\infty,\infty)\)</span></td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://pytorch.org/docs/stable/distributions.html#laplace">Laplace</a></td>
+<td style="text-align: center;"><code>Laplace()</code></td>
+<td style="text-align: center;">Continuous <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in (-\infty,\infty)\)</span></td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://pytorch.org/docs/stable/distributions.html#normal">Logistic</a></td>
+<td style="text-align: center;"><code>Logistic()</code></td>
+<td style="text-align: center;">Continuous <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in (-\infty,\infty)\)</span></td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://pytorch.org/docs/stable/distributions.html#lognormal">LogNormal</a></td>
+<td style="text-align: center;"><code>LogNormal()</code></td>
+<td style="text-align: center;">Continuous <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in (0,\infty)\)</span></td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://pytorch.org/docs/stable/distributions.html#mixturesamefamily">Mixture</a></td>
+<td style="text-align: center;"><code>Mixture(CompDist(), M)</code></td>
+<td style="text-align: center;">Continuous &amp; Discrete Count <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in (-\infty,\infty)\)</span> <br /> <br /> <span class="arithmatex">\(y \in [0, \infty)\)</span>  <br  /> <br /> <span class="arithmatex">\(y \in [0, 1]\)</span>  <br  />  <br /> <span class="arithmatex">\(y \in (0, 1, 2, 3, \ldots)\)</span></td>
+<td style="text-align: center;">CompDist + M</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://pytorch.org/docs/stable/distributions.html#multivariatenormal">Multivariate Normal (Cholesky)</a></td>
+<td style="text-align: center;"><code>MVN(D)</code></td>
+<td style="text-align: center;">Continuous <br /> (Multivariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y_{D} \in (-\infty,\infty)\)</span></td>
+<td style="text-align: center;">D(D + 3)/2</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://pytorch.org/docs/stable/distributions.html#lowrankmultivariatenormal">Multivariate Normal (Low-Rank)</a></td>
+<td style="text-align: center;"><code>MVN_LoRa(D, rank)</code></td>
+<td style="text-align: center;">Continuous <br /> (Multivariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y_{D} \in (-\infty,\infty)\)</span></td>
+<td style="text-align: center;">D(2+rank)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://docs.pyro.ai/en/stable/distributions.html#multivariatestudentt">Multivariate Student-T</a></td>
+<td style="text-align: center;"><code>MVT(D)</code></td>
+<td style="text-align: center;">Continuous <br /> (Multivariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y_{D} \in (-\infty,\infty)\)</span></td>
+<td style="text-align: center;">1 + D(D + 3)/2</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://pytorch.org/docs/stable/distributions.html#negativebinomial">Negative Binomial</a></td>
+<td style="text-align: center;"><code>NegativeBinomial()</code></td>
+<td style="text-align: center;">Discrete Count <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in (0, 1, 2, 3, \ldots)\)</span></td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://pytorch.org/docs/stable/distributions.html#poisson">Poisson</a></td>
+<td style="text-align: center;"><code>Poisson()</code></td>
+<td style="text-align: center;">Discrete Count <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in (0, 1, 2, 3, \ldots)\)</span></td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://docs.pyro.ai/en/stable/distributions.html#pyro.distributions.transforms.Spline">Spline Flow</a></td>
+<td style="text-align: center;"><code>SplineFlow()</code></td>
+<td style="text-align: center;">Continuous &amp; Discrete Count <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in (-\infty,\infty)\)</span> <br /> <br /> <span class="arithmatex">\(y \in [0, \infty)\)</span>  <br  /> <br /> <span class="arithmatex">\(y \in [0, 1]\)</span>  <br  />  <br /> <span class="arithmatex">\(y \in (0, 1, 2, 3, \ldots)\)</span></td>
+<td style="text-align: center;">2xcount_bins + (count_bins-1) (order=quadratic)  <br  /> <br  />  3xcount_bins + (count_bins-1) (order=linear)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://pytorch.org/docs/stable/distributions.html#studentt">Student-T</a></td>
+<td style="text-align: center;"><code>StudentT()</code></td>
+<td style="text-align: center;">Continuous <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in (-\infty,\infty)\)</span></td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://pytorch.org/docs/stable/distributions.html#weibull">Weibull</a></td>
+<td style="text-align: center;"><code>Weibull()</code></td>
+<td style="text-align: center;">Continuous <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in [0, \infty)\)</span></td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py">Zero-Adjusted Beta</a></td>
+<td style="text-align: center;"><code>ZABeta()</code></td>
+<td style="text-align: center;">Discrete-Continuous <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in [0, 1)\)</span></td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py">Zero-Adjusted Gamma</a></td>
+<td style="text-align: center;"><code>ZAGamma()</code></td>
+<td style="text-align: center;">Discrete-Continuous <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in [0, \infty)\)</span></td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py">Zero-Adjusted LogNormal</a></td>
+<td style="text-align: center;"><code>ZALN()</code></td>
+<td style="text-align: center;">Discrete-Continuous <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in [0, \infty)\)</span></td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py#L150">Zero-Inflated Negative Binomial</a></td>
+<td style="text-align: center;"><code>ZINB()</code></td>
+<td style="text-align: center;">Discrete-Count <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in [0, 1, 2, 3, \ldots)\)</span></td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/zero_inflated.py#L121">Zero-Inflated Poisson</a></td>
+<td style="text-align: center;"><code>ZIPoisson()</code></td>
+<td style="text-align: center;">Discrete-Count <br /> (Univariate)</td>
+<td style="text-align: center;"><span class="arithmatex">\(y \in [0, 1, 2, 3, \ldots)\)</span></td>
+<td style="text-align: center;">2</td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../dgbm/" class="btn btn-neutral float-left" title="Distributional Modelling"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../examples/Gaussian_Regression/" class="btn btn-neutral float-right" title="Basic Walkthrough - Gaussian Regression">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/StatMixedML/XGBoostLSS" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../dgbm/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../examples/Gaussian_Regression/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../javascripts/mathjax.js"></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
