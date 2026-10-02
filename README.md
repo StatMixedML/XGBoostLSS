@@ -103,6 +103,11 @@ März, Alexander (2019): [*XGBoostLSS - An extension of XGBoost to probabilistic
 --->
 
 ## `Star History`
-<a href="https://star-history.dera.page/#StatMixedML/XGBoostLSS&Date">
-    <img src="https://star-history.dera.page/svg?repos=StatMixedML/XGBoostLSS&type=Date" width="450">
+
+<a href="https://www.star-history.com/?repos=StatMixedML%2FXGBoostLSS&type=date&logscale=&legend=bottom-right">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=StatMixedML/XGBoostLSS&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=StatMixedML/XGBoostLSS&type=date&legend=top-left" />
+   <img alt="Star History Chart" width="520" src="https://api.star-history.com/chart?repos=StatMixedML/XGBoostLSS&type=date&legend=top-left" />
+ </picture>
 </a>
