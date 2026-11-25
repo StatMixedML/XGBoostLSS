@@ -1,5 +1,11 @@
-import pkg_resources
+from importlib.resources import files
+
 import pandas as pd
+
+
+def _read_csv(name):
+    with files(__package__).joinpath(name).open("rb") as f:
+        return pd.read_csv(f)
 
 
 def load_simulated_gaussian_data():
@@ -12,11 +18,9 @@ def load_simulated_gaussian_data():
         X1:X10         int64: random noise features
 
     """
-    train_path = pkg_resources.resource_stream(__name__, "gaussian_train_sim.csv")
-    train_df = pd.read_csv(train_path)
+    train_df = _read_csv("gaussian_train_sim.csv")
 
-    test_path = pkg_resources.resource_stream(__name__, "gaussian_test_sim.csv")
-    test_df = pd.read_csv(test_path)
+    test_df = _read_csv("gaussian_test_sim.csv")
 
     return train_df, test_df
 
@@ -31,11 +35,9 @@ def load_simulated_studentT_data():
         X1:X10         int64: random noise features
 
     """
-    train_path = pkg_resources.resource_stream(__name__, "studentT_train_sim.csv")
-    train_df = pd.read_csv(train_path)
+    train_df = _read_csv("studentT_train_sim.csv")
 
-    test_path = pkg_resources.resource_stream(__name__, "studentT_test_sim.csv")
-    test_df = pd.read_csv(test_path)
+    test_df = _read_csv("studentT_test_sim.csv")
 
     return train_df, test_df
 
@@ -49,8 +51,7 @@ def load_simulated_multivariate_gaussian_data():
         x              int64: x-feature
 
     """
-    data_path = pkg_resources.resource_stream(__name__, "sim_triv_gaussian.csv")
-    data_df = pd.read_csv(data_path)
+    data_df = _read_csv("sim_triv_gaussian.csv")
 
     return data_df
 
@@ -64,8 +65,7 @@ def load_simulated_multivariate_studentT_data():
         x              int64: x-feature
 
     """
-    data_path = pkg_resources.resource_stream(__name__, "sim_triv_studentT.csv")
-    data_df = pd.read_csv(data_path)
+    data_df = _read_csv("sim_triv_studentT.csv")
 
     return data_df
 
@@ -89,7 +89,6 @@ def load_articlake_data():
     ------
     https://rdrr.io/rforge/DirichletReg/
     """
-    data_path = pkg_resources.resource_stream(__name__, "arcticlake.csv")
-    data_df = pd.read_csv(data_path)
+    data_df = _read_csv("arcticlake.csv")
 
     return data_df
